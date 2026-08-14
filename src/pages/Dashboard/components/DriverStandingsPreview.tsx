@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Trophy } from 'lucide-react';
 import { useDriverStandings } from '../../../hooks/useF1Data';
 import Card from '../../../components/ui/Card';
-import Loader from '../../../components/ui/Loader';
 import ErrorState from '../../../components/ui/ErrorState';
 import './DriverStandingsPreview.css';
 
@@ -12,8 +11,25 @@ const DriverStandingsPreview: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card title="Driver Standings" className="standings-card-loading">
-        <Loader size={24} />
+      <Card title="Driver Standings" className="driver-standings-preview">
+        <div className="standings-table">
+          <div className="table-header">
+            <span className="col-pos">Pos</span>
+            <span className="col-driver">Driver</span>
+            <span className="col-team">Team</span>
+            <span className="col-pts text-right">Pts</span>
+          </div>
+          <div className="table-body">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="table-row" style={{ padding: 'var(--space-3) var(--space-3)' }}>
+                <span className="col-pos"><div className="skeleton" style={{ width: '16px', height: '16px' }} /></span>
+                <span className="col-driver"><div className="skeleton" style={{ width: '120px', height: '16px' }} /></span>
+                <span className="col-team"><div className="skeleton" style={{ width: '80px', height: '16px' }} /></span>
+                <span className="col-pts text-right"><div className="skeleton" style={{ width: '32px', height: '16px', marginLeft: 'auto' }} /></span>
+              </div>
+            ))}
+          </div>
+        </div>
       </Card>
     );
   }

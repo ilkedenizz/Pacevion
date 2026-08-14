@@ -14,7 +14,7 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Router />
     </BrowserRouter>
   </QueryClientProvider>

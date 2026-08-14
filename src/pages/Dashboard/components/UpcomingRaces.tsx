@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Calendar, MapPin, ChevronRight, ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import Card from '../../../components/ui/Card';
-import Loader from '../../../components/ui/Loader';
 import ErrorState from '../../../components/ui/ErrorState';
 import './UpcomingRaces.css';
 
@@ -28,8 +27,23 @@ const UpcomingRaces: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card title="Upcoming Schedule" className="upcoming-card-loading">
-        <Loader size={24} />
+      <Card title="Upcoming Schedule" className="upcoming-races-card">
+        <div className="upcoming-list">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="upcoming-row-item" style={{ minHeight: '76px', cursor: 'default' }}>
+              <div className="skeleton" style={{ width: '50px', height: '22px' }} />
+              <div className="race-details-block" style={{ gap: '6px' }}>
+                <div className="skeleton" style={{ width: '120px', height: '14px' }} />
+                <div className="skeleton" style={{ width: '160px', height: '11px' }} />
+                <div className="meta-sub-row">
+                  <div className="skeleton" style={{ width: '80px', height: '10px' }} />
+                  <div className="skeleton" style={{ width: '60px', height: '10px' }} />
+                </div>
+              </div>
+              <div className="skeleton" style={{ width: '16px', height: '16px' }} />
+            </div>
+          ))}
+        </div>
       </Card>
     );
   }

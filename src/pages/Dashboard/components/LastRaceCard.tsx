@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Award } from 'lucide-react';
 import { useCalendar, useRaceResults } from '../../../hooks/useF1Data';
 import Card from '../../../components/ui/Card';
-import Loader from '../../../components/ui/Loader';
 import ErrorState from '../../../components/ui/ErrorState';
 import './LastRaceCard.css';
 
@@ -52,8 +51,23 @@ const LastRaceCard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card title="Last Race Result" className="last-race-card-loading">
-        <Loader size={24} />
+      <Card title="Last Race Result" className="last-race-card">
+        <div className="last-race-header">
+          <div className="skeleton" style={{ width: '120px', height: '16px' }} />
+          <div className="skeleton" style={{ width: '80px', height: '12px' }} />
+        </div>
+        <div className="podium-list">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="podium-row" style={{ minHeight: '52px' }}>
+              <div className="skeleton" style={{ width: '54px', height: '22px' }} />
+              <div className="podium-info" style={{ gap: '4px' }}>
+                <div className="skeleton" style={{ width: '100px', height: '14px' }} />
+                <div className="skeleton" style={{ width: '70px', height: '11px' }} />
+              </div>
+              <div className="skeleton" style={{ width: '36px', height: '22px', marginLeft: 'auto' }} />
+            </div>
+          ))}
+        </div>
       </Card>
     );
   }
