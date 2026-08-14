@@ -1,24 +1,75 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
-import DashboardPage from '../pages/Dashboard';
-import RaceCalendarPage from '../pages/RaceCalendar';
-import RaceDetailsPage from '../pages/RaceDetails';
-import DriversPage from '../pages/Drivers';
-import DriverProfilePage from '../pages/DriverProfile';
-import ConstructorsPage from '../pages/Constructors';
-import StandingsPage from '../pages/Standings';
+import Loader from '../components/ui/Loader';
+
+const DashboardPage = lazy(() => import('../pages/Dashboard'));
+const RaceCalendarPage = lazy(() => import('../pages/RaceCalendar'));
+const RaceDetailsPage = lazy(() => import('../pages/RaceDetails'));
+const DriversPage = lazy(() => import('../pages/Drivers'));
+const DriverProfilePage = lazy(() => import('../pages/DriverProfile'));
+const ConstructorsPage = lazy(() => import('../pages/Constructors'));
+const StandingsPage = lazy(() => import('../pages/Standings'));
 
 const Router: React.FC = () => (
   <Routes>
     <Route element={<AppLayout />}>
-      <Route path="/" element={<DashboardPage />} />
-      <Route path="/calendar" element={<RaceCalendarPage />} />
-      <Route path="/races/:season/:round" element={<RaceDetailsPage />} />
-      <Route path="/drivers" element={<DriversPage />} />
-      <Route path="/drivers/:driverId" element={<DriverProfilePage />} />
-      <Route path="/constructors" element={<ConstructorsPage />} />
-      <Route path="/standings" element={<StandingsPage />} />
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <DashboardPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/calendar"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <RaceCalendarPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/races/:season/:round"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <RaceDetailsPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/drivers"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <DriversPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/drivers/:driverId"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <DriverProfilePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/constructors"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <ConstructorsPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/standings"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <StandingsPage />
+          </Suspense>
+        }
+      />
     </Route>
   </Routes>
 );

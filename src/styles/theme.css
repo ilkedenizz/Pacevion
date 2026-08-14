@@ -89,3 +89,11 @@ body {
   animation: pulse 1.5s ease-in-out infinite;
   border-radius: var(--radius-sm);
 }
+
+.page-loader-suspense {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  width: 100%;
+}
