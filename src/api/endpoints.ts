@@ -5,10 +5,12 @@ import type {
   MRDataDriverStandingsResponse,
   MRDataRaceResultsResponse,
   MRDataConstructorStandingsResponse,
+  MRDataQualifyingResponse,
   Race,
   DriverStanding,
   ConstructorStanding,
   ResultRace,
+  QualifyingRace,
 } from './types';
 
 /**
@@ -44,4 +46,21 @@ export async function getConstructorStandings(): Promise<ConstructorStanding[]> 
   const data = await fetchClient<MRDataConstructorStandingsResponse>('/current/constructorStandings.json');
   const lists = data.MRData.StandingsTable.StandingsLists;
   return lists.length > 0 ? lists[0].ConstructorStandings : [];
+}
+
+/**
+ * Fetch the calendar for a specific season.
+ */
+export async function getSeasonCalendar(season: string): Promise<Race[]> {
+  const data = await fetchClient<MRDataCalendarResponse>(`/${season}.json`);
+  return data.MRData.RaceTable.Races;
+}
+
+/**
+ * Fetch qualifying results for a specific race.
+ */
+export async function getQualifyingResults(season: string, round: string): Promise<QualifyingRace | null> {
+  const data = await fetchClient<MRDataQualifyingResponse>(`/${season}/${round}/qualifying.json`);
+  const races = data.MRData.RaceTable.Races;
+  return races.length > 0 ? races[0] : null;
 }

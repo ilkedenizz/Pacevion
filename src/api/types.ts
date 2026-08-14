@@ -184,3 +184,35 @@ export interface MRDataConstructorStandingsResponse {
     StandingsTable: ConstructorStandingsTable;
   };
 }
+
+export interface QualifyingResult {
+  number: string;
+  position: string;
+  Driver: Driver;
+  Constructor: Constructor;
+  Q1: string;
+  Q2?: string;
+  Q3?: string;
+}
+
+export interface QualifyingRace extends Race {
+  QualifyingResults: QualifyingResult[];
+}
+
+export interface QualifyingRaceTable {
+  season?: string;
+  round?: string;
+  Races: QualifyingRace[];
+}
+
+export interface MRDataQualifyingResponse {
+  MRData: {
+    xmlns: string;
+    series: string;
+    url: string;
+    limit: string;
+    offset: string;
+    total: string;
+    RaceTable: QualifyingRaceTable;
+  };
+}
