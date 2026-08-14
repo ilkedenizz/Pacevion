@@ -4,7 +4,7 @@ import './Header.css';
 const Header: React.FC = () => (
   <header className="header">
     <div className="header-logo-section">
-      <h1 className="title">Pacevion</h1>
+      <span className="title">Pacevion</span>
     </div>
     <div className="header-status-section">
       <div className="status-item">

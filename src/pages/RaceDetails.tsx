@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Trophy, HelpCircle, ChevronLeft, ChevronRight, Award, Timer } from 'lucide-react';
 import { useSeasonCalendar, useRaceResults, useQualifyingResults } from '../hooks/useF1Data';
+import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import './RaceDetails.css';
 
@@ -44,6 +45,25 @@ const RaceDetails: React.FC = () => {
     if (!calendar || calendar.length === 0) return null;
     return calendar.find((r) => r.round === round) || null;
   }, [calendar, round]);
+
+  const seoTitle = useMemo(() => {
+    return raceInfo 
+      ? `${raceInfo.raceName} ${season} Results & Qualifying | Pacevion`
+      : `Formula 1 Season ${season} Round ${round} | Pacevion`;
+  }, [raceInfo, season, round]);
+
+  const seoDescription = useMemo(() => {
+    return raceInfo 
+      ? `Formula 1 ${season} ${raceInfo.raceName} (Round ${round}) detaylı yarış sonuçları, klasman sıralaması, pol pozisyonu dereceleri ve sıralama turları zamanları.`
+      : `Formula 1 ${season} Round ${round} yarış hafta sonu detayları ve sonuçları.`;
+  }, [raceInfo, season, round]);
+
+  useSEO({
+    title: seoTitle,
+    description: seoDescription,
+    canonicalPath: `/races/${season}/${round}`
+  });
+
 
   // Is race completed?
   const isCompleted = useMemo(() => {

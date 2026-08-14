@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, ChevronRight, RefreshCw } from 'lucide-react';
 import { useCalendar } from '../hooks/useF1Data';
+import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import './RaceCalendar.css';
 
@@ -9,6 +10,12 @@ const RaceCalendar: React.FC = () => {
   const navigate = useNavigate();
   const { data: races, isLoading, isError, refetch } = useCalendar();
   const [filter, setFilter] = useState<'all' | 'completed' | 'upcoming'>('all');
+
+  useSEO({
+    title: '2026 F1 Race Calendar & Schedule | Pacevion',
+    description: 'Formula 1 2026 sezonundaki tüm yarışların tarihlerini, saatlerini, pist adlarını ve durumlarını takip edin.',
+    canonicalPath: '/calendar'
+  });
 
   const now = useMemo(() => new Date(), []);
 
@@ -217,7 +224,7 @@ const RaceCalendar: React.FC = () => {
                     </div>
 
                     <div className="card-race-info">
-                      <h3 className="card-race-title font-heading">{race.raceName}</h3>
+                      <h2 className="card-race-title font-heading">{race.raceName}</h2>
                       <p className="card-circuit-details">
                         <MapPin size={12} className="card-icon" />
                         <span>{race.Circuit.circuitName} · {race.Circuit.Location.locality}, {race.Circuit.Location.country}</span>

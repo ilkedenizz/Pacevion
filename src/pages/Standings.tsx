@@ -2,12 +2,19 @@ import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Trophy, Shield, User, RefreshCw } from 'lucide-react';
 import { useDriverStandings, useConstructorStandings, useCalendar } from '../hooks/useF1Data';
+import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import './Standings.css';
 
 const Standings: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'drivers' | 'constructors'>('drivers');
+
+  useSEO({
+    title: 'F1 Driver & Constructor Standings | Pacevion',
+    description: 'Formula 1 2026 sezonu pilotlar şampiyonası ve markalar şampiyonası güncel puan durumu tablolarını ve liderlik mücadelesini inceleyin.',
+    canonicalPath: '/standings'
+  });
 
   // Fetch queries
   const {

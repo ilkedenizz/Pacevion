@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ilkedenizz.github.io/Pacevion/sitemap.xml

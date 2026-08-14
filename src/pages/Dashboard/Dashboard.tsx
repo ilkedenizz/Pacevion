@@ -5,11 +5,18 @@ import LastRaceCard from './components/LastRaceCard';
 import UpcomingRaces from './components/UpcomingRaces';
 import ChampionshipAnalytics from './components/ChampionshipAnalytics';
 import { useCalendar, useDriverStandings } from '../../hooks/useF1Data';
+import { useSEO } from '../../hooks/useSEO';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
   const { data: races } = useCalendar();
   const { data: standings } = useDriverStandings();
+
+  useSEO({
+    title: 'Pacevion — Formula 1 Results, Standings & Race Data',
+    description: 'Pacevion ile Formula 1 yarış sonuçlarını, pilotlar ve takımlar şampiyonası puan durumlarını, yarış takvimini ve detaylı F1 verilerini takip edin.',
+    canonicalPath: '/'
+  });
 
   const stats = useMemo(() => {
     const total = races ? races.length : 0;
@@ -34,7 +41,7 @@ const Dashboard: React.FC = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <span className="dashboard-category">F1 2026</span>
-        <h2 className="dashboard-title">Season Overview</h2>
+        <h1 className="dashboard-title">Season Overview</h1>
         <p className="dashboard-subtitle">Real-time statistics, calendars, and championship standings.</p>
       </div>
 
