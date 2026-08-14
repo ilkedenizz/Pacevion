@@ -1,6 +1,6 @@
 // src/hooks/useF1Data.ts
 import { useQuery } from '@tanstack/react-query';
-import { getCalendar, getDriverStandings, getRaceResults } from '../api/endpoints';
+import { getCalendar, getDriverStandings, getRaceResults, getConstructorStandings } from '../api/endpoints';
 
 /**
  * Hook to fetch the current season's race calendar.
@@ -30,5 +30,15 @@ export function useRaceResults(season: string, round: string) {
     queryKey: ['raceResults', season, round],
     queryFn: () => getRaceResults(season, round),
     enabled: !!season && !!round,
+  });
+}
+
+/**
+ * Hook to fetch the current season's constructor standings.
+ */
+export function useConstructorStandings() {
+  return useQuery({
+    queryKey: ['constructorStandings'],
+    queryFn: getConstructorStandings,
   });
 }

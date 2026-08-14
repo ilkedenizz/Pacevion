@@ -152,3 +152,35 @@ export interface MRDataRaceResultsResponse {
     RaceTable: ResultsRaceTable;
   };
 }
+
+export interface ConstructorStanding {
+  position: string;
+  positionText: string;
+  points: string;
+  wins: string;
+  Constructor: Constructor;
+}
+
+export interface ConstructorStandingsList {
+  season: string;
+  round: string;
+  ConstructorStandings: ConstructorStanding[];
+}
+
+export interface ConstructorStandingsTable {
+  season?: string;
+  round?: string;
+  StandingsLists: ConstructorStandingsList[];
+}
+
+export interface MRDataConstructorStandingsResponse {
+  MRData: {
+    xmlns: string;
+    series: string;
+    url: string;
+    limit: string;
+    offset: string;
+    total: string;
+    StandingsTable: ConstructorStandingsTable;
+  };
+}
