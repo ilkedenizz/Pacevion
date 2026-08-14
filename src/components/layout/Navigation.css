@@ -1,0 +1,106 @@
+/* Navigation.css */
+.navigation {
+  background-color: var(--color-surface);
+  padding: var(--space-4) var(--space-3);
+  border-right: 1px solid var(--border, #2e303a);
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: var(--radius-md);
+  transition: all 0.2s ease;
+  position: relative;
+  outline: none;
+}
+
+/* Accessible focus state */
+.nav-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.nav-link:hover {
+  color: var(--color-text-primary);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.nav-link.active {
+  color: var(--color-text-primary);
+  background-color: rgba(225, 6, 0, 0.1);
+  font-weight: 600;
+}
+
+.nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 3px;
+  background-color: var(--color-accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.nav-icon {
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover .nav-icon {
+  transform: translateX(2px);
+}
+
+/* Responsive adjustment: sidebar shifts to horizontal tab bar on smaller screens */
+@media (max-width: 768px) {
+  .navigation {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border, #2e303a);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .nav-list {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: var(--space-1);
+  }
+
+  .nav-link {
+    padding: var(--space-2) var(--space-3);
+    flex-direction: column;
+    gap: var(--space-1);
+    font-size: 11px;
+    align-items: center;
+  }
+
+  .nav-link.active::before {
+    left: 15%;
+    bottom: 0;
+    top: auto;
+    width: 70%;
+    height: 3px;
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  }
+
+  .nav-link:hover .nav-icon {
+    transform: none;
+  }
+}

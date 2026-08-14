@@ -1,0 +1,41 @@
+/* src/styles/base.css */
+/* Minimal reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html, body, #root {
+  height: 100%;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  background: var(--color-bg, #0a0a0a);
+  color: var(--color-text-primary, #f5f5f5);
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.page-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+  background-color: var(--color-bg);
+}
+
+/* Responsive navigation adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+}
+
