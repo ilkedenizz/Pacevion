@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from '../components/layout/Header';
 import Navigation from '../components/layout/Navigation';
+import WelcomeOverlay from '../components/ui/WelcomeOverlay';
 import { Outlet } from 'react-router-dom';
 
 const AppLayout: React.FC = () => (
@@ -12,6 +13,7 @@ const AppLayout: React.FC = () => (
         <Outlet />
       </main>
     </div>
+    <WelcomeOverlay />
   </div>
 );
 
