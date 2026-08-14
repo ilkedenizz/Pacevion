@@ -1,75 +1,20 @@
-# React + TypeScript + Vite
+# Pacevion
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Pacevion is a premium, portfolio-quality Formula 1 dashboard application built with React, TypeScript, and Vite. It consumes real-time F1 data from the Jolpica F1 API to provide dynamic countdowns, standings, results, and detailed calendar statistics.
 
-Currently, two official plugins are available:
+## Tech Stack
+- **Framework**: React 18.2.0 + Vite
+- **Language**: TypeScript
+- **Routing**: React Router v7
+- **Server State**: TanStack Query (React Query v5)
+- **Styling**: Native CSS with a premium motorsport-inspired dark theme and subtle carbon texture
+- **Icons**: Lucide React
+- **Charts**: Recharts (preconfigured with theme variables)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+## Architecture
+Pacevion follows a strict modular separation of concerns:
+1. **API Client (`src/api/`)**: Centralized native `fetch` client and strongly-typed endpoints generated directly from the Ergast/Jolpica response schemas.
+2. **React Query Hooks (`src/hooks/`)**: Wraps API calls to manage caching, refetching, and pagination state.
+3. **UI Atoms (`src/components/ui/`)**: Reusable presentation components (`Card`, `Loader`, `ErrorState`).
+4. **Layout Primitives (`src/layout/`)**: Consistent global structure (`Header`, `Navigation`, `AppLayout`) with mobile-responsive horizontal tab transitions.
+5. **Feature Pages (`src/pages/`)**: Domain-specific dashboard and schedule interfaces (Dashboard, Race Calendar, etc.).

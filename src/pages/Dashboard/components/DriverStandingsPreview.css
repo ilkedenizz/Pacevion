@@ -1,0 +1,143 @@
+/* DriverStandingsPreview.css */
+.driver-standings-preview {
+  height: 100%;
+}
+
+.view-all-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: color 0.15s ease;
+  outline: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1);
+}
+
+.view-all-link:focus-visible {
+  box-shadow: 0 0 0 2px var(--color-accent-25);
+  color: var(--color-accent);
+}
+
+.view-all-link:hover {
+  color: var(--color-accent);
+}
+
+.standings-table {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.table-header {
+  display: flex;
+  padding: var(--space-2) var(--space-3);
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--border, #2e303a);
+  letter-spacing: 0.5px;
+}
+
+.table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  font-size: 14px;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.col-pos {
+  width: 40px;
+  flex-shrink: 0;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+}
+
+.gold-trophy {
+  color: #ffd700; /* gold */
+}
+
+.col-driver {
+  flex: 2;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.driver-short-name {
+  display: none;
+}
+
+.col-team {
+  flex: 2;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-pts {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.text-right {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.empty-standings {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.standings-card-loading {
+  height: 250px;
+  justify-content: center;
+}
+
+@media (max-width: 576px) {
+  .driver-full-name {
+    display: none;
+  }
+  .driver-short-name {
+    display: inline;
+    font-weight: 700;
+  }
+  .col-pos {
+    width: 30px;
+  }
+  .col-pts {
+    width: 45px;
+  }
+}

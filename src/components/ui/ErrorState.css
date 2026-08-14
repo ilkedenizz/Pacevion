@@ -1,0 +1,66 @@
+/* ErrorState.css */
+.error-state-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--space-6);
+  background-color: var(--color-surface);
+  border: 1px solid rgba(225, 6, 0, 0.2);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  max-width: 480px;
+  margin: var(--space-4) auto;
+}
+
+.error-icon {
+  color: var(--color-accent);
+  margin-bottom: var(--space-3);
+}
+
+.error-title {
+  font-family: var(--font-heading);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+  color: var(--color-text-primary);
+  letter-spacing: 0.5px;
+}
+
+.error-message {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+  line-height: var(--line-height-base);
+}
+
+.retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background-color: var(--color-accent);
+  color: #ffffff;
+  border: none;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  outline: none;
+}
+
+.retry-button:focus-visible {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px var(--color-accent);
+}
+
+.retry-button:hover {
+  background-color: #b90400; /* Darker red */
+}
+
+.retry-button:active {
+  transform: scale(0.97);
+}

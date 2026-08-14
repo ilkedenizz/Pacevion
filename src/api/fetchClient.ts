@@ -12,7 +12,7 @@ export async function fetchClient<T>(endpoint: string, init?: RequestInit): Prom
     ...init,
     headers: {
       ...(init?.headers ?? {}),
-      'User-Agent': 'F1Pulse/0.0.0 (github.com/your-repo)',
+      'User-Agent': 'Pacevion/0.0.0 (github.com/your-repo)',
     },
   });
   if (!response.ok) {
