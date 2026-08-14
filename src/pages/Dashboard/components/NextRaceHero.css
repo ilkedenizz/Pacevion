@@ -2,30 +2,28 @@
 .next-race-hero {
   position: relative;
   background-color: var(--color-surface);
-  border: 1px solid var(--border, #2e303a);
-  border-left: 4px solid var(--color-accent);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-sm);
   padding: var(--space-5);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   overflow: hidden;
-  margin-bottom: var(--space-5);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-5);
 }
 
-/* Subtle carbon fiber-like background layer */
 .next-race-hero::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
   right: 0;
   bottom: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0.005) 0px,
-    rgba(255, 255, 255, 0.005) 2px,
-    transparent 2px,
-    transparent 4px
-  );
+  left: 0;
+  background: radial-gradient(rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.2) 100%),
+              repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.002) 0px, rgba(255, 255, 255, 0.002) 1px, transparent 1px, transparent 2px),
+              repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.002) 0px, rgba(255, 255, 255, 0.002) 1px, transparent 1px, transparent 2px);
   pointer-events: none;
 }
 
@@ -34,6 +32,7 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
+  flex: 1;
 }
 
 .badge-container {
@@ -42,30 +41,31 @@
 
 .live-badge {
   display: inline-block;
-  background-color: rgba(225, 6, 0, 0.1);
+  background-color: var(--color-accent-10);
   border: 1px solid var(--color-accent);
   color: var(--color-accent);
-  font-size: 11px;
+  font-family: var(--font-heading);
+  font-size: 10px;
   font-weight: 700;
   padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
 }
 
 .grand-prix-name {
   font-family: var(--font-heading);
-  font-size: var(--font-size-xl);
+  font-size: 26px;
   font-weight: 800;
   text-transform: uppercase;
   color: var(--color-text-primary);
-  margin-bottom: var(--space-1);
+  margin: 0 0 var(--space-2) 0;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
 }
 
-.circuit-name {
-  font-size: 14px;
+.circuit-name-hero {
+  font-size: 13px;
   color: var(--color-text-secondary);
-  font-style: italic;
-  margin-bottom: var(--space-4);
+  margin: 0 0 var(--space-4) 0;
 }
 
 .meta-details {
@@ -80,38 +80,37 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--color-text-secondary);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .countdown-container {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin: var(--space-4) 0 var(--space-5);
-  background-color: rgba(0, 0, 0, 0.2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
+  margin: var(--space-3) 0 var(--space-4);
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
   width: max-content;
-  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .countdown-box {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 50px;
+  min-width: 48px;
 }
 
 .countdown-box .number {
   font-family: var(--font-heading);
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: var(--color-text-primary);
   letter-spacing: 0.5px;
 }
 
 .countdown-box .label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 600;
   color: var(--color-text-secondary);
   letter-spacing: 0.5px;
@@ -119,17 +118,17 @@
 
 .countdown-divider {
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--color-accent);
-  padding-bottom: 12px;
+  padding-bottom: 8px;
 }
 
 .race-live-banner {
-  margin: var(--space-4) 0 var(--space-5);
+  margin: var(--space-3) 0 var(--space-4);
   font-weight: 700;
   color: var(--color-accent);
-  font-size: 14px;
+  font-size: 13px;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -153,11 +152,12 @@
   background-color: transparent;
   color: var(--color-text-primary);
   border: 1px solid var(--color-text-secondary);
-  padding: var(--space-2) var(--space-4);
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: 13px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.15s ease;
   outline: none;
@@ -165,53 +165,125 @@
 
 .view-race-btn:focus-visible {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 2px var(--color-accent-25);
 }
 
 .view-race-btn:hover {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
+  color: #ffffff;
+}
+
+/* Circuit Visualizer Pane */
+.hero-circuit-pane {
+  flex: 0 0 160px;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--color-border);
+  padding-left: var(--space-5);
+  position: relative;
+  z-index: 1;
+}
+
+.circuit-svg {
+  width: 100%;
+  height: 120px;
+}
+
+.circuit-caption {
+  font-family: var(--font-heading);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+  margin-top: var(--space-2);
 }
 
 /* Skeleton Loading State Styles */
 .next-race-skeleton {
-  height: 240px;
-  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-border);
+  border-radius: var(--radius-sm);
   padding: var(--space-5);
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  align-items: center;
+  height: 240px;
 }
 
-.skeleton-title {
-  height: 36px;
-  width: 40%;
-  background-color: #333333;
-  border-radius: var(--radius-sm);
+.skeleton-hero-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.skeleton-details {
-  height: 80px;
-  width: 60%;
-  background-color: #333333;
-  border-radius: var(--radius-sm);
+.skeleton-hero-right {
+  flex: 0 0 160px;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--color-border);
+  padding-left: var(--space-5);
 }
 
-@media (max-width: 576px) {
+@media (max-width: 768px) {
+  .next-race-hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-4);
+  }
+  
+  .hero-circuit-pane {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-left: 0;
+    padding-top: var(--space-4);
+    flex: 0 0 auto;
+    height: 140px;
+  }
+  
+  .circuit-svg {
+    height: 100px;
+  }
+  
+  .next-race-skeleton {
+    flex-direction: column;
+    height: auto;
+    gap: var(--space-4);
+  }
+  
+  .skeleton-hero-right {
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    padding-left: 0;
+    padding-top: var(--space-4);
+    flex: 0 0 auto;
+    height: 140px;
+  }
+}
+
+@media (max-width: 480px) {
   .countdown-container {
     width: 100%;
     justify-content: space-around;
     gap: var(--space-1);
-    padding: var(--space-3) var(--space-2);
+    padding: var(--space-2) var(--space-1);
   }
+  
   .countdown-box {
     min-width: 40px;
   }
+  
   .countdown-box .number {
-    font-size: 20px;
+    font-size: 18px;
   }
+  
   .countdown-divider {
-    font-size: 16px;
-    padding-bottom: 10px;
+    font-size: 14px;
+    padding-bottom: 6px;
   }
 }

@@ -22,13 +22,11 @@ const NextRaceHero: React.FC = () => {
   const nextRace = useMemo(() => {
     if (!races || races.length === 0) return null;
     const now = new Date();
-    // Races are already ordered by round/date.
-    // Find the first race where the race date/time is in the future.
     return races.find((race) => {
       const raceTimeStr = race.time ? (race.time.endsWith('Z') ? race.time : `${race.time}Z`) : '00:00:00Z';
       const raceDate = new Date(`${race.date}T${raceTimeStr}`);
       return raceDate > now;
-    }) || races[races.length - 1]; // fallback to last race of season if all completed
+    }) || races[races.length - 1];
   }, [races]);
 
   // Countdown timer effect
@@ -62,9 +60,18 @@ const NextRaceHero: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="next-race-skeleton skeleton">
-        <div className="skeleton-title" />
-        <div className="skeleton-details" />
+      <div className="next-race-skeleton">
+        <div className="skeleton-hero-left">
+          <div className="skeleton" style={{ width: '120px', height: '16px', marginBottom: '16px' }} />
+          <div className="skeleton" style={{ width: '70%', height: '32px', marginBottom: '16px' }} />
+          <div className="skeleton" style={{ width: '40%', height: '14px', marginBottom: '8px' }} />
+          <div className="skeleton" style={{ width: '50%', height: '14px', marginBottom: '24px' }} />
+          <div className="skeleton" style={{ width: '80%', height: '60px', marginBottom: '24px' }} />
+          <div className="skeleton" style={{ width: '140px', height: '36px' }} />
+        </div>
+        <div className="skeleton-hero-right">
+          <div className="skeleton" style={{ width: '120px', height: '120px', borderRadius: '50%' }} />
+        </div>
       </div>
     );
   }
@@ -89,46 +96,48 @@ const NextRaceHero: React.FC = () => {
     <div className="next-race-hero">
       <div className="hero-content">
         <div className="badge-container">
-          <span className="live-badge">UPCOMING ROUND {nextRace.round}</span>
+          <span className="live-badge">UPCOMING // ROUND {nextRace.round}</span>
         </div>
-        <h2 className="grand-prix-name">{nextRace.raceName}</h2>
+        <h2 className="grand-prix-name font-heading-condensed">{nextRace.raceName}</h2>
+        
         <div className="meta-details">
           <div className="meta-item">
-            <MapPin size={16} />
+            <MapPin size={14} className="accent" />
             <span>{nextRace.Circuit.Location.locality}, {nextRace.Circuit.Location.country}</span>
           </div>
           <div className="meta-item">
-            <Calendar size={16} />
+            <Calendar size={14} />
             <span>{nextRace.date}</span>
           </div>
           {nextRace.time && (
             <div className="meta-item">
-              <Clock size={16} />
+              <Clock size={14} />
               <span>{nextRace.time.replace('Z', ' UTC')}</span>
             </div>
           )}
         </div>
-        <p className="circuit-name">{nextRace.Circuit.circuitName}</p>
+        
+        <p className="circuit-name-hero text-secondary">{nextRace.Circuit.circuitName}</p>
         
         {countdown && !countdown.isPassed && (
           <div className="countdown-container">
             <div className="countdown-box">
-              <span className="number">{String(countdown.days).padStart(2, '0')}</span>
+              <span className="number font-mono">{String(countdown.days).padStart(2, '0')}</span>
               <span className="label">DAYS</span>
             </div>
             <div className="countdown-divider">:</div>
             <div className="countdown-box">
-              <span className="number">{String(countdown.hours).padStart(2, '0')}</span>
+              <span className="number font-mono">{String(countdown.hours).padStart(2, '0')}</span>
               <span className="label">HRS</span>
             </div>
             <div className="countdown-divider">:</div>
             <div className="countdown-box">
-              <span className="number">{String(countdown.minutes).padStart(2, '0')}</span>
+              <span className="number font-mono">{String(countdown.minutes).padStart(2, '0')}</span>
               <span className="label">MINS</span>
             </div>
             <div className="countdown-divider">:</div>
             <div className="countdown-box">
-              <span className="number">{String(countdown.seconds).padStart(2, '0')}</span>
+              <span className="number font-mono">{String(countdown.seconds).padStart(2, '0')}</span>
               <span className="label">SECS</span>
             </div>
           </div>
@@ -136,14 +145,38 @@ const NextRaceHero: React.FC = () => {
 
         {countdown?.isPassed && (
           <div className="race-live-banner">
-            <span className="blink">●</span> RACE WEEKEND UNDERWAY / COMPLETED
+            <span className="blink">●</span> SESSION COMPLETED / WEEKEND IN PROGRESS
           </div>
         )}
 
         <button className="view-race-btn" onClick={handleViewRace} type="button">
-          <span>View Race Weekend Details</span>
-          <ArrowRight size={16} />
+          <span>VIEW RACE DETAILS</span>
+          <ArrowRight size={14} />
         </button>
+      </div>
+
+      <div className="hero-circuit-pane">
+        <svg className="circuit-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+          {/* Abstract racing line track path */}
+          <path
+            d="M 20 40 C 20 15, 60 10, 80 25 C 95 40, 85 65, 75 70 C 60 75, 55 60, 45 60 C 35 60, 40 85, 25 80 C 10 75, 10 55, 20 40 Z"
+            fill="none"
+            stroke="rgba(225, 6, 0, 0.05)"
+            strokeWidth="8"
+            strokeLinecap="round"
+          />
+          <path
+            d="M 20 40 C 20 15, 60 10, 80 25 C 95 40, 85 65, 75 70 C 60 75, 55 60, 45 60 C 35 60, 40 85, 25 80 C 10 75, 10 55, 20 40 Z"
+            fill="none"
+            stroke="var(--color-accent)"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeDasharray="4 2"
+          />
+          <circle cx="20" cy="40" r="3" fill="#f5f5f5" />
+          <text x="18" y="34" fill="#8a8a8f" fontSize="6" fontWeight="bold">S/F</text>
+        </svg>
+        <span className="circuit-caption">SECTOR MAP & TELEMETRY</span>
       </div>
     </div>
   );

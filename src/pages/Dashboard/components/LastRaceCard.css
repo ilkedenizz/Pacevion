@@ -3,19 +3,15 @@
   height: 100%;
 }
 
-.last-race-card-loading {
-  height: 250px;
-  justify-content: center;
-}
-
 .view-details-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   color: var(--color-text-secondary);
   text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: color 0.15s ease;
@@ -29,7 +25,7 @@
 }
 
 .last-race-header {
-  border-bottom: 1px solid var(--border, #2e303a);
+  border-bottom: 1px solid var(--color-border);
   padding-bottom: var(--space-3);
   margin-bottom: var(--space-3);
   display: flex;
@@ -40,21 +36,22 @@
 
 .last-race-header .race-name {
   font-family: var(--font-heading);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
   text-transform: uppercase;
   color: var(--color-text-primary);
   margin: 0;
+  letter-spacing: 0.5px;
 }
 
 .last-race-header .race-date {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .podium-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .podium-row {
@@ -62,14 +59,15 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-2) var(--space-3);
-  background-color: rgba(0, 0, 0, 0.15);
-  border-radius: var(--radius-md);
-  border: 1px solid rgba(255, 255, 255, 0.01);
+  background-color: rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  transition: all 0.15s ease;
 }
 
 .podium-row:hover {
   background-color: rgba(255, 255, 255, 0.01);
-  border-color: rgba(255, 255, 255, 0.03);
+  border-color: var(--color-accent-25);
 }
 
 .podium-badge {
@@ -77,27 +75,27 @@
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
+  font-family: var(--font-heading);
+  font-size: 10px;
   font-weight: 700;
-  min-width: 54px;
+  min-width: 50px;
   justify-content: center;
 }
 
 .podium-badge.pos-1 {
-  background-color: rgba(255, 215, 0, 0.1);
+  background-color: rgba(255, 215, 0, 0.05);
   border: 1px solid #ffd700;
   color: #ffd700;
 }
 
 .podium-badge.pos-2 {
-  background-color: rgba(192, 192, 192, 0.1);
+  background-color: rgba(192, 192, 192, 0.05);
   border: 1px solid #c0c0c0;
   color: #c0c0c0;
 }
 
 .podium-badge.pos-3 {
-  background-color: rgba(205, 127, 50, 0.1);
+  background-color: rgba(205, 127, 50, 0.05);
   border: 1px solid #cd7f32;
   color: #cd7f32;
 }
@@ -111,7 +109,7 @@
 
 .podium-driver-name {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
@@ -119,7 +117,7 @@
 }
 
 .podium-team-name {
-  font-size: 12px;
+  font-size: 11px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -127,19 +125,22 @@
 
 .podium-points {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  font-weight: 700;
+  align-items: baseline;
+  gap: 2px;
+  font-family: var(--font-heading);
+  font-weight: 800;
   font-size: 14px;
   color: var(--color-text-primary);
-  min-width: 45px;
+}
+
+.podium-row:hover .podium-points {
+  color: var(--color-accent);
 }
 
 .podium-points .pts-lbl {
-  font-size: 9px;
+  font-size: 8px;
   color: var(--color-text-secondary);
-  font-weight: 500;
-  margin-top: -2px;
+  font-weight: 600;
 }
 
 .empty-results {

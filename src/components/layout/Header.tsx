@@ -3,7 +3,20 @@ import './Header.css';
 
 const Header: React.FC = () => (
   <header className="header">
-    <h1 className="title">Pacevion</h1>
+    <div className="header-logo-section">
+      <h1 className="title">Pacevion</h1>
+    </div>
+    <div className="header-status-section">
+      <div className="status-item">
+        <span className="status-label">SEASON</span>
+        <span className="status-value font-mono">2026</span>
+      </div>
+      <div className="status-divider" />
+      <div className="status-item">
+        <span className="status-indicator live" />
+        <span className="status-value font-mono">LIVE FEED</span>
+      </div>
+    </div>
   </header>
 );
 

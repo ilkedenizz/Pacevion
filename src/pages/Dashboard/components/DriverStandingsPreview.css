@@ -9,8 +9,9 @@
   gap: var(--space-1);
   color: var(--color-text-secondary);
   text-decoration: none;
-  font-size: 12px;
-  font-weight: 600;
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: color 0.15s ease;
@@ -20,7 +21,6 @@
 }
 
 .view-all-link:focus-visible {
-  box-shadow: 0 0 0 2px var(--color-accent-25);
   color: var(--color-accent);
 }
 
@@ -36,13 +36,14 @@
 
 .table-header {
   display: flex;
-  padding: var(--space-2) var(--space-3);
-  font-size: 11px;
+  padding: var(--space-2) var(--space-4);
+  font-size: 10px;
+  font-family: var(--font-heading);
   text-transform: uppercase;
   font-weight: 700;
   color: var(--color-text-secondary);
-  border-bottom: 1px solid var(--border, #2e303a);
-  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--color-border);
+  letter-spacing: 1px;
 }
 
 .table-body {
@@ -53,9 +54,10 @@
 .table-row {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-3);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-  font-size: 14px;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+  transition: background-color 0.15s ease;
 }
 
 .table-row:last-child {
@@ -67,7 +69,7 @@
 }
 
 .col-pos {
-  width: 40px;
+  width: 44px;
   flex-shrink: 0;
   font-weight: 700;
   color: var(--color-text-secondary);
@@ -76,13 +78,18 @@
 }
 
 .gold-trophy {
-  color: #ffd700; /* gold */
+  color: #ffd700;
+  filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.2));
 }
 
 .col-driver {
-  flex: 2;
+  flex: 1.5;
   font-weight: 600;
   color: var(--color-text-primary);
+}
+
+.driver-full-name {
+  font-weight: 600;
 }
 
 .driver-short-name {
@@ -90,16 +97,24 @@
 }
 
 .col-team {
-  flex: 2;
-  font-size: 13px;
+  flex: 1.5;
+  font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .col-pts {
-  width: 60px;
+  width: 64px;
   flex-shrink: 0;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.table-row:hover .col-pts {
+  color: var(--color-accent);
 }
 
 .text-right {
@@ -119,11 +134,6 @@
   padding: var(--space-4);
   text-align: center;
   color: var(--color-text-secondary);
-}
-
-.standings-card-loading {
-  height: 250px;
-  justify-content: center;
 }
 
 @media (max-width: 576px) {

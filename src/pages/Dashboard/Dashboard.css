@@ -2,30 +2,43 @@
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
 }
 
 .dashboard-header {
-  border-bottom: 1px solid var(--border, #2e303a);
-  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
   margin-bottom: var(--space-2);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-category {
+  font-family: var(--font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: var(--space-1);
 }
 
 .dashboard-title {
   font-family: var(--font-heading);
-  font-size: var(--font-size-xl);
+  font-size: 28px;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   color: var(--color-text-primary);
   margin: 0 0 var(--space-1) 0;
+  line-height: 1.1;
 }
 
 .dashboard-subtitle {
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text-secondary);
   margin: 0;
 }
@@ -40,9 +53,49 @@
   width: 100%;
 }
 
+/* Season Stats Row */
+.season-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.stat-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: border-color 0.15s ease;
+}
+
+.stat-card:hover {
+  border-color: var(--color-accent-25);
+}
+
+.stat-label {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: var(--space-1);
+}
+
+.stat-value {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+/* Content Columns */
 .grid-content-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.2fr 0.8fr;
   gap: var(--space-5);
   align-items: start;
 }
@@ -50,7 +103,6 @@
 .content-column-main {
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .content-column-side {
@@ -62,16 +114,22 @@
 /* Responsive adjustments */
 @media (max-width: 1024px) {
   .grid-content-row {
-    gap: var(--space-4);
-  }
-  .content-column-side {
+    grid-template-columns: 1fr;
     gap: var(--space-4);
   }
 }
 
 @media (max-width: 768px) {
-  .grid-content-row {
-    grid-template-columns: 1fr;
-    gap: var(--space-4);
+  .season-stats-row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+  
+  .stat-value {
+    font-size: 20px;
+  }
+  
+  .dashboard-title {
+    font-size: 22px;
   }
 }
