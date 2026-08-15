@@ -63,6 +63,16 @@
   gap: var(--space-3);
   flex: 1;
   padding: var(--space-3) var(--space-4);
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .season-stat:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+  .season-stat:hover .season-stat-icon {
+    color: var(--color-accent-hover);
+  }
 }
 
 .season-stat-icon {
@@ -117,7 +127,7 @@
 /* ── 4-Column Data Grid ─────────────────────── */
 .grid-content-row {
   display: grid;
-  grid-template-columns: 1.15fr 1.15fr 1.15fr 1fr;
+  grid-template-columns: 1.25fr 1.15fr 1.10fr 1.15fr;
   gap: 1px;
   background-color: var(--color-border);
   border-bottom: 1px solid var(--color-border);

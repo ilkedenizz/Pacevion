@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, Zap } from 'lucide-react';
 import { useCalendar, useRaceResults } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
+import { formatLocalTime } from '../../../utils/dateUtils';
 import './LastRaceCard.css';
 
 const LastRaceCard: React.FC = () => {
@@ -95,7 +96,7 @@ const LastRaceCard: React.FC = () => {
 
       <div className="last-race-subtitle">
         <span className="last-race-name">{raceResults.raceName}</span>
-        <span className="last-race-date text-secondary">{raceResults.date}</span>
+        <span className="last-race-date text-secondary">{formatLocalTime(raceResults.date, raceResults.time)}</span>
       </div>
 
       <div className="podium-list">

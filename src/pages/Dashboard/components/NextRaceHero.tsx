@@ -4,6 +4,7 @@ import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { circuitLayouts } from '../../../data/circuits';
+import { formatLocalTime } from '../../../utils/dateUtils';
 import './NextRaceHero.css';
 
 interface Countdown {
@@ -108,12 +109,12 @@ const NextRaceHero: React.FC = () => {
           </div>
           <div className="meta-item">
             <Calendar size={14} />
-            <span>{nextRace.date}</span>
+            <span>{formatLocalTime(nextRace.date, nextRace.time)}</span>
           </div>
           {nextRace.time && (
             <div className="meta-item">
               <Clock size={14} />
-              <span>{nextRace.time.replace('Z', ' UTC')}</span>
+              <span>{nextRace.time.substring(0, 5)} UTC</span>
             </div>
           )}
         </div>

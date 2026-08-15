@@ -92,6 +92,14 @@
   background-color: var(--color-accent);
 }
 
+.table-row:first-child::before {
+  background-color: rgba(225, 6, 0, 0.5);
+}
+
+.table-row:first-child {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
 .table-row:hover .col-pts {
   color: var(--color-accent);
 }
@@ -167,7 +175,7 @@
   width: 64px;
   flex-shrink: 0;
   font-family: var(--font-heading);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 900;
   color: var(--color-text-primary);
   font-variant-numeric: tabular-nums;

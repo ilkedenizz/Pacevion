@@ -4,6 +4,7 @@ import { Calendar, MapPin, ChevronRight, ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import Card from '../../../components/ui/Card';
 import ErrorState from '../../../components/ui/ErrorState';
+import { formatLocalTime } from '../../../utils/dateUtils';
 import './UpcomingRaces.css';
 
 const UpcomingRaces: React.FC = () => {
@@ -96,7 +97,7 @@ const UpcomingRaces: React.FC = () => {
                   </span>
                   <span className="meta-sub-item">
                     <Calendar size={12} />
-                    <span>{race.date}</span>
+                    <span>{formatLocalTime(race.date, race.time)}</span>
                   </span>
                 </div>
               </div>

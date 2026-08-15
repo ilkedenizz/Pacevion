@@ -1,5 +1,5 @@
 import React from 'react';
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, type TooltipProps } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell, type TooltipProps } from 'recharts';
 import { useDriverStandings } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { Link } from 'react-router-dom';
@@ -78,9 +78,9 @@ const ChampionshipAnalytics: React.FC = () => {
           <ArrowRight size={14} />
         </Link>
       </div>
-      <div className="chart-container" style={{ width: '100%', height: 180 }}>
+      <div className="chart-container" style={{ width: '100%', height: 220 }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+          <BarChart data={chartData} margin={{ top: 20, right: 10, left: 10, bottom: 0 }}>
             <XAxis
               dataKey="name"
               stroke="#8a8a8f"
@@ -88,19 +88,18 @@ const ChampionshipAnalytics: React.FC = () => {
               tickLine={false}
               axisLine={{ stroke: '#27272A' }}
             />
-            <YAxis
-              stroke="#8a8a8f"
-              fontSize={10}
-              tickLine={false}
-              axisLine={{ stroke: '#27272A' }}
-              tickFormatter={(val) => String(val)}
-            />
             <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255, 255, 255, 0.02)' }} />
-            <Bar dataKey="points" radius={[2, 2, 0, 0]}>
+            <Bar 
+              dataKey="points" 
+              radius={[2, 2, 0, 0]} 
+              isAnimationActive={true}
+              animationDuration={600}
+              label={{ position: 'top', fill: 'var(--color-text-primary)', fontSize: 10, fontWeight: 800, fontFamily: 'var(--font-heading)' }}
+            >
               {chartData.map((_entry, index) => (
                 <Cell
                   key={`cell-${index}`}
-                  fill={index === 0 ? '#e10600' : 'rgba(255, 255, 255, 0.15)'}
+                  fill={index === 0 ? 'var(--color-accent)' : '#4a4a4c'}
                 />
               ))}
             </Bar>
