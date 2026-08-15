@@ -4,13 +4,16 @@ import DriverStandingsPreview from './components/DriverStandingsPreview';
 import LastRaceCard from './components/LastRaceCard';
 import UpcomingRaces from './components/UpcomingRaces';
 import ChampionshipAnalytics from './components/ChampionshipAnalytics';
+import AboutSection from './components/AboutSection';
 import { useCalendar, useDriverStandings } from '../../hooks/useF1Data';
 import { useSEO } from '../../hooks/useSEO';
+import { useLanguage } from '../../context/LanguageContext';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
   const { data: races } = useCalendar();
   const { data: standings } = useDriverStandings();
+  const { t } = useLanguage();
 
   useSEO({
     title: 'Pacevion — Formula 1 Results, Standings & Race Data',
@@ -41,8 +44,8 @@ const Dashboard: React.FC = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <span className="dashboard-category">F1 2026</span>
-        <h1 className="dashboard-title">Season Overview</h1>
-        <p className="dashboard-subtitle">Real-time statistics, calendars, and championship standings.</p>
+        <h1 className="dashboard-title">{t('seasonOverview')}</h1>
+        <p className="dashboard-subtitle">{t('realTimeStats')}</p>
       </div>
 
       <div className="dashboard-grid">
@@ -52,19 +55,19 @@ const Dashboard: React.FC = () => {
 
         <div className="season-stats-row">
           <div className="stat-card">
-            <span className="stat-label">Total Rounds</span>
+            <span className="stat-label">{t('totalRounds')}</span>
             <span className="stat-value">{stats.total || '—'}</span>
           </div>
           <div className="stat-card">
-            <span className="stat-label">Completed GPs</span>
+            <span className="stat-label">{t('completedGps')}</span>
             <span className="stat-value">{stats.completed || '—'}</span>
           </div>
           <div className="stat-card">
-            <span className="stat-label">Leader Points</span>
+            <span className="stat-label">{t('leaderPoints')}</span>
             <span className="stat-value">{stats.points || '—'}</span>
           </div>
           <div className="stat-card">
-            <span className="stat-label">Teams Entered</span>
+            <span className="stat-label">{t('teamsEntered')}</span>
             <span className="stat-value">{stats.constructors || '—'}</span>
           </div>
         </div>
@@ -80,6 +83,8 @@ const Dashboard: React.FC = () => {
             <UpcomingRaces />
           </div>
         </div>
+
+        <AboutSection />
       </div>
     </div>
   );

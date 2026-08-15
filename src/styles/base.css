@@ -8,8 +8,13 @@
 html, body, #root {
   height: 100%;
   font-family: var(--font-sans, system-ui, sans-serif);
-  background: var(--color-bg, #0a0a0a);
+  background: var(--color-bg, #0a0a0b);
   color: var(--color-text-primary, #f5f5f5);
+}
+
+/* Scroll lock on body when mobile sidebar is active */
+body.sidebar-open-scroll-lock {
+  overflow: hidden;
 }
 
 .app-layout {
@@ -23,19 +28,28 @@ html, body, #root {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 .page-container {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-5);
+  padding: var(--space-4) var(--space-5);
   background-color: var(--color-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.page-content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 /* Responsive navigation adjustments */
 @media (max-width: 768px) {
-  .main-content {
-    flex-direction: column;
+  .page-container {
+    padding: var(--space-3) var(--space-4);
   }
 }
-

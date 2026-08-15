@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Router from './router';
 
+import { LanguageProvider } from './context/LanguageContext';
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -13,11 +15,13 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Router />
-    </BrowserRouter>
-  </QueryClientProvider>
+  <LanguageProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <Router />
+      </BrowserRouter>
+    </QueryClientProvider>
+  </LanguageProvider>
 );
 
 export default App;
