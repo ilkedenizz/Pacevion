@@ -18,6 +18,35 @@ import PowerUnit from './components/PowerUnit';
 import RaceData from './components/RaceData';
 import Glossary from './components/Glossary';
 
+import { ASSETS } from '../../data/assets';
+
+const LEARN_SECTIONS = [
+  {
+    id: 'aerodynamics',
+    title: 'AERODYNAMICS',
+    content: 'The most critical performance differentiator in modern F1. Complex front wings, underfloor venturi tunnels, and rear wings generate immense downforce, pushing the car into the track. This allows cornering speeds that defy logic, though it comes at the cost of drag on the straights.',
+    visual: ASSETS.learn.aerodynamics
+  },
+  {
+    id: 'power-unit',
+    title: 'POWER UNIT',
+    content: 'A masterpiece of engineering. The 1.6-liter V6 turbocharged hybrid power unit consists of the Internal Combustion Engine (ICE), Motor Generator Unit-Kinetic (MGU-K), Motor Generator Unit-Heat (MGU-H), Energy Store (ES), and Control Electronics (CE). It produces over 1000 horsepower.',
+    visual: ASSETS.learn.powerUnit
+  },
+  {
+    id: 'tyres',
+    title: 'TYRES & BRAKES',
+    content: 'Pirelli supplies F1 with complex tyre compounds ranging from C1 (hardest) to C5 (softest), plus intermediate and wet tyres. Managing tyre temperatures and degradation is crucial. Brakes can reach 1000°C and provide 5G of deceleration.',
+    visual: ASSETS.learn.tyres
+  },
+  {
+    id: 'drs-ers',
+    title: 'DRS & ERS',
+    content: 'The Drag Reduction System (DRS) opens a flap in the rear wing to reduce drag and aid overtaking. The Energy Recovery System (ERS) deploys 160hp of electrical energy per lap, harvested from braking and exhaust gases.',
+    visual: null
+  }
+];
+
 const Learn: React.FC = () => {
   const { language } = useLanguage();
   const t = learnTranslations[language];
@@ -76,6 +105,30 @@ const Learn: React.FC = () => {
           
           <div className="lkc-car-diagram-wrapper">
             <F1Car t={t} id="car" />
+          </div>
+          
+          <div className="learn-sections">
+            {LEARN_SECTIONS.map((section) => (
+              <div 
+                key={section.id}
+                id={section.id}
+                className="learn-section-card"
+              >
+                {section.visual ? (
+                  <div className="ls-visual">
+                    <img src={section.visual} alt={section.title} className="ls-img" loading="lazy" />
+                  </div>
+                ) : (
+                  <div className="ls-visual">
+                    <img src={ASSETS.circuits.hero} alt={section.title} className="ls-img" loading="lazy" />
+                  </div>
+                )}
+                <div className="ls-content">
+                  <h3 className="ls-title">{section.title}</h3>
+                  <p className="ls-desc">{section.content}</p>
+                </div>
+              </div>
+            ))}
           </div>
           
           <PowerUnit t={t} />

@@ -4,6 +4,7 @@ import { ArrowRight, Zap } from 'lucide-react';
 import { useCalendar, useRaceResults } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { formatLocalTime } from '../../../utils/dateUtils';
+import { getTeamVisual, getDriverVisual } from '../../../data/assets';
 import './LastRaceCard.css';
 
 const LastRaceCard: React.FC = () => {
@@ -80,6 +81,17 @@ const LastRaceCard: React.FC = () => {
         <span className="last-race-name">{raceResults.raceName}</span>
         <span className="last-race-date text-secondary">{formatLocalTime(raceResults.date, raceResults.time)}</span>
       </div>
+
+      {topThree.length > 0 && (
+        <div className="last-race-winner-visual">
+          <img src={getTeamVisual(topThree[0].Constructor?.constructorId)} alt="Winner Team" className="lr-team-img" />
+          <img src={getDriverVisual(topThree[0].Driver?.driverId, topThree[0].Constructor?.constructorId)} alt="Winner Driver" className="lr-driver-img" />
+          <div className="lr-winner-overlay">
+            <span className="lr-winner-label">RACE WINNER</span>
+            <span className="lr-winner-name">{topThree[0].Driver.familyName}</span>
+          </div>
+        </div>
+      )}
 
       <div className="podium-list">
         {topThree.map((result) => {

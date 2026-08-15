@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
+import { ASSETS } from '../data/assets';
 import './RaceCalendar.css';
 
 const RaceCalendar: React.FC = () => {
@@ -101,66 +102,59 @@ const RaceCalendar: React.FC = () => {
         <button className={`cb-filter-btn ${filter === 'upcoming' ? 'active' : ''}`} onClick={() => setFilter('upcoming')}>UPCOMING</button>
       </div>
 
-      <div className="calendar-board-wrapper">
-        <div className="cb-header-row">
-          <div className="cb-col-round">ROUND</div>
-          <div className="cb-col-date">DATE</div>
-          <div className="cb-col-gp">GRAND PRIX</div>
-          <div className="cb-col-circuit">CIRCUIT</div>
-          <div className="cb-col-status">STATUS</div>
-        </div>
-
-        <div className="cb-body">
-          {processedRaces.list.length === 0 ? (
-            <div className="cb-empty">No races match the selected filter.</div>
-          ) : (
-            processedRaces.list.map((race) => {
+      <div className="calendar-grid-wrapper">
+        {processedRaces.list.length === 0 ? (
+          <div className="cb-empty">No races match the selected filter.</div>
+        ) : (
+          <div className="calendar-card-grid">
+            {processedRaces.list.map((race) => {
               const isNext = race.round === processedRaces.nextRound;
-              let rowClass = 'cb-row';
-              let statusLabel = '';
-              let statusClass = '';
-
+              let cardClass = 'rc-grid-card';
+              let statusLabel: string;
+              
               if (race.isCompleted) {
-                rowClass += ' row-completed';
+                cardClass += ' card-completed';
                 statusLabel = 'COMPLETED';
-                statusClass = 'status-completed';
               } else if (isNext) {
-                rowClass += ' row-next';
+                cardClass += ' card-next';
                 statusLabel = 'NEXT RACE';
-                statusClass = 'status-next';
               } else {
-                rowClass += ' row-upcoming';
+                cardClass += ' card-upcoming';
                 statusLabel = 'UPCOMING';
-                statusClass = 'status-upcoming';
               }
 
               return (
                 <div 
                   key={`${race.season}-${race.round}`}
-                  className={rowClass}
+                  className={cardClass}
                   onClick={() => handleRowClick(race.season, race.round)}
                 >
-                  <div className="cb-col-round">
-                    <span className="cb-round-val">{String(race.round).padStart(2, '0')}</span>
+                  <div className="rcc-bg">
+                    <img src={ASSETS.circuits.hero} alt="Circuit" />
+                    <div className="rcc-overlay" />
                   </div>
-                  <div className="cb-col-date">
-                    <span className="cb-date-val">{formatDate(race.date)}</span>
-                  </div>
-                  <div className="cb-col-gp">
-                    <span className="cb-gp-country">{race.Circuit.Location.country}</span>
-                    <span className="cb-gp-name">{race.raceName}</span>
-                  </div>
-                  <div className="cb-col-circuit">
-                    <span className="cb-circuit-name">{race.Circuit.circuitName}</span>
-                  </div>
-                  <div className="cb-col-status">
-                    <span className={`cb-status-badge ${statusClass}`}>{statusLabel}</span>
+                  
+                  <div className="rcc-content">
+                    <div className="rcc-top">
+                      <span className="rcc-round">R{String(race.round).padStart(2, '0')}</span>
+                      <span className={`rcc-status ${isNext ? 'rcc-status-next' : ''}`}>{statusLabel}</span>
+                    </div>
+                    
+                    <div className="rcc-middle">
+                      <span className="rcc-gp-name">{race.raceName}</span>
+                      <span className="rcc-circuit">{race.Circuit.circuitName}</span>
+                    </div>
+                    
+                    <div className="rcc-bottom">
+                      <span className="rcc-date">{formatDate(race.date)}</span>
+                      <span className="rcc-country">{race.Circuit.Location.country}</span>
+                    </div>
                   </div>
                 </div>
               );
-            })
-          )}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ChevronLeft, Trophy } from 'lucide-react';
 import { useDriverStandings } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
+import { getDriverVisual } from '../data/assets';
 import ErrorState from '../components/ui/ErrorState';
 import './Drivers.css';
 
@@ -14,6 +15,7 @@ const DriverProfile: React.FC = () => {
 
   const driverData = useMemo(() => {
     if (!standings || standings.length === 0) return null;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return standings.find((s: any) => s.Driver.driverId === driverId) || null;
   }, [standings, driverId]);
 
@@ -51,6 +53,7 @@ const DriverProfile: React.FC = () => {
 
   const driver = driverData.Driver;
   const constructor = driverData.Constructors[0];
+  const driverVisual = getDriverVisual(driver.driverId, constructor.constructorId);
 
   return (
     <div className="driver-grid-container">
@@ -61,6 +64,9 @@ const DriverProfile: React.FC = () => {
       </div>
 
       <div className="driver-profile-hero">
+        <div className="dp-hero-image">
+          <img src={driverVisual} alt={`${driver.givenName} ${driver.familyName}`} />
+        </div>
         <div className="dp-hero-bg">
           <span className="dp-hero-bg-number">{driver.permanentNumber || ''}</span>
         </div>

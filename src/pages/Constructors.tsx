@@ -1,6 +1,7 @@
 import React from 'react';
 import { useConstructorStandings } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
+import { getTeamVisual } from '../data/assets';
 import ErrorState from '../components/ui/ErrorState';
 import './Constructors.css';
 
@@ -39,44 +40,37 @@ const Constructors: React.FC = () => {
         </div>
       </div>
 
-      <div className="constructors-board-wrapper">
-        <div className="cb-table-header">
-          <div className="cb-col-pos">POS</div>
-          <div className="cb-col-team">CONSTRUCTOR</div>
-          <div className="cb-col-nat">NATIONALITY</div>
-          <div className="cb-col-wins text-right">WINS</div>
-          <div className="cb-col-pts text-right">PTS</div>
-        </div>
+      <div className="constructors-showcase-grid">
+        {standings.map((standing) => {
+          const team = standing.Constructor;
+          const isLeader = standing.position === '1';
+          const teamVisual = getTeamVisual(team.constructorId);
 
-        <div className="cb-table-body">
-          {standings.map((standing) => {
-            const team = standing.Constructor;
-            const isLeader = standing.position === '1';
-
-            return (
-              <div 
-                key={team.constructorId} 
-                className={`cb-row ${isLeader ? 'leader-row' : ''}`}
-              >
-                <div className="cb-col-pos">
-                  <span className="cb-pos-badge">{standing.position}</span>
+          return (
+            <div 
+              key={team.constructorId} 
+              className={`constructor-showcase-card ${isLeader ? 'leader-card' : ''}`}
+            >
+              <div className="csc-car-visual">
+                <img src={teamVisual} alt={`${team.name} F1 Car`} loading="lazy" />
+              </div>
+              
+              <div className="csc-content">
+                <div className="csc-header">
+                  <span className="csc-pos">P{standing.position}</span>
+                  <span className="csc-pts">{standing.points} PTS</span>
                 </div>
-                <div className="cb-col-team">
-                  <span className="cb-team-name">{team.name}</span>
-                </div>
-                <div className="cb-col-nat">
-                  <span className="cb-nat-text">{team.nationality}</span>
-                </div>
-                <div className="cb-col-wins text-right">
-                  <span className="cb-stat">{standing.wins}</span>
-                </div>
-                <div className="cb-col-pts text-right">
-                  <span className="cb-pts-val">{standing.points}</span>
+                
+                <h2 className="csc-team-name">{team.name}</h2>
+                
+                <div className="csc-meta">
+                  <span className="csc-nat">{team.nationality}</span>
+                  <span className="csc-wins">{standing.wins} WINS</span>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

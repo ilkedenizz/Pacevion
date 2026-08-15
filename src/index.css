@@ -15,9 +15,10 @@
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
   
-  --transition-fast: 180ms;
+  --transition-fast: 150ms;
   --transition-normal: 250ms;
-  --transition-slow: 400ms;
+  --transition-slow: 500ms;
+  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   
   /* Technical Radiuses */
   --radius-sm: 2px;

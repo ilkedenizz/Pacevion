@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
-import { circuitLayouts } from '../../../data/circuits';
+import { ASSETS } from '../../../data/assets';
 import './NextRaceHero.css';
 
 interface Countdown {
@@ -67,25 +67,12 @@ const NextRaceHero: React.FC = () => {
   if (!nextRace) return null;
 
   return (
-    <div className="hero-broadcast-panel">
-      {/* Background SVG */}
-      <div className="hero-bg-visual">
-        {circuitLayouts[nextRace.Circuit.circuitId] && (
-          <svg className="hero-bg-svg" viewBox={circuitLayouts[nextRace.Circuit.circuitId].viewBox} preserveAspectRatio="xMidYMid meet">
-            <path
-              d={circuitLayouts[nextRace.Circuit.circuitId].trackPath}
-              fill="none"
-              stroke="rgba(255, 255, 255, 0.03)"
-              strokeWidth="20"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        )}
-        <div className="hero-red-glow"></div>
+    <div className="nr-hero-container">
+      <div className="nr-hero-bg">
+        <img src={ASSETS.circuits.hero} alt="Circuit Night" className="nr-hero-image" />
       </div>
 
-      <div className="hero-content-layer">
+      <div className="nr-hero-content">
         <div className="hero-left-col">
           <div className="hero-top-meta">
             <span className="live-badge-red">NEXT RACE</span>

@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { formatLocalTime } from '../../../utils/dateUtils';
+import { ASSETS } from '../../../data/assets';
 import './UpcomingRaces.css';
 
 const UpcomingRaces: React.FC = () => {
@@ -63,9 +64,9 @@ const UpcomingRaces: React.FC = () => {
               key={`${race.season}-${race.round}`}
               className={`upcoming-row-item${index === 0 ? ' next-race' : ''}`}
             >
-              <div className="round-badge">
-                <span className="rd-lbl">RD</span>
-                <span className="rd-num">{race.round}</span>
+              <div className="ur-thumb-col">
+                <img src={ASSETS.circuits.hero} alt="Track" className="ur-track-thumb" />
+                <div className="ur-round-badge">R{race.round}</div>
               </div>
               
               <div className="race-details-block">
@@ -75,16 +76,15 @@ const UpcomingRaces: React.FC = () => {
                 </div>
                 
                 <div className="meta-row">
+                  <span className="meta-loc">{race.Circuit.Location.country}</span>
+                  <span className="meta-sep">•</span>
                   <span className="circuit-name-sub text-secondary">{race.Circuit.circuitName}</span>
-                  <span className="meta-sep">/</span>
-                  <span className="meta-loc">{race.Circuit.Location.locality}, {race.Circuit.Location.country}</span>
                 </div>
               </div>
               
               <div className="race-action-block">
                 <div className="date-badge">
-                  <Calendar size={12} className="date-icon" />
-                  <span>{formatLocalTime(race.date, race.time)}</span>
+                  <span>{formatLocalTime(race.date, race.time).split(',')[0]}</span>
                 </div>
                 <button 
                   className="row-action-btn"

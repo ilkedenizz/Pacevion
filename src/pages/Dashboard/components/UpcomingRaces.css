@@ -27,39 +27,39 @@
   background-color: rgba(225, 6, 0, 0.03);
 }
 
-.round-badge {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+.ur-thumb-col {
+  position: relative;
+  width: 80px;
+  height: 56px;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.upcoming-row-item.next-race .round-badge {
-  border-color: var(--color-accent);
-  background-color: rgba(225, 6, 0, 0.1);
+.ur-track-thumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.6;
+  filter: grayscale(0.5);
+  transition: all var(--motion-normal) var(--motion-ease);
 }
 
-.rd-lbl {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: var(--color-text-secondary);
+.upcoming-row-item:hover .ur-track-thumb {
+  opacity: 1;
+  filter: grayscale(0);
+  transform: scale(1.05);
 }
 
-.upcoming-row-item.next-race .rd-lbl {
-  color: var(--color-accent);
-}
-
-.rd-num {
+.ur-round-badge {
+  position: absolute;
+  top: 0; left: 0;
+  background: var(--color-accent);
+  color: #fff;
   font-family: var(--font-heading);
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  line-height: 1;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 4px;
 }
 
 .race-details-block {

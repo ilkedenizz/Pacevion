@@ -2,6 +2,7 @@ import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, Tooltip, Cell, type TooltipProps } from 'recharts';
 import { useDriverStandings } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
+import { getDriverVisual, getTeamVisual } from '../../../data/assets';
 import './ChampionshipAnalytics.css';
 
 interface ChartDataItem {
@@ -9,6 +10,8 @@ interface ChartDataItem {
   points: number;
   fullName: string;
   team: string;
+  id: string;
+  teamId: string;
 }
 
 const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload }) => {
@@ -32,15 +35,20 @@ const ChampionshipAnalytics: React.FC = () => {
   const { data: standings, isLoading, isError, refetch } = useDriverStandings();
 
   const chartData: ChartDataItem[] = standings
-    ? standings.slice(0, 6).map((item) => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ? standings.slice(0, 6).map((item: any) => ({
         name: item.Driver.code || item.Driver.familyName.slice(0, 3).toUpperCase(),
         points: parseInt(item.points, 10),
         fullName: `${item.Driver.givenName} ${item.Driver.familyName}`,
         team: item.Constructors[0]?.name || 'N/A',
+        id: item.Driver.driverId,
+        teamId: item.Constructors[0]?.constructorId || ''
       }))
     : [];
 
-  const leader = chartData.length > 0 ? chartData[0] : null;
+  const leaderData = chartData.length > 0 ? chartData[0] : null;
+  const leaderVisual = leaderData ? getDriverVisual(leaderData.id, leaderData.teamId) : null;
+  const leaderCarVisual = leaderData ? getTeamVisual(leaderData.teamId) : null;
 
   if (isLoading) {
     return (
@@ -60,14 +68,24 @@ const ChampionshipAnalytics: React.FC = () => {
 
   return (
     <div className="analytics-container">
-      {leader && (
+      {leaderData && (
         <div className="leader-info-block">
-          <span className="leader-label">CHAMPIONSHIP LEADER</span>
-          <span className="leader-name">{leader.fullName}</span>
-          <div className="leader-pts-block">
-            <span className="leader-pts-val">{leader.points}</span>
-            <span className="leader-pts-lbl">PTS</span>
+          {leaderCarVisual && (
+            <img src={leaderCarVisual} alt="Team Car" className="leader-car-bg" />
+          )}
+          <div className="leader-text">
+            <span className="leader-label">CHAMPIONSHIP LEADER</span>
+            <span className="leader-name">{leaderData.fullName}</span>
+            <div className="leader-pts-block">
+              <span className="leader-pts-val">{leaderData.points}</span>
+              <span className="leader-pts-lbl">PTS</span>
+            </div>
           </div>
+          {leaderVisual && (
+            <div className="leader-visual">
+              <img src={leaderVisual} alt={leaderData.fullName} className="leader-img" />
+            </div>
+          )}
         </div>
       )}
       
