@@ -6,16 +6,16 @@
   right: 0;
   bottom: 0;
   z-index: 9999;
-  background-color: rgba(10, 10, 11, 0.8);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background-color: rgba(10, 10, 11, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
   opacity: 1;
-  transition: opacity 0.3s ease;
-  animation: overlay-fade-in 0.3s ease forwards;
+  transition: opacity 0.2s ease;
+  animation: overlay-fade-in 0.2s ease forwards;
 }
 
 .welcome-overlay-backdrop.closing {
@@ -25,17 +25,18 @@
 .welcome-overlay-container {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent); /* Motorsport F1 red highlight line */
   border-radius: var(--radius-sm);
-  max-width: 500px;
+  max-width: 440px;
   width: 100%;
   padding: var(--space-5);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  transform: scale(1);
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  animation: overlay-scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: scale(0.98);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: overlay-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .welcome-overlay-backdrop.closing .welcome-overlay-container {
@@ -45,12 +46,12 @@
 .welcome-logo-section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 2px;
 }
 
 .welcome-logo {
   font-family: var(--font-heading);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: 3px;
   color: var(--color-text-primary);
@@ -63,8 +64,8 @@
 .welcome-logo::before {
   content: '';
   display: inline-block;
-  width: 4px;
-  height: 20px;
+  width: 3px;
+  height: 16px;
   background-color: var(--color-accent);
   transform: skewX(-15deg);
 }
@@ -73,7 +74,7 @@
   font-family: var(--font-heading);
   font-size: 9px;
   font-weight: 700;
-  color: var(--color-accent);
+  color: var(--color-text-secondary);
   letter-spacing: 1px;
 }
 
@@ -91,7 +92,7 @@
 
 .welcome-title {
   font-family: var(--font-heading);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -102,32 +103,32 @@
 .welcome-text-container {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
 }
 
 .welcome-para {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--color-text-secondary);
   margin: 0;
 }
 
 .disclaimer-sub {
   font-size: 11px;
-  color: var(--color-text-secondary);
-  border-left: 2px solid var(--color-border);
+  border-left: 2px solid var(--color-accent-25);
   padding-left: var(--space-2);
+  margin-top: 4px;
 }
 
 .welcome-cta-btn {
   background-color: var(--color-accent);
   color: #ffffff;
   border: 1px solid var(--color-accent);
-  padding: var(--space-3) var(--space-4);
+  padding: 10px var(--space-4);
   font-family: var(--font-heading);
   font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 1.5px;
+  font-size: 11px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   cursor: pointer;
   outline: none;
@@ -145,6 +146,10 @@
 .welcome-cta-btn:hover {
   background-color: var(--color-accent-hover);
   border-color: var(--color-accent-hover);
+}
+
+.welcome-cta-btn:active {
+  transform: scale(0.98);
 }
 
 /* Animations */
@@ -166,14 +171,33 @@
   }
 }
 
+/* Responsive breakdowns */
 @media (max-width: 576px) {
   .welcome-overlay-container {
     padding: var(--space-4);
+    gap: var(--space-3);
   }
+  
   .welcome-logo {
-    font-size: 20px;
+    font-size: 18px;
   }
+  
+  .welcome-title {
+    font-size: 13px;
+  }
+  
+  .welcome-para {
+    font-size: 11px;
+  }
+  
   .welcome-cta-btn {
-    padding: var(--space-3) var(--space-3);
+    padding: 10px var(--space-3);
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .welcome-overlay-container {
+    padding: var(--space-3);
   }
 }
