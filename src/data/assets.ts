@@ -41,6 +41,27 @@ const DRIVER_HEADSHOTS: Record<string, string> = {
   bottas: `${base}assets/img/drivers/bottas.webp`,
 };
 
+// ─── TEAM CAR MAPPING ────────────────────────────────────────────────────────
+// Official F1 2024/2026 team cars from media.formula1.com
+// Keys match the Ergast API constructorId values or variations
+const TEAM_CARS: Record<string, string> = {
+  ferrari: `${base}assets/img/cars/ferrari.png`,
+  mercedes: `${base}assets/img/cars/mercedes.png`,
+  mclaren: `${base}assets/img/cars/mclaren.png`,
+  red_bull: `${base}assets/img/cars/red-bull-racing.png`,
+  redbull: `${base}assets/img/cars/red-bull-racing.png`,
+  rb: `${base}assets/img/cars/rb.png`,
+  alphatauri: `${base}assets/img/cars/rb.png`,
+  alpine: `${base}assets/img/cars/alpine.png`,
+  haas: `${base}assets/img/cars/haas.png`,
+  haas_f1_team: `${base}assets/img/cars/haas.png`,
+  sauber: `${base}assets/img/cars/kick-sauber.png`,
+  kick_sauber: `${base}assets/img/cars/kick-sauber.png`,
+  alfa: `${base}assets/img/cars/kick-sauber.png`,
+  williams: `${base}assets/img/cars/williams.png`,
+  aston_martin: `${base}assets/img/cars/aston-martin.png`,
+};
+
 // ─── STATIC ASSETS ───────────────────────────────────────────────────────────
 export const ASSETS = {
   cars: {
@@ -88,15 +109,26 @@ export const getDriverVisual = (driverId?: string, _constructorId?: string): str
 
 /**
  * Returns the best available team car visual.
+ * Priority: real car png -> team-color generic fallback.
  */
 export const getTeamVisual = (constructorId?: string): string => {
   if (!constructorId) return ASSETS.cars.default_blue;
+  
+  // Direct real car lookup
+  if (TEAM_CARS[constructorId]) {
+    return TEAM_CARS[constructorId];
+  }
+
+  // Fallback to ASSETS.cars if it exists
   if (ASSETS.cars[constructorId as keyof typeof ASSETS.cars]) {
     return ASSETS.cars[constructorId as keyof typeof ASSETS.cars];
   }
+
+  // Fallback generic
   const redTeams = ['ferrari', 'alfa', 'haas', 'haas_f1_team'];
   if (redTeams.includes(constructorId)) {
     return ASSETS.cars.default_red;
   }
+  
   return ASSETS.cars.default_blue;
 };

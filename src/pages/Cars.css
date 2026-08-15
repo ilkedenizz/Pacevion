@@ -1,0 +1,437 @@
+/* ═══════════════════════════════════════════════
+   Cars.css — Premium F1 Constructor Showcase
+   ═══════════════════════════════════════════════ */
+
+/* ── PAGE CONTAINER ── */
+.cars-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-6) var(--space-4);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Subtle Technical Grid Background */
+.cars-page::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(225, 6, 0, 0.04) 0%, transparent 50%),
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+  background-size: 100% 100%, 40px 40px, 40px 40px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* ── PAGE HEADER ── */
+.cars-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  position: relative;
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-7);
+}
+
+.cars-header-line {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(to right, rgba(225, 6, 0, 0.5), rgba(255, 255, 255, 0.1) 40%, transparent 100%);
+}
+
+.cars-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cars-header-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+.cars-header-title {
+  display: flex;
+  gap: var(--space-3);
+  margin: 0;
+  line-height: 1;
+}
+
+.cars-title-thin {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 300;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cars-title-bold {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 5vw, 64px);
+  font-weight: 900;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.cars-header-desc {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+  margin-bottom: 0;
+}
+
+.cars-header-right {
+  display: flex;
+  gap: var(--space-6);
+}
+
+.cars-header-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cars-stat-val {
+  font-family: var(--font-heading);
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.cars-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+
+/* ═══════════════════════════════════════════
+   CARS GRID & CARDS
+   ═══════════════════════════════════════════ */
+.cars-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.car-card {
+  position: relative;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: transform 300ms var(--motion-ease), box-shadow 300ms var(--motion-ease);
+  will-change: transform;
+}
+
+/* Left team accent line hidden by default */
+.car-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--color-accent);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 400ms var(--motion-ease);
+  z-index: 10;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .car-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  }
+  .car-card:hover::before {
+    transform: scaleY(1);
+  }
+}
+
+/* Position Number */
+.car-card-top {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-5);
+  z-index: 5;
+}
+
+.car-card-pos {
+  font-family: var(--font-heading);
+  font-size: 64px;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.08);
+  line-height: 1;
+  letter-spacing: -2px;
+  transition: color 300ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .car-card:hover .car-card-pos {
+    color: rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* ── VISUAL WRAPPER ── */
+.car-card-visual-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: radial-gradient(circle at center, #181820 0%, #0a0a0f 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.car-card-bg-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40%;
+  background: linear-gradient(to top, var(--color-surface), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.car-card-spotlight {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+  z-index: 0;
+  transition: transform 600ms ease;
+  pointer-events: none;
+}
+
+.car-card-img {
+  position: relative;
+  z-index: 2;
+  width: 90%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+  transition: transform 500ms cubic-bezier(0.2, 0.8, 0.2, 1), filter 300ms ease;
+  will-change: transform;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .car-card:hover .car-card-img {
+    transform: scale(1.04) translateX(1%);
+    filter: drop-shadow(0 24px 40px rgba(0, 0, 0, 0.7)) brightness(1.1);
+  }
+  .car-card:hover .car-card-spotlight {
+    transform: translate(5%, 5%);
+  }
+}
+
+/* ── CARD CONTENT ── */
+.car-card-content {
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  position: relative;
+  z-index: 3;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.car-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: var(--space-4);
+}
+
+.car-team-name {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.car-team-nat {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 2px;
+}
+
+/* Drivers List */
+.car-card-drivers {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.car-driver-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 200ms ease;
+}
+
+.car-driver-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-primary);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Stats */
+.car-card-stats {
+  display: flex;
+  gap: var(--space-6);
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: var(--space-4);
+}
+
+.car-stat {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+}
+
+.car-stat-val {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.car-stat-lbl {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+}
+
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════════ */
+
+/* Tablet Landscape */
+@media (max-width: 1024px) {
+  .cars-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .cars-page {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .cars-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .cars-header-right {
+    gap: var(--space-5);
+    flex-wrap: wrap;
+  }
+
+  .cars-header-stat {
+    align-items: flex-start;
+  }
+
+  .car-card-visual-wrapper {
+    aspect-ratio: 16 / 10;
+  }
+
+  .car-card-img {
+    width: 95%;
+  }
+
+  .car-team-name {
+    font-size: 20px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 430px) {
+  .cars-title-thin,
+  .cars-title-bold {
+    font-size: 28px;
+  }
+  
+  .cars-header-desc {
+    font-size: 13px;
+  }
+
+  .car-card-visual-wrapper {
+    aspect-ratio: 4 / 3;
+  }
+
+  .car-card-img {
+    width: 100%;
+  }
+
+  .car-card-content {
+    padding: var(--space-4);
+  }
+
+  .car-card-drivers {
+    gap: var(--space-2);
+    flex-direction: column;
+  }
+
+  .car-driver-btn {
+    width: 100%;
+    text-align: left;
+  }
+}
+
+/* ═══════════════════════════════════════════
+   PREFERS REDUCED MOTION
+   ═══════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .car-card, .car-card::before, .car-card-img, .car-card-spotlight {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .car-card:hover {
+    transform: none !important;
+  }
+}

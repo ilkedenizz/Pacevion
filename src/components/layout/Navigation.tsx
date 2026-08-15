@@ -77,6 +77,16 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
             </li>
             <li className="nav-item">
               <NavLink
+                to="/cars"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={onClose}
+              >
+                <Shield className="nav-icon" size={16} />
+                <span className="nav-text">{t('cars')}</span>
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
                 to="/standings"
                 className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
                 onClick={onClose}
