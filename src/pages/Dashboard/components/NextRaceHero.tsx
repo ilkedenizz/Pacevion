@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { circuitLayouts } from '../../../data/circuits';
-import { formatLocalTime } from '../../../utils/dateUtils';
 import './NextRaceHero.css';
 
 interface Countdown {
@@ -20,7 +19,6 @@ const NextRaceHero: React.FC = () => {
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState<Countdown | null>(null);
 
-  // Find the next upcoming race
   const nextRace = useMemo(() => {
     if (!races || races.length === 0) return null;
     const now = new Date();
@@ -31,7 +29,6 @@ const NextRaceHero: React.FC = () => {
     }) || races[races.length - 1];
   }, [races]);
 
-  // Countdown timer effect
   useEffect(() => {
     if (!nextRace) return;
 
@@ -56,133 +53,82 @@ const NextRaceHero: React.FC = () => {
 
     calculateTime();
     const interval = setInterval(calculateTime, 1000);
-
     return () => clearInterval(interval);
   }, [nextRace]);
 
   if (isLoading) {
-    return (
-      <div className="next-race-skeleton">
-        <div className="skeleton-hero-left">
-          <div className="skeleton" style={{ width: '120px', height: '16px', marginBottom: '16px' }} />
-          <div className="skeleton" style={{ width: '70%', height: '32px', marginBottom: '16px' }} />
-          <div className="skeleton" style={{ width: '40%', height: '14px', marginBottom: '8px' }} />
-          <div className="skeleton" style={{ width: '50%', height: '14px', marginBottom: '24px' }} />
-          <div className="skeleton" style={{ width: '80%', height: '60px', marginBottom: '24px' }} />
-          <div className="skeleton" style={{ width: '140px', height: '36px' }} />
-        </div>
-        <div className="skeleton-hero-right">
-          <div className="skeleton" style={{ width: '120px', height: '120px', borderRadius: '50%' }} />
-        </div>
-      </div>
-    );
+    return <div className="hero-broadcast-panel loading"><div className="skeleton" style={{ width: '100%', height: '100%' }}/></div>;
   }
 
   if (isError) {
     return <ErrorState message="Could not load next race information." onRetry={refetch} />;
   }
 
-  if (!nextRace) {
-    return (
-      <div className="next-race-empty">
-        <p>No upcoming races scheduled.</p>
-      </div>
-    );
-  }
-
-  const handleViewRace = () => {
-    navigate(`/races/${nextRace.season}/${nextRace.round}`);
-  };
+  if (!nextRace) return null;
 
   return (
-    <div className="next-race-hero">
-      <div className="hero-content">
-        <div className="badge-container">
-          <span className="live-badge">UPCOMING // ROUND {nextRace.round}</span>
-        </div>
-        <h2 className="grand-prix-name font-heading-condensed">{nextRace.raceName}</h2>
-        
-        <div className="meta-details">
-          <div className="meta-item">
-            <MapPin size={14} className="accent" />
-            <span>{nextRace.Circuit.Location.locality}, {nextRace.Circuit.Location.country}</span>
-          </div>
-          <div className="meta-item">
-            <Calendar size={14} />
-            <span>{formatLocalTime(nextRace.date, nextRace.time)}</span>
-          </div>
-          {nextRace.time && (
-            <div className="meta-item">
-              <Clock size={14} />
-              <span>{nextRace.time.substring(0, 5)} UTC</span>
-            </div>
-          )}
-        </div>
-        
-        <p className="circuit-name-hero text-secondary">{nextRace.Circuit.circuitName}</p>
-        
-        {countdown && !countdown.isPassed && (
-          <div className="countdown-container">
-            <div className="countdown-box">
-              <span className="number font-mono">{String(countdown.days).padStart(2, '0')}</span>
-              <span className="label">DAYS</span>
-            </div>
-            <div className="countdown-divider">:</div>
-            <div className="countdown-box">
-              <span className="number font-mono">{String(countdown.hours).padStart(2, '0')}</span>
-              <span className="label">HRS</span>
-            </div>
-            <div className="countdown-divider">:</div>
-            <div className="countdown-box">
-              <span className="number font-mono">{String(countdown.minutes).padStart(2, '0')}</span>
-              <span className="label">MINS</span>
-            </div>
-            <div className="countdown-divider">:</div>
-            <div className="countdown-box">
-              <span className="number font-mono">{String(countdown.seconds).padStart(2, '0')}</span>
-              <span className="label">SECS</span>
-            </div>
-          </div>
-        )}
-
-        {countdown?.isPassed && (
-          <div className="race-live-banner">
-            <span className="blink">●</span> SESSION COMPLETED / WEEKEND IN PROGRESS
-          </div>
-        )}
-
-        <button className="view-race-btn" onClick={handleViewRace} type="button">
-          <span>VIEW RACE DETAILS</span>
-          <ArrowRight size={14} />
-        </button>
-      </div>
-
-      <div className="hero-circuit-pane">
-        {nextRace && circuitLayouts[nextRace.Circuit.circuitId] ? (
-          <svg className="circuit-svg" viewBox={circuitLayouts[nextRace.Circuit.circuitId].viewBox} preserveAspectRatio="xMidYMid meet">
+    <div className="hero-broadcast-panel">
+      {/* Background SVG */}
+      <div className="hero-bg-visual">
+        {circuitLayouts[nextRace.Circuit.circuitId] && (
+          <svg className="hero-bg-svg" viewBox={circuitLayouts[nextRace.Circuit.circuitId].viewBox} preserveAspectRatio="xMidYMid meet">
             <path
               d={circuitLayouts[nextRace.Circuit.circuitId].trackPath}
               fill="none"
-              stroke="rgba(225, 6, 0, 0.05)"
-              strokeWidth="12"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <path
-              d={circuitLayouts[nextRace.Circuit.circuitId].trackPath}
-              fill="none"
-              stroke="var(--color-accent)"
-              strokeWidth="3"
+              stroke="rgba(255, 255, 255, 0.03)"
+              strokeWidth="20"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
-        ) : (
-          <div className="circuit-fallback">
-            <p>CIRCUIT LAYOUT UNAVAILABLE</p>
-          </div>
         )}
-        <span className="circuit-caption">SECTOR MAP & TELEMETRY</span>
+        <div className="hero-red-glow"></div>
+      </div>
+
+      <div className="hero-content-layer">
+        <div className="hero-left-col">
+          <div className="hero-top-meta">
+            <span className="live-badge-red">NEXT RACE</span>
+            <span className="round-info font-mono">ROUND {nextRace.round}</span>
+          </div>
+          
+          <h1 className="hero-race-title">{nextRace.raceName}</h1>
+          <h2 className="hero-location-subtitle">{nextRace.Circuit.Location.locality} / {nextRace.Circuit.Location.country}</h2>
+          
+          <button className="hero-action-btn" onClick={() => navigate(`/races/${nextRace.season}/${nextRace.round}`)}>
+            VIEW RACE DETAILS <ArrowRight size={16} />
+          </button>
+        </div>
+
+        <div className="hero-right-col">
+          {countdown && !countdown.isPassed ? (
+            <div className="broadcast-countdown">
+              <div className="cd-block">
+                <span className="cd-num">{String(countdown.days).padStart(2, '0')}</span>
+                <span className="cd-lbl">DAYS</span>
+              </div>
+              <span className="cd-sep">:</span>
+              <div className="cd-block">
+                <span className="cd-num">{String(countdown.hours).padStart(2, '0')}</span>
+                <span className="cd-lbl">HRS</span>
+              </div>
+              <span className="cd-sep">:</span>
+              <div className="cd-block">
+                <span className="cd-num">{String(countdown.minutes).padStart(2, '0')}</span>
+                <span className="cd-lbl">MINS</span>
+              </div>
+              <span className="cd-sep">:</span>
+              <div className="cd-block">
+                <span className="cd-num">{String(countdown.seconds).padStart(2, '0')}</span>
+                <span className="cd-lbl">SEC</span>
+              </div>
+            </div>
+          ) : (
+            <div className="broadcast-live-state">
+              <span className="blink-dot"></span> SESSION LIVE OR COMPLETED
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

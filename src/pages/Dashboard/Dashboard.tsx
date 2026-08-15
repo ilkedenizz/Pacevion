@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
-import { Flag, Users, Award, CheckCircle, CalendarDays } from 'lucide-react';
 import NextRaceHero from './components/NextRaceHero';
 import DriverStandingsPreview from './components/DriverStandingsPreview';
 import LastRaceCard from './components/LastRaceCard';
 import UpcomingRaces from './components/UpcomingRaces';
 import ChampionshipAnalytics from './components/ChampionshipAnalytics';
 import AboutSection from './components/AboutSection';
+import RevealSection from '../../components/ui/RevealSection';
 import { useCalendar, useDriverStandings } from '../../hooks/useF1Data';
 import { useSEO } from '../../hooks/useSEO';
 import './Dashboard.css';
@@ -37,79 +37,97 @@ const Dashboard: React.FC = () => {
       : 0;
     const remaining = total - completed;
 
-    return { total, completed, drivers, constructors, remaining };
+    // Next Race computation for data strip
+    const nextRace = races ? races.find(race => {
+      const raceTimeStr = race.time ? (race.time.endsWith('Z') ? race.time : `${race.time}Z`) : '00:00:00Z';
+      const raceDate = new Date(`${race.date}T${raceTimeStr}`);
+      return raceDate > now;
+    }) : null;
+    
+    const nextEventName = nextRace ? nextRace.Circuit.Location.country : '—';
+
+    return { total, completed, drivers, constructors, remaining, nextEventName };
   }, [races, standings]);
 
   return (
-    <div className="dashboard-container">
-      <div className="dashboard-grid">
-        {/* HERO */}
-        <div className="grid-hero-row">
-          <NextRaceHero />
-        </div>
+    <div className="dashboard-wrapper">
+      {/* 1. Full Width Broadcast Hero */}
+      <RevealSection className="hero-broadcast-wrapper">
+        <NextRaceHero />
+      </RevealSection>
 
-        {/* SEASON OVERVIEW STATS BAR */}
-        <div className="season-stats-bar">
-          <div className="season-stats-label">2026 SEASON OVERVIEW</div>
-          <div className="season-stats-items">
-            <div className="season-stat">
-              <Flag size={20} className="season-stat-icon" />
-              <div className="season-stat-body">
-                <span className="season-stat-value">{stats.total || '—'}</span>
-                <span className="season-stat-title">GRAND PRIX</span>
-                <span className="season-stat-sub">SEASON RACES</span>
-              </div>
-            </div>
-            <div className="season-stat-divider" />
-            <div className="season-stat">
-              <Users size={20} className="season-stat-icon" />
-              <div className="season-stat-body">
-                <span className="season-stat-value">{stats.drivers || '—'}</span>
-                <span className="season-stat-title">DRIVERS</span>
-                <span className="season-stat-sub">ON THE GRID</span>
-              </div>
-            </div>
-            <div className="season-stat-divider" />
-            <div className="season-stat">
-              <Award size={20} className="season-stat-icon" />
-              <div className="season-stat-body">
-                <span className="season-stat-value">{stats.constructors || '—'}</span>
-                <span className="season-stat-title">TEAMS</span>
-                <span className="season-stat-sub">COMPETING</span>
-              </div>
-            </div>
-            <div className="season-stat-divider" />
-            <div className="season-stat">
-              <CheckCircle size={20} className="season-stat-icon" />
-              <div className="season-stat-body">
-                <span className="season-stat-value">{stats.completed || '—'}</span>
-                <span className="season-stat-title">ROUNDS COMPLETED</span>
-                <span className="season-stat-sub">{stats.remaining || '—'} TO GO</span>
-              </div>
-            </div>
-            <div className="season-stat-divider" />
-            <div className="season-stat">
-              <CalendarDays size={20} className="season-stat-icon" />
-              <div className="season-stat-body">
-                <span className="season-stat-value">{stats.remaining || '—'}</span>
-                <span className="season-stat-title">REMAINING</span>
-                <span className="season-stat-sub">RACES LEFT</span>
-              </div>
-            </div>
+      {/* 2. Horizontal Data Strip */}
+      <RevealSection className="data-strip-wrapper">
+        <div className="data-strip">
+          <div className="strip-item">
+            <span className="strip-label">ROUND</span>
+            <span className="strip-value">{stats.completed + 1 || '—'}</span>
+          </div>
+          <div className="strip-item">
+            <span className="strip-label">RACES</span>
+            <span className="strip-value">{stats.total || '—'}</span>
+          </div>
+          <div className="strip-item">
+            <span className="strip-label">DRIVERS</span>
+            <span className="strip-value">{stats.drivers || '—'}</span>
+          </div>
+          <div className="strip-item">
+            <span className="strip-label">TEAMS</span>
+            <span className="strip-value">{stats.constructors || '—'}</span>
+          </div>
+          <div className="strip-item strip-item-accent">
+            <span className="strip-label">NEXT EVENT</span>
+            <span className="strip-value">{stats.nextEventName}</span>
           </div>
         </div>
+      </RevealSection>
 
-        {/* 4-COLUMN DATA GRID */}
-        <div className="grid-content-row">
-          <DriverStandingsPreview />
-          <ChampionshipAnalytics />
-          <LastRaceCard />
-          <UpcomingRaces />
+      {/* 3. Editorial Dashboard Grid */}
+      <div className="editorial-container">
+        <div className="editorial-grid">
+          
+          <RevealSection className="editorial-panel">
+            <div className="editorial-header">
+              <span className="ed-num">01</span>
+              <span className="ed-title">DRIVER STANDINGS</span>
+            </div>
+            <DriverStandingsPreview />
+          </RevealSection>
+
+          <RevealSection className="editorial-panel">
+            <div className="editorial-header">
+              <span className="ed-num">02</span>
+              <span className="ed-title">CHAMPIONSHIP BATTLE</span>
+            </div>
+            <ChampionshipAnalytics />
+          </RevealSection>
+
+          <RevealSection className="editorial-panel">
+            <div className="editorial-header">
+              <span className="ed-num">03</span>
+              <span className="ed-title">LATEST RACE</span>
+            </div>
+            <LastRaceCard />
+          </RevealSection>
+
+          <RevealSection className="editorial-panel">
+            <div className="editorial-header">
+              <span className="ed-num">04</span>
+              <span className="ed-title">UPCOMING SCHEDULE</span>
+            </div>
+            <UpcomingRaces />
+          </RevealSection>
+
         </div>
-
-        {/* ABOUT */}
-        <AboutSection />
       </div>
+
+      {/* 4. Editorial About Section */}
+      <div className="editorial-container">
+        <RevealSection className="editorial-about-wrapper">
+          <AboutSection />
+        </RevealSection>
+      </div>
+
     </div>
   );
 };

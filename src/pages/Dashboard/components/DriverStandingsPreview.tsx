@@ -12,19 +12,16 @@ const DriverStandingsPreview: React.FC = () => {
   if (isLoading) {
     return (
       <div className="timing-board-container">
-        <div className="timing-board-header">
-          <h3 className="timing-board-title">DRIVER STANDINGS</h3>
-        </div>
         <div className="standings-table">
           <div className="table-header">
-            <span className="col-pos">Pos</span>
-            <span className="col-driver">Driver</span>
-            <span className="col-team">Team</span>
-            <span className="col-pts text-right">Pts</span>
+            <span className="col-pos">POS</span>
+            <span className="col-driver">DRIVER</span>
+            <span className="col-team">TEAM</span>
+            <span className="col-pts text-right">PTS</span>
           </div>
           <div className="table-body">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="table-row" style={{ padding: 'var(--space-3) var(--space-3)' }}>
+              <div key={i} className="table-row">
                 <span className="col-pos"><div className="skeleton" style={{ width: '16px', height: '16px' }} /></span>
                 <span className="col-driver"><div className="skeleton" style={{ width: '120px', height: '16px' }} /></span>
                 <span className="col-team"><div className="skeleton" style={{ width: '80px', height: '16px' }} /></span>
@@ -40,9 +37,6 @@ const DriverStandingsPreview: React.FC = () => {
   if (isError) {
     return (
       <div className="timing-board-container">
-        <div className="timing-board-header">
-          <h3 className="timing-board-title">DRIVER STANDINGS</h3>
-        </div>
         <ErrorState message="Could not load standings." onRetry={refetch} />
       </div>
     );
@@ -52,23 +46,15 @@ const DriverStandingsPreview: React.FC = () => {
 
   return (
     <div className="timing-board-container">
-      <div className="timing-board-header">
-        <h3 className="timing-board-title">DRIVER STANDINGS</h3>
-        <Link to="/standings" className="view-all-link">
-          <span>FULL STANDINGS</span>
-          <ArrowRight size={14} />
-        </Link>
-      </div>
-      
       {topFive.length === 0 ? (
         <div className="empty-standings">No standings data available.</div>
       ) : (
         <div className="standings-table">
           <div className="table-header">
-            <span className="col-pos">Pos</span>
-            <span className="col-driver">Driver</span>
-            <span className="col-team">Team</span>
-            <span className="col-pts text-right">Pts</span>
+            <span className="col-pos">POS</span>
+            <span className="col-driver">DRIVER</span>
+            <span className="col-team">TEAM</span>
+            <span className="col-pts text-right">PTS</span>
           </div>
           <div className="table-body">
             {topFive.map((row) => {
@@ -82,7 +68,7 @@ const DriverStandingsPreview: React.FC = () => {
                     {row.position === '1' ? (
                       <Trophy size={14} className="gold-trophy" />
                     ) : (
-                      row.position
+                      String(row.position).padStart(2, '0')
                     )}
                   </span>
                   <span className="col-driver">

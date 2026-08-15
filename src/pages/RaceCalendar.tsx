@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Calendar, MapPin, Clock, ChevronRight, RefreshCw } from 'lucide-react';
 import { useCalendar } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
@@ -13,55 +12,32 @@ const RaceCalendar: React.FC = () => {
 
   useSEO({
     title: '2026 F1 Race Calendar & Schedule | Pacevion',
-    description: 'Formula 1 2026 sezonundaki tüm yarışların tarihlerini, saatlerini, pist adlarını ve durumlarını takip edin.',
+    description: 'Formula 1 2026 sezonundaki tüm yarışların takvimi.',
     canonicalPath: '/calendar'
   });
 
   const now = useMemo(() => new Date(), []);
 
-  // Format date helper
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-US', {
       day: '2-digit',
-      month: 'short',
-      year: 'numeric'
+      month: 'short'
     }).toUpperCase();
   };
 
-  // Format time helper
-  const formatTime = (timeStr?: string) => {
-    if (!timeStr) return '';
-    const cleaned = timeStr.replace('Z', '');
-    const parts = cleaned.split(':');
-    if (parts.length >= 2) {
-      return `${parts[0]}:${parts[1]} UTC`;
-    }
-    return timeStr;
-  };
-
-  // Categorize and filter races
   const processedRaces = useMemo(() => {
-    if (!races) return { list: [], stats: { total: 0, completed: 0, upcoming: 0, nextRound: '' } };
+    if (!races) return { list: [], stats: { total: 0, nextRound: '' } };
 
     const listWithStatus = races.map((race) => {
       const raceTimeStr = race.time ? (race.time.endsWith('Z') ? race.time : `${race.time}Z`) : '00:00:00Z';
       const raceDate = new Date(`${race.date}T${raceTimeStr}`);
       const isCompleted = raceDate <= now;
-
-      return {
-        ...race,
-        isCompleted,
-        raceDateTime: raceDate
-      };
+      return { ...race, isCompleted, raceDateTime: raceDate };
     });
 
-    // Find the next upcoming race
     const nextUpcoming = listWithStatus.find(r => !r.isCompleted);
     const nextRoundNumber = nextUpcoming ? nextUpcoming.round : '';
-
-    const completedCount = listWithStatus.filter(r => r.isCompleted).length;
-    const upcomingCount = listWithStatus.length - completedCount;
 
     const filteredList = listWithStatus.filter((race) => {
       if (filter === 'completed') return race.isCompleted;
@@ -72,53 +48,23 @@ const RaceCalendar: React.FC = () => {
     return {
       list: filteredList,
       nextRound: nextRoundNumber,
-      stats: {
-        total: races.length,
-        completed: completedCount,
-        upcoming: upcomingCount,
-        nextRound: nextRoundNumber
-      }
+      stats: { total: races.length, nextRound: nextRoundNumber }
     };
   }, [races, filter, now]);
 
   if (isLoading) {
     return (
-      <div className="calendar-container">
-        <div className="calendar-header">
-          <div className="skeleton" style={{ width: '80px', height: '14px', marginBottom: '8px' }} />
-          <div className="skeleton" style={{ width: '240px', height: '36px', marginBottom: '8px' }} />
-          <div className="skeleton" style={{ width: '180px', height: '14px' }} />
-        </div>
-        <div className="calendar-stats-row">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="stat-card">
-              <div className="skeleton" style={{ width: '60px', height: '10px', marginBottom: '8px' }} />
-              <div className="skeleton" style={{ width: '40px', height: '24px' }} />
-            </div>
-          ))}
-        </div>
-        <div className="timeline-loading">
-          {[1, 2, 3].map(i => (
-            <div key={i} className="skeleton-timeline-item">
-              <div className="skeleton" style={{ width: '50px', height: '16px' }} />
-              <div className="skeleton-card-body">
-                <div className="skeleton" style={{ width: '60%', height: '18px', marginBottom: '12px' }} />
-                <div className="skeleton" style={{ width: '40%', height: '12px', marginBottom: '8px' }} />
-                <div className="skeleton" style={{ width: '30%', height: '12px' }} />
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="calendar-board-container loading">
+        <div className="skeleton" style={{ width: '300px', height: '40px', marginBottom: '20px' }} />
+        <div className="skeleton" style={{ width: '100%', height: '400px' }} />
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="calendar-container">
-        <div className="calendar-error-wrapper">
-          <ErrorState message="Unable to load the race calendar." onRetry={refetch} />
-        </div>
+      <div className="calendar-board-container error">
+        <ErrorState message="Unable to load the race calendar." onRetry={refetch} />
       </div>
     );
   }
@@ -128,137 +74,94 @@ const RaceCalendar: React.FC = () => {
   };
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-header">
-        <div className="header-title-section">
-          <span className="calendar-category">F1 2026</span>
-          <h1 className="calendar-title">Race Calendar</h1>
-          <p className="calendar-subtitle">Every round. Every circuit. One season.</p>
+    <div className="calendar-board-container">
+      <div className="calendar-board-header">
+        <div className="cbh-titles">
+          <h1 className="cbh-main">2026 RACE CALENDAR</h1>
+          <span className="cbh-sub">SEASON 2026</span>
         </div>
-        <div className="header-badge-section">
-          <span className="rounds-badge">{processedRaces.stats.total} ROUNDS</span>
-        </div>
-      </div>
-
-      <div className="calendar-stats-row">
-        <div className="stat-card">
-          <span className="stat-label">Total Rounds</span>
-          <span className="stat-value">{processedRaces.stats.total}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Completed</span>
-          <span className="stat-value text-success">{processedRaces.stats.completed}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Upcoming</span>
-          <span className="stat-value text-accent">{processedRaces.stats.upcoming}</span>
-        </div>
-        <div className="stat-card">
-          <span className="stat-label">Next Round</span>
-          <span className="stat-value">{processedRaces.nextRound ? `RD ${processedRaces.nextRound}` : '—'}</span>
+        
+        <div className="cbh-stats">
+          <div className="cbh-stat-item">
+            <span className="cbh-stat-label">TOTAL ROUNDS</span>
+            <span className="cbh-stat-val">{processedRaces.stats.total}</span>
+          </div>
+          <div className="cbh-stat-item">
+            <span className="cbh-stat-label">NEXT EVENT</span>
+            <span className="cbh-stat-val text-accent">
+              {processedRaces.stats.nextRound ? `RD ${processedRaces.stats.nextRound}` : '—'}
+            </span>
+          </div>
         </div>
       </div>
 
-      <div className="filter-row">
-        <button
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-          type="button"
-        >
-          ALL
-        </button>
-        <button
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-          onClick={() => setFilter('completed')}
-          type="button"
-        >
-          COMPLETED
-        </button>
-        <button
-          className={`filter-btn ${filter === 'upcoming' ? 'active' : ''}`}
-          onClick={() => setFilter('upcoming')}
-          type="button"
-        >
-          UPCOMING
-        </button>
+      <div className="cb-filter-row">
+        <button className={`cb-filter-btn ${filter === 'all' ? 'active' : ''}`} onClick={() => setFilter('all')}>ALL RACES</button>
+        <button className={`cb-filter-btn ${filter === 'completed' ? 'active' : ''}`} onClick={() => setFilter('completed')}>COMPLETED</button>
+        <button className={`cb-filter-btn ${filter === 'upcoming' ? 'active' : ''}`} onClick={() => setFilter('upcoming')}>UPCOMING</button>
       </div>
 
-      {processedRaces.list.length === 0 ? (
-        <div className="calendar-empty-state">
-          <RefreshCw size={24} className="empty-icon" />
-          <p>No races match the selected filter.</p>
+      <div className="calendar-board-wrapper">
+        <div className="cb-header-row">
+          <div className="cb-col-round">ROUND</div>
+          <div className="cb-col-date">DATE</div>
+          <div className="cb-col-gp">GRAND PRIX</div>
+          <div className="cb-col-circuit">CIRCUIT</div>
+          <div className="cb-col-status">STATUS</div>
         </div>
-      ) : (
-        <div className="timeline-container">
-          <div className="timeline-line" />
-          <div className="timeline-list">
-            {processedRaces.list.map((race) => {
+
+        <div className="cb-body">
+          {processedRaces.list.length === 0 ? (
+            <div className="cb-empty">No races match the selected filter.</div>
+          ) : (
+            processedRaces.list.map((race) => {
               const isNext = race.round === processedRaces.nextRound;
-              const statusClass = race.isCompleted ? 'status-completed' : (isNext ? 'status-next' : 'status-upcoming');
-              const statusLabel = race.isCompleted ? 'COMPLETED' : (isNext ? 'NEXT RACE' : 'UPCOMING');
+              let rowClass = 'cb-row';
+              let statusLabel = '';
+              let statusClass = '';
+
+              if (race.isCompleted) {
+                rowClass += ' row-completed';
+                statusLabel = 'COMPLETED';
+                statusClass = 'status-completed';
+              } else if (isNext) {
+                rowClass += ' row-next';
+                statusLabel = 'NEXT RACE';
+                statusClass = 'status-next';
+              } else {
+                rowClass += ' row-upcoming';
+                statusLabel = 'UPCOMING';
+                statusClass = 'status-upcoming';
+              }
 
               return (
-                <div
+                <div 
                   key={`${race.season}-${race.round}`}
-                  className={`timeline-item ${isNext ? 'highlight-next' : ''}`}
+                  className={rowClass}
+                  onClick={() => handleRowClick(race.season, race.round)}
                 >
-                  <div className="timeline-marker-wrapper">
-                    <div className={`timeline-dot ${statusClass}`} />
-                    <span className="timeline-round-label font-heading">RD {race.round}</span>
+                  <div className="cb-col-round">
+                    <span className="cb-round-val">{String(race.round).padStart(2, '0')}</span>
                   </div>
-
-                  <div
-                    className="timeline-card"
-                    onClick={() => handleRowClick(race.season, race.round)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        handleRowClick(race.season, race.round);
-                      }
-                    }}
-                  >
-                    <div className="card-top-header">
-                      <span className={`status-pill ${statusClass}`}>{statusLabel}</span>
-                    </div>
-
-                    <div className="card-race-info">
-                      <h2 className="card-race-title font-heading">{race.raceName}</h2>
-                      <p className="card-circuit-details">
-                        <MapPin size={12} className="card-icon" />
-                        <span>{race.Circuit.circuitName} · {race.Circuit.Location.locality}, {race.Circuit.Location.country}</span>
-                      </p>
-                      <div className="card-time-details text-secondary">
-                        <Calendar size={12} className="card-icon" />
-                        <span style={{ marginRight: '12px' }}>{formatDate(race.date)}</span>
-                        {race.time && (
-                          <>
-                            <Clock size={12} className="card-icon" />
-                            <span>{formatTime(race.time)}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-
-                    <button 
-                      className="card-details-cta font-heading" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRowClick(race.season, race.round);
-                      }}
-                      type="button"
-                    >
-                      <span>VIEW RACE WEEKEND</span>
-                      <ChevronRight size={14} />
-                    </button>
+                  <div className="cb-col-date">
+                    <span className="cb-date-val">{formatDate(race.date)}</span>
+                  </div>
+                  <div className="cb-col-gp">
+                    <span className="cb-gp-country">{race.Circuit.Location.country}</span>
+                    <span className="cb-gp-name">{race.raceName}</span>
+                  </div>
+                  <div className="cb-col-circuit">
+                    <span className="cb-circuit-name">{race.Circuit.circuitName}</span>
+                  </div>
+                  <div className="cb-col-status">
+                    <span className={`cb-status-badge ${statusClass}`}>{statusLabel}</span>
                   </div>
                 </div>
               );
-            })}
-          </div>
+            })
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

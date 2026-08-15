@@ -1,115 +1,134 @@
 /* AboutSection.css */
-.about-section {
+.manifesto-section {
   display: flex;
   flex-direction: column;
-  padding: var(--space-4) 0 var(--space-6);
-  margin-top: 0;
-  background-color: transparent;
+  padding: var(--space-8) var(--space-6);
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: var(--space-8);
 }
 
-.about-header {
-  margin-bottom: var(--space-5);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-1);
-}
-
-.about-header::before {
-  content: 'ABOUT PACEVION';
-  font-family: var(--font-heading);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  color: var(--color-accent);
-  display: block;
-  margin-bottom: var(--space-1);
-}
-
-.about-main-title {
-  font-family: var(--font-heading);
-  font-size: clamp(24px, 3vw, 36px);
-  font-weight: 900;
-  text-transform: uppercase;
-  color: var(--color-text-primary);
-  margin: 0;
-  letter-spacing: 1px;
-}
-
-.about-subtitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--color-accent);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  margin: 0;
-}
-
-.about-layout-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: var(--space-6);
-  align-items: start;
-}
-
-.about-main-column {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.about-lead {
-  font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-text-primary);
-  font-weight: 500;
-  margin: 0;
-}
-
-.about-columns {
+.manifesto-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-5);
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
 }
 
-.about-paragraph {
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.about-side-column {
+.manifesto-left {
   display: flex;
   flex-direction: column;
 }
 
-.about-highlight-box {
-  background-color: var(--color-surface);
-  border-left: 4px solid var(--color-accent);
-  padding: var(--space-4);
+.manifesto-headline {
   font-family: var(--font-heading);
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1.4;
+  font-size: clamp(48px, 6vw, 72px);
+  font-weight: 900;
   color: var(--color-text-primary);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin: 0;
+}
+
+.manifesto-divider {
+  width: 100px;
+  height: 4px;
+  background-color: var(--color-accent);
+  margin: var(--space-5) 0;
+}
+
+.manifesto-subtitle {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.manifesto-right {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.manifesto-text-block {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.manifesto-text-block.lead {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.manifesto-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.manifesto-highlight-banner {
+  background-color: var(--color-accent);
+  color: #fff;
+  padding: var(--space-4) var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+.mh-label {
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.mh-text {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  line-height: 1.3;
 }
 
 @media (max-width: 1024px) {
-  .about-layout-grid {
+  .manifesto-grid {
     grid-template-columns: 1fr;
-    gap: var(--space-5);
+    gap: var(--space-6);
   }
 }
 
 @media (max-width: 768px) {
-  .about-columns {
+  .manifesto-columns {
     grid-template-columns: 1fr;
+    gap: var(--space-4);
+  }
+  
+  .manifesto-highlight-banner {
+    flex-direction: column;
+    align-items: flex-start;
     gap: var(--space-3);
   }
+}
 
-  .about-lead {
-    font-size: 15px;
+@media (max-width: 480px) {
+  .manifesto-section {
+    padding: var(--space-6) var(--space-4);
+  }
+  .mh-text {
+    font-size: 16px;
   }
 }

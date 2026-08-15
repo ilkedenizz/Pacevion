@@ -1,162 +1,123 @@
 /* Dashboard.css */
-@keyframes dashboard-reveal {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
 
-/* ── Container ─────────────────────────────── */
-.dashboard-container {
+.dashboard-wrapper {
   display: flex;
   flex-direction: column;
-  max-width: 1440px;
-  margin: 0 auto;
   width: 100%;
-  padding: 0 var(--space-5);
-  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) forwards;
 }
 
-.dashboard-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-/* ── Hero Row ───────────────────────────────── */
-.grid-hero-row {
+/* 1. Full Width Broadcast Hero */
+.hero-broadcast-wrapper {
   width: 100%;
   border-bottom: 1px solid var(--color-border);
-  opacity: 0;
-  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 50ms forwards;
 }
 
-/* ── Season Stats Bar ───────────────────────── */
-.season-stats-bar {
-  display: flex;
-  flex-direction: column;
+/* 2. Horizontal Data Strip */
+.data-strip-wrapper {
+  width: 100%;
   background-color: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
-  padding: var(--space-3) 0;
-  opacity: 0;
-  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 100ms forwards;
 }
 
-.season-stats-label {
-  font-family: var(--font-heading);
+.data-strip {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}
+
+.strip-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-4) var(--space-5);
+  border-right: 1px solid var(--color-border);
+  transition: background-color var(--transition-fast) ease;
+}
+
+.strip-item:last-child {
+  border-right: none;
+}
+
+.strip-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.strip-label {
+  font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 2px;
   color: var(--color-text-muted);
-  text-transform: uppercase;
   margin-bottom: var(--space-2);
-  padding: 0 var(--space-2);
 }
 
-.season-stats-items {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-}
-
-.season-stat {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex: 1;
-  padding: var(--space-3) var(--space-4);
-  transition: background-color var(--motion-fast) var(--motion-ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .season-stat:hover {
-    background-color: rgba(255, 255, 255, 0.02);
-  }
-  .season-stat:hover .season-stat-icon {
-    color: var(--color-accent-hover);
-  }
-}
-
-.season-stat-icon {
-  color: var(--color-accent);
-  flex-shrink: 0;
-  opacity: 0.9;
-}
-
-.season-stat-body {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.season-stat-value {
+.strip-value {
   font-family: var(--font-heading);
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--color-text-primary);
-  letter-spacing: -0.5px;
+  line-height: 1;
   font-variant-numeric: tabular-nums;
-  line-height: 1;
+  letter-spacing: -1px;
 }
 
-.season-stat-title {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-text-primary);
+.strip-item-accent .strip-value {
+  color: var(--color-accent);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
+  font-size: 24px;
 }
 
-.season-stat-sub {
-  font-family: var(--font-heading);
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--color-text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  line-height: 1;
+/* 3. Editorial Dashboard Grid */
+.editorial-container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-5);
 }
 
-.season-stat-divider {
-  width: 1px;
-  background: var(--color-border);
-  align-self: stretch;
-  margin: var(--space-2) 0;
-}
-
-/* ── 4-Column Data Grid ─────────────────────── */
-.grid-content-row {
+.editorial-grid {
   display: grid;
-  grid-template-columns: 1.25fr 1.15fr 1.10fr 1.15fr;
-  gap: 1px;
-  background-color: var(--color-border);
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6) var(--space-8);
+}
+
+.editorial-panel {
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+}
+
+.editorial-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-2);
   border-bottom: 1px solid var(--color-border);
-  opacity: 0;
-  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 150ms forwards;
 }
 
-/* Each direct child of the grid gets a white bg */
-.grid-content-row > * {
-  background-color: var(--color-surface);
-  min-height: 0;
+.ed-num {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-accent);
 }
 
-/* ── About ──────────────────────────────────── */
-.dashboard-grid > .about-section {
-  margin-top: 0;
-  border-top: none;
-  opacity: 0;
-  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 200ms forwards;
+.ed-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--color-text-secondary);
 }
 
-/* ── Reduced motion ─────────────────────────── */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .dashboard-container,
-  .grid-hero-row,
-  .season-stats-bar,
-  .grid-content-row,
-  .about-section,
-  .app-footer {
+  .hero-broadcast-wrapper,
+  .data-strip-wrapper,
+  .editorial-panel,
+  .editorial-about-wrapper {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;
@@ -164,57 +125,44 @@
 }
 
 /* ── Tablet ─────────────────────────────────── */
-@media (max-width: 1100px) {
-  .grid-content-row {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .season-stat-value {
-    font-size: 22px;
+@media (max-width: 1024px) {
+  .editorial-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
   }
 }
 
 /* ── Mobile ─────────────────────────────────── */
 @media (max-width: 768px) {
-  .dashboard-container {
-    padding: 0 var(--space-4);
-  }
-
-  .grid-content-row {
-    grid-template-columns: 1fr;
-  }
-
-  .season-stats-items {
+  .data-strip {
     flex-wrap: wrap;
   }
-
-  .season-stat {
+  
+  .strip-item {
     flex: 1 1 45%;
+    border-bottom: 1px solid var(--color-border);
   }
 
-  .season-stat-divider {
-    display: none;
+  .strip-item:nth-child(even) {
+    border-right: none;
   }
 
-  .season-stat-value {
-    font-size: 24px;
+  .strip-item-accent {
+    flex: 1 1 100%;
+    border-right: none;
+    border-bottom: none;
+  }
+  
+  .editorial-container {
+    padding: var(--space-6) var(--space-4);
   }
 }
 
 @media (max-width: 480px) {
-  .dashboard-container {
-    padding: 0 var(--space-3);
+  .strip-value {
+    font-size: 24px;
   }
-
-  .season-stat {
-    flex: 1 1 100%;
-  }
-
-  .season-stat-value {
+  .strip-item-accent .strip-value {
     font-size: 20px;
-  }
-
-  .season-stats-label {
-    font-size: 9px;
   }
 }

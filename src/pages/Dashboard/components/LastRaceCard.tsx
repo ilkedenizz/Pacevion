@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Zap } from 'lucide-react';
 import { useCalendar, useRaceResults } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
@@ -39,19 +39,16 @@ const LastRaceCard: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="last-race-panel">
-        <div className="panel-header">
-          <h3 className="panel-title">LAST RACE RESULT</h3>
-        </div>
+      <div className="last-race-panel loading">
         <div className="podium-list">
           {[1, 2, 3].map((i) => (
             <div key={i} className="podium-row">
-              <div className="skeleton" style={{ width: '44px', height: '20px' }} />
+              <div className="skeleton" style={{ width: '44px', height: '32px' }} />
               <div className="podium-info">
-                <div className="skeleton" style={{ width: '100px', height: '13px' }} />
-                <div className="skeleton" style={{ width: '70px', height: '11px', marginTop: '4px' }} />
+                <div className="skeleton" style={{ width: '120px', height: '16px' }} />
+                <div className="skeleton" style={{ width: '80px', height: '12px', marginTop: '4px' }} />
               </div>
-              <div className="skeleton" style={{ width: '36px', height: '20px', marginLeft: 'auto' }} />
+              <div className="skeleton" style={{ width: '40px', height: '24px', marginLeft: 'auto' }} />
             </div>
           ))}
         </div>
@@ -61,10 +58,7 @@ const LastRaceCard: React.FC = () => {
 
   if (isError) {
     return (
-      <div className="last-race-panel">
-        <div className="panel-header">
-          <h3 className="panel-title">LAST RACE RESULT</h3>
-        </div>
+      <div className="last-race-panel error">
         <ErrorState message="Could not load last race results." onRetry={handleRetry} />
       </div>
     );
@@ -73,9 +67,6 @@ const LastRaceCard: React.FC = () => {
   if (!lastCompletedRaceInfo || !raceResults) {
     return (
       <div className="last-race-panel">
-        <div className="panel-header">
-          <h3 className="panel-title">LAST RACE RESULT</h3>
-        </div>
         <div className="empty-results">No completed races found.</div>
       </div>
     );
@@ -84,16 +75,7 @@ const LastRaceCard: React.FC = () => {
   const topThree = raceResults.Results ? raceResults.Results.slice(0, 3) : [];
 
   return (
-    <div className="last-race-panel" onClick={() => navigate(`/races/${season}/${round}`)} role="button" tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/races/${season}/${round}`); }}>
-      <div className="panel-header">
-        <h3 className="panel-title">LAST RACE RESULT</h3>
-        <Link to={`/races/${season}/${round}`} className="panel-link" onClick={(e) => e.stopPropagation()}>
-          <span>DETAILS</span>
-          <ArrowRight size={12} />
-        </Link>
-      </div>
-
+    <div className="last-race-panel">
       <div className="last-race-subtitle">
         <span className="last-race-name">{raceResults.raceName}</span>
         <span className="last-race-date text-secondary">{formatLocalTime(raceResults.date, raceResults.time)}</span>
@@ -107,7 +89,7 @@ const LastRaceCard: React.FC = () => {
           const points = result.points;
 
           return (
-            <div key={result.Driver.driverId} className="podium-row">
+            <div key={result.Driver.driverId} className={`podium-row row-pos-${position}`}>
               <div className={`podium-badge pos-${position}`}>
                 <span>P{position}</span>
               </div>
@@ -116,8 +98,8 @@ const LastRaceCard: React.FC = () => {
                 <span className="podium-team-name">{teamName}</span>
               </div>
               <div className="podium-points">
+                <span className="pts-plus">+</span>
                 <span className="pts-val">{points}</span>
-                <span className="pts-lbl">PTS</span>
               </div>
             </div>
           );
@@ -126,17 +108,22 @@ const LastRaceCard: React.FC = () => {
 
       {fastestLap && (
         <div className="fastest-lap-strip">
-          <Zap size={12} className="fastest-lap-icon" />
-          <span className="fastest-lap-label">FASTEST LAP</span>
-          <span className="fastest-lap-driver">
-            {fastestLap.Driver.givenName} {fastestLap.Driver.familyName}
-          </span>
-          <span className="fastest-lap-time">{fastestLap.FastestLap?.Time?.time}</span>
-          {fastestLap.FastestLap?.lap && (
-            <span className="fastest-lap-meta">LAP {fastestLap.FastestLap.lap}</span>
-          )}
+          <div className="fl-left">
+            <Zap size={14} className="fastest-lap-icon" />
+            <span className="fastest-lap-label">FASTEST LAP</span>
+          </div>
+          <div className="fl-right">
+            <span className="fastest-lap-driver">
+              {fastestLap.Driver.code || fastestLap.Driver.familyName.slice(0,3).toUpperCase()}
+            </span>
+            <span className="fastest-lap-time">{fastestLap.FastestLap?.Time?.time}</span>
+          </div>
         </div>
       )}
+
+      <button className="view-full-race-btn" onClick={() => navigate(`/races/${season}/${round}`)}>
+        VIEW FULL CLASSIFICATION <ArrowRight size={14} />
+      </button>
     </div>
   );
 };

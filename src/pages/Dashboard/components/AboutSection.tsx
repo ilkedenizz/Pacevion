@@ -6,32 +6,36 @@ const AboutSection: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="about-section" aria-labelledby="about-title">
-      <div className="about-header">
-        <h2 id="about-title" className="about-main-title">{t('aboutTitle')}</h2>
-        <p className="about-subtitle">{t('aboutSubtitle')}</p>
-      </div>
-
-      <div className="about-layout-grid">
-        <div className="about-main-column">
-          <p className="about-lead">
-            {t('aboutP1')}
+    <section className="manifesto-section" aria-labelledby="about-title">
+      <div className="manifesto-grid">
+        <div className="manifesto-left">
+          <h2 id="about-title" className="manifesto-headline">
+            {t('aboutTitle')}
+          </h2>
+          <div className="manifesto-divider"></div>
+          <p className="manifesto-subtitle">
+            {t('aboutSubtitle')}
           </p>
-          <div className="about-columns">
-            <p className="about-paragraph">
-              {t('aboutP2')}
-            </p>
-            <p className="about-paragraph">
-              {t('aboutP3')}
-            </p>
-          </div>
         </div>
         
-        <div className="about-side-column">
-          <div className="about-highlight-box">
-            {t('aboutHighlight')}
+        <div className="manifesto-right">
+          <div className="manifesto-text-block lead">
+            {t('aboutP1')}
+          </div>
+          <div className="manifesto-columns">
+            <div className="manifesto-text-block">
+              {t('aboutP2')}
+            </div>
+            <div className="manifesto-text-block">
+              {t('aboutP3')}
+            </div>
           </div>
         </div>
+      </div>
+      
+      <div className="manifesto-highlight-banner">
+        <span className="mh-label">PLATFORM MISSION</span>
+        <span className="mh-text">{t('aboutHighlight')}</span>
       </div>
     </section>
   );

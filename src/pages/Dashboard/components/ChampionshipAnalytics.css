@@ -1,108 +1,115 @@
 /* ChampionshipAnalytics.css */
 .analytics-container {
-  background: var(--color-surface);
-  padding: var(--space-4);
-}
-
-
-.analytics-container.loading,
-.analytics-container.error {
-  min-height: 200px;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  height: 100%;
+  position: relative;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: center bottom;
 }
 
-.analytics-header {
+.leader-info-block {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--space-3);
+  flex-direction: column;
+  padding: var(--space-4) 0;
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.analytics-title {
-  font-family: var(--font-heading);
-  font-size: 0.875rem;
+.leader-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
-  margin: 0;
-}
-
-.view-all-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   color: var(--color-accent);
-  text-decoration: none;
-  transition: opacity 0.15s ease;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: var(--space-1);
 }
 
-.view-all-link:hover {
-  opacity: 0.75;
+.leader-name {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.chart-skeleton {
-  flex: 1;
+.leader-pts-block {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.leader-pts-val {
+  font-family: var(--font-heading);
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--color-accent);
+  line-height: 1;
+}
+
+.leader-pts-lbl {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
 }
 
 .chart-container {
+  flex: 1;
+  min-height: 220px;
   width: 100%;
 }
 
 .custom-tooltip-analytics {
-  background-color: var(--color-surface-elevated, #171719);
-  border: 1px solid var(--color-border, #27272a);
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
 }
 
-.custom-tooltip-analytics .tooltip-title {
+.tooltip-title {
   font-family: var(--font-heading);
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 900;
   color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.custom-tooltip-analytics .tooltip-team {
-  font-size: 11px;
+.tooltip-team {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 600;
   color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: var(--space-2);
 }
 
-.custom-tooltip-analytics .tooltip-pts-row {
+.tooltip-pts-row {
   display: flex;
   align-items: baseline;
-  gap: var(--space-1);
-  margin-top: var(--space-1);
-  border-top: 1px solid var(--color-border);
-  padding-top: var(--space-2);
+  gap: var(--space-2);
 }
 
-.custom-tooltip-analytics .tooltip-pts-val {
+.tooltip-pts-val {
   font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 900;
   color: var(--color-accent);
 }
 
-.custom-tooltip-analytics .tooltip-pts-lbl {
-  font-size: 8px;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-}
-
-@media (max-width: 480px) {
-  .analytics-title {
-    font-size: 0.75rem;
-  }
+.tooltip-pts-lbl {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-text-muted);
 }

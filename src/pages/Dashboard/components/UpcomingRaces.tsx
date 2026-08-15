@@ -1,8 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Calendar, MapPin, ChevronRight, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
-import Card from '../../../components/ui/Card';
 import ErrorState from '../../../components/ui/ErrorState';
 import { formatLocalTime } from '../../../utils/dateUtils';
 import './UpcomingRaces.css';
@@ -28,46 +27,33 @@ const UpcomingRaces: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card title="Upcoming Schedule" className="upcoming-races-card">
+      <div className="upcoming-schedule-container loading">
         <div className="upcoming-list">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="upcoming-row-item" style={{ minHeight: '76px', cursor: 'default' }}>
-              <div className="skeleton" style={{ width: '50px', height: '22px' }} />
+            <div key={i} className="upcoming-row-item">
+              <div className="skeleton" style={{ width: '40px', height: '16px' }} />
               <div className="race-details-block" style={{ gap: '6px' }}>
-                <div className="skeleton" style={{ width: '120px', height: '14px' }} />
-                <div className="skeleton" style={{ width: '160px', height: '11px' }} />
-                <div className="meta-sub-row">
-                  <div className="skeleton" style={{ width: '80px', height: '10px' }} />
-                  <div className="skeleton" style={{ width: '60px', height: '10px' }} />
-                </div>
+                <div className="skeleton" style={{ width: '140px', height: '16px' }} />
+                <div className="skeleton" style={{ width: '100px', height: '12px' }} />
               </div>
-              <div className="skeleton" style={{ width: '16px', height: '16px' }} />
+              <div className="skeleton" style={{ width: '80px', height: '24px', marginLeft: 'auto' }} />
             </div>
           ))}
         </div>
-      </Card>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Card title="Upcoming Schedule">
+      <div className="upcoming-schedule-container error">
         <ErrorState message="Could not load schedule." onRetry={refetch} />
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card
-      title="Upcoming Schedule"
-      className="upcoming-races-card"
-      headerAction={
-        <Link to="/calendar" className="view-calendar-link">
-          <span>Full Calendar</span>
-          <ArrowRight size={14} />
-        </Link>
-      }
-    >
+    <div className="upcoming-schedule-container">
       {nextThreeRaces.length === 0 ? (
         <div className="empty-schedule">No upcoming races found.</div>
       ) : (
@@ -76,37 +62,48 @@ const UpcomingRaces: React.FC = () => {
             <div
               key={`${race.season}-${race.round}`}
               className={`upcoming-row-item${index === 0 ? ' next-race' : ''}`}
-              onClick={() => navigate(`/races/${race.season}/${race.round}`)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigate(`/races/${race.season}/${race.round}`);
-                }
-              }}
             >
-              <div className="round-badge font-heading">RD {race.round}</div>
+              <div className="round-badge">
+                <span className="rd-lbl">RD</span>
+                <span className="rd-num">{race.round}</span>
+              </div>
+              
               <div className="race-details-block">
-                <span className="race-title">{race.raceName}</span>
-                <span className="circuit-name-sub text-secondary">{race.Circuit.circuitName}</span>
-                <div className="meta-sub-row text-secondary">
-                  <span className="meta-sub-item">
-                    <MapPin size={12} />
-                    <span>{race.Circuit.Location.locality}, {race.Circuit.Location.country}</span>
-                  </span>
-                  <span className="meta-sub-item">
-                    <Calendar size={12} />
-                    <span>{formatLocalTime(race.date, race.time)}</span>
-                  </span>
+                <div className="title-row">
+                  <span className="race-title">{race.raceName}</span>
+                  {index === 0 && <span className="next-badge">NEXT</span>}
+                </div>
+                
+                <div className="meta-row">
+                  <span className="circuit-name-sub text-secondary">{race.Circuit.circuitName}</span>
+                  <span className="meta-sep">/</span>
+                  <span className="meta-loc">{race.Circuit.Location.locality}, {race.Circuit.Location.country}</span>
                 </div>
               </div>
-              <ChevronRight className="arrow-icon text-secondary" size={16} />
+              
+              <div className="race-action-block">
+                <div className="date-badge">
+                  <Calendar size={12} className="date-icon" />
+                  <span>{formatLocalTime(race.date, race.time)}</span>
+                </div>
+                <button 
+                  className="row-action-btn"
+                  onClick={() => navigate(`/races/${race.season}/${race.round}`)}
+                  title="View Race Details"
+                >
+                  <ArrowRight size={14} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
       )}
-    </Card>
+      
+      <Link to="/calendar" className="view-full-calendar-btn">
+        <span>VIEW FULL CALENDAR</span>
+        <ArrowRight size={12} />
+      </Link>
+    </div>
   );
 };
 

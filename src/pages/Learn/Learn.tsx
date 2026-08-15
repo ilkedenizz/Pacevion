@@ -36,43 +36,34 @@ const Learn: React.FC = () => {
   };
 
   return (
-    <div className="learn-page fade-in">
-      <section className="learn-hero">
-        <span className="learn-hero-title">{t.heroTitle}</span>
-        <h1 className="learn-hero-headline">{t.heroHeadline}</h1>
-        <div className="learn-hero-subs">
-          <span>{t.heroSub1}</span>
-          <span>{t.heroSub2}</span>
-          <span>{t.heroSub3}</span>
+    <div className="learn-knowledge-center">
+      <div className="lkc-hero">
+        <div className="lkc-hero-content">
+          <span className="lkc-hero-tag">PACEVION EDITORIAL</span>
+          <h1 className="lkc-hero-title">F1 KNOWLEDGE CENTER</h1>
+          <p className="lkc-hero-subtitle">{t.heroHeadline}</p>
+          <div className="lkc-hero-manifesto">
+            <p>{t.heroSub1} {t.heroSub2} {t.heroSub3}</p>
+          </div>
         </div>
-      </section>
+      </div>
 
-      <div className="learn-content-grid">
-        <aside className="learning-path-sidebar">
-          <h3 className="path-title">{t.startHere}</h3>
-          <div className="path-list">
-            <a onClick={() => scrollToSection('basics')} className="path-step">
-              <span className="path-step-num">01</span> {t.pathBasics}
-            </a>
-            <a onClick={() => scrollToSection('weekend')} className="path-step">
-              <span className="path-step-num">02</span> {t.pathWeekend}
-            </a>
-            <a onClick={() => scrollToSection('rules')} className="path-step">
-              <span className="path-step-num">03</span> {t.pathRules}
-            </a>
-            <a onClick={() => scrollToSection('tyres')} className="path-step">
-              <span className="path-step-num">04</span> {t.pathTyres}
-            </a>
-            <a onClick={() => scrollToSection('strategy')} className="path-step">
-              <span className="path-step-num">05</span> {t.pathStrategy}
-            </a>
-            <a onClick={() => scrollToSection('car')} className="path-step">
-              <span className="path-step-num">06</span> {t.pathCar}
-            </a>
+      <div className="lkc-main-layout">
+        <aside className="lkc-sidebar">
+          <div className="lkc-sidebar-sticky">
+            <h3 className="lkc-sidebar-title">{t.startHere}</h3>
+            <nav className="lkc-nav">
+              <button onClick={() => scrollToSection('basics')} className="lkc-nav-link"><span className="lkc-nav-num">01</span> <span className="lkc-nav-text">{t.pathBasics}</span></button>
+              <button onClick={() => scrollToSection('weekend')} className="lkc-nav-link"><span className="lkc-nav-num">02</span> <span className="lkc-nav-text">{t.pathWeekend}</span></button>
+              <button onClick={() => scrollToSection('rules')} className="lkc-nav-link"><span className="lkc-nav-num">03</span> <span className="lkc-nav-text">{t.pathRules}</span></button>
+              <button onClick={() => scrollToSection('tyres')} className="lkc-nav-link"><span className="lkc-nav-num">04</span> <span className="lkc-nav-text">{t.pathTyres}</span></button>
+              <button onClick={() => scrollToSection('strategy')} className="lkc-nav-link"><span className="lkc-nav-num">05</span> <span className="lkc-nav-text">{t.pathStrategy}</span></button>
+              <button onClick={() => scrollToSection('car')} className="lkc-nav-link"><span className="lkc-nav-num">06</span> <span className="lkc-nav-text">{t.pathCar}</span></button>
+            </nav>
           </div>
         </aside>
 
-        <div className="learn-sections">
+        <div className="lkc-content-area">
           <F1Basics t={t} id="basics" />
           <RaceWeekend t={t} id="weekend" />
           <PointsSystem t={t} />
@@ -82,7 +73,11 @@ const Learn: React.FC = () => {
           <DRSOvertaking t={t} />
           <PitStops t={t} />
           <RaceStrategy t={t} id="strategy" />
-          <F1Car t={t} id="car" />
+          
+          <div className="lkc-car-diagram-wrapper">
+            <F1Car t={t} id="car" />
+          </div>
+          
           <PowerUnit t={t} />
           <RaceData t={t} />
           <Glossary t={t} />

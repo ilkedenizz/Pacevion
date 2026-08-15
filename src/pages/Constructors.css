@@ -1,19 +1,19 @@
-/* Standings.css */
-.standings-board-container {
+/* Constructors.css */
+.constructors-board-container {
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
   width: 100%;
   padding: var(--space-6) 0;
 }
 
 /* Background Atmosphere */
-.standings-board-container {
+.constructors-board-container {
   position: relative;
 }
 
-.standings-board-container::before {
+.constructors-board-container::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -26,7 +26,7 @@
   opacity: 0.5;
 }
 
-.standings-board-header {
+.cb-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -35,13 +35,13 @@
   margin-bottom: var(--space-6);
 }
 
-.sbh-titles {
+.cbh-titles {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
 }
 
-.sbh-main {
+.cbh-main {
   font-family: var(--font-heading);
   font-size: 32px;
   font-weight: 900;
@@ -52,7 +52,7 @@
   line-height: 1;
 }
 
-.sbh-sub {
+.cbh-sub {
   font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
@@ -60,46 +60,15 @@
   letter-spacing: 2px;
 }
 
-.sbh-tabs {
-  display: flex;
-  gap: var(--space-3);
-}
-
-.sbh-tab-btn {
-  background-color: transparent;
-  border: 1px solid var(--color-border);
-  color: var(--color-text-secondary);
-  font-family: var(--font-heading);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  padding: var(--space-2) var(--space-4);
-  cursor: pointer;
-  transition: all var(--motion-fast) var(--motion-ease);
-  outline: none;
-}
-
-.sbh-tab-btn:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-  color: var(--color-text-primary);
-}
-
-.sbh-tab-btn.active {
-  background-color: var(--color-surface);
-  border-color: var(--color-accent);
-  color: var(--color-text-primary);
-}
-
 /* Timing Board */
-.timing-board-wrapper {
+.constructors-board-wrapper {
   display: flex;
   flex-direction: column;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 
-.tb-header-row {
+.cb-table-header {
   display: flex;
   align-items: center;
   padding: var(--space-3) var(--space-4);
@@ -114,26 +83,25 @@
   letter-spacing: 2px;
 }
 
-.tb-body {
+.cb-table-body {
   display: flex;
   flex-direction: column;
 }
 
-.tb-row {
+.cb-row {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-  cursor: pointer;
-  transition: background-color var(--motion-fast) var(--motion-ease);
   position: relative;
+  transition: background-color var(--motion-fast) var(--motion-ease);
 }
 
-.tb-row:last-child {
+.cb-row:last-child {
   border-bottom: none;
 }
 
-.tb-row::before {
+.cb-row::before {
   content: '';
   position: absolute;
   left: 0;
@@ -144,163 +112,149 @@
   transition: background-color var(--motion-fast) var(--motion-ease);
 }
 
-.tb-row:hover {
+.cb-row:hover {
   background-color: rgba(255, 255, 255, 0.02);
 }
 
-.tb-row:hover::before {
+.cb-row:hover::before {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-.tb-row.leader-row {
+.cb-row.leader-row {
   background-color: rgba(225, 6, 0, 0.03);
 }
 
-.tb-row.leader-row::before {
+.cb-row.leader-row::before {
   background-color: var(--color-accent);
 }
 
-.tb-row.top-3-row .tb-pos-badge {
-  background-color: var(--color-text-primary);
-  color: var(--color-background);
-}
-
-.tb-row.leader-row .tb-pos-badge {
+.cb-row.leader-row .cb-pos-badge {
   background-color: var(--color-accent);
   color: #fff;
 }
 
 /* Columns */
-.tb-col-pos {
+.cb-col-pos {
   width: 60px;
   flex-shrink: 0;
 }
 
-.tb-col-driver {
-  flex: 1;
+.cb-col-team {
+  flex: 2;
   min-width: 200px;
 }
 
-.tb-col-team-primary {
-  flex: 1;
-  min-width: 200px;
-}
-
-.tb-col-team {
+.cb-col-nat {
   flex: 1;
   min-width: 150px;
 }
 
-.tb-col-lineup {
-  flex: 1;
-  min-width: 200px;
-}
-
-.tb-col-wins {
-  width: 80px;
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.tb-col-pts {
+.cb-col-wins {
   width: 100px;
-  text-align: right;
   flex-shrink: 0;
+}
+
+.cb-col-pts {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.text-right {
+  text-align: right;
+  justify-content: flex-end;
 }
 
 /* Typography inside board */
-.tb-pos-badge {
+.cb-pos-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   background-color: rgba(255, 255, 255, 0.1);
   color: var(--color-text-secondary);
   font-family: var(--font-heading);
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 800;
   border-radius: 2px;
 }
 
-.tb-driver-name {
+.cb-team-name {
   font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 24px;
+  font-weight: 900;
   color: var(--color-text-primary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.tb-team-name {
-  font-family: var(--font-heading);
-  font-size: 11px;
-  font-weight: 600;
+.cb-nat-text {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-.tb-stat {
+.cb-stat {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--color-text-secondary);
 }
 
-.tb-pts-val {
+.cb-pts-val {
   font-family: var(--font-heading);
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 900;
   color: var(--color-accent);
 }
 
-.tb-row.leader-row .tb-pts-val {
-  font-size: 24px;
+.cb-row.leader-row .cb-pts-val {
+  font-size: 32px;
 }
 
 @media (max-width: 768px) {
-  .standings-board-header {
+  .cb-header {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-4);
   }
   
-  .tb-header-row {
+  .cb-table-header {
     display: none;
   }
   
-  .tb-row {
+  .cb-row {
     flex-wrap: wrap;
     padding: var(--space-4);
   }
   
-  .tb-col-pos {
+  .cb-col-pos {
     width: 40px;
   }
   
-  .tb-col-driver, .tb-col-team-primary {
+  .cb-col-team {
     flex: 1;
-    min-width: 0; /* allows truncation */
+    min-width: 0;
   }
   
-  .tb-col-team {
+  .cb-team-name {
+    font-size: 18px;
+  }
+  
+  .cb-col-nat {
     width: 100%;
     padding-left: 40px;
     margin-top: 4px;
   }
   
-  .tb-col-lineup {
-    width: 100%;
-    padding-left: 40px;
-    margin-top: 4px;
-  }
-  
-  .tb-col-wins {
+  .cb-col-wins {
     display: none;
   }
   
-  .tb-col-pts {
+  .cb-col-pts {
     width: auto;
   }
 }
