@@ -1,0 +1,229 @@
+.f1-car-diagram-container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: var(--space-6);
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  overflow: hidden;
+}
+
+.f1-car-metadata {
+  display: flex;
+  gap: var(--space-6);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  flex-wrap: wrap;
+}
+
+.f1-car-metadata-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.f1-car-metadata-label {
+  color: var(--color-text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.f1-car-metadata-value {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.f1-diagram-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.f1-svg {
+  width: 100%;
+  height: 100%;
+  max-height: 600px;
+  overflow: visible;
+}
+
+/* SVG Elements */
+.f1-svg-path {
+  fill: #111;
+  stroke: #444;
+  stroke-width: 1.5;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.f1-svg-path:hover,
+.f1-svg-path.active {
+  fill: #222;
+  stroke: var(--color-accent);
+  filter: drop-shadow(0 0 8px rgba(225, 6, 0, 0.4));
+}
+
+.f1-callout-line {
+  stroke: #666;
+  stroke-width: 1;
+  fill: none;
+  stroke-dasharray: 4;
+  transition: all 0.3s ease;
+  opacity: 0;
+  animation: drawLine 0.6s ease forwards 0.3s;
+}
+
+.f1-callout-line.active {
+  stroke: var(--color-accent);
+  stroke-dasharray: none;
+  stroke-width: 1.5;
+}
+
+@keyframes drawLine {
+  to { opacity: 1; }
+}
+
+.f1-callout-group {
+  opacity: 0;
+  animation: fadeIn 0.4s ease forwards 0.6s;
+  cursor: pointer;
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+.f1-callout-text {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  fill: var(--color-text-primary);
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.f1-callout-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--color-accent);
+  font-weight: 800;
+}
+
+.f1-callout-group:hover .f1-callout-text,
+.f1-callout-group.active .f1-callout-text {
+  fill: var(--color-accent);
+}
+
+.f1-info-panel {
+  position: absolute;
+  bottom: var(--space-4);
+  right: var(--space-4);
+  width: 280px;
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid var(--color-accent);
+  padding: var(--space-4);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.8);
+}
+
+.f1-info-panel.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.f1-info-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  color: var(--color-text-primary);
+  margin: 0 0 var(--space-2) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.f1-info-num {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.f1-info-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.f1-mobile-list {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.f1-mobile-item {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--color-border);
+  padding: var(--space-4);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.f1-mobile-item.active {
+  border-color: var(--color-accent);
+  background: rgba(225, 6, 0, 0.05);
+}
+
+.f1-mobile-item-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.f1-mobile-item-desc {
+  margin-top: var(--space-3);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  display: none;
+}
+
+.f1-mobile-item.active .f1-mobile-item-desc {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .f1-diagram-wrapper {
+    aspect-ratio: auto;
+    height: 300px;
+  }
+  .f1-callout-group,
+  .f1-callout-line {
+    display: none; /* Hide complex callouts on mobile to prevent clutter */
+  }
+  .f1-info-panel {
+    display: none; /* Info panel replaced by list on mobile */
+  }
+  .f1-mobile-list {
+    display: flex;
+  }
+}
