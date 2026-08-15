@@ -34,7 +34,7 @@ body.sidebar-open-scroll-lock {
 .page-container {
   flex: 1;
   overflow-y: auto;
-  padding: var(--space-4) var(--space-5);
+  padding: 0;
   background-color: var(--color-bg);
   display: flex;
   flex-direction: column;
@@ -50,6 +50,6 @@ body.sidebar-open-scroll-lock {
 /* Responsive navigation adjustments */
 @media (max-width: 768px) {
   .page-container {
-    padding: var(--space-3) var(--space-4);
+    padding: 0;
   }
 }

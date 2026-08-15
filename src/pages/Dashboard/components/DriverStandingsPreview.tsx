@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Trophy } from 'lucide-react';
 import { useDriverStandings } from '../../../hooks/useF1Data';
-import Card from '../../../components/ui/Card';
+
 import ErrorState from '../../../components/ui/ErrorState';
 import './DriverStandingsPreview.css';
 
@@ -11,7 +11,10 @@ const DriverStandingsPreview: React.FC = () => {
 
   if (isLoading) {
     return (
-      <Card title="Driver Standings" className="driver-standings-preview">
+      <div className="timing-board-container">
+        <div className="timing-board-header">
+          <h3 className="timing-board-title">DRIVER STANDINGS</h3>
+        </div>
         <div className="standings-table">
           <div className="table-header">
             <span className="col-pos">Pos</span>
@@ -30,31 +33,33 @@ const DriverStandingsPreview: React.FC = () => {
             ))}
           </div>
         </div>
-      </Card>
+      </div>
     );
   }
 
   if (isError) {
     return (
-      <Card title="Driver Standings">
+      <div className="timing-board-container">
+        <div className="timing-board-header">
+          <h3 className="timing-board-title">DRIVER STANDINGS</h3>
+        </div>
         <ErrorState message="Could not load standings." onRetry={refetch} />
-      </Card>
+      </div>
     );
   }
 
   const topFive = standings ? standings.slice(0, 5) : [];
 
   return (
-    <Card
-      title="Driver Standings"
-      className="driver-standings-preview"
-      headerAction={
+    <div className="timing-board-container">
+      <div className="timing-board-header">
+        <h3 className="timing-board-title">DRIVER STANDINGS</h3>
         <Link to="/standings" className="view-all-link">
-          <span>Full Standings</span>
+          <span>FULL STANDINGS</span>
           <ArrowRight size={14} />
         </Link>
-      }
-    >
+      </div>
+      
       {topFive.length === 0 ? (
         <div className="empty-standings">No standings data available.</div>
       ) : (
@@ -92,7 +97,11 @@ const DriverStandingsPreview: React.FC = () => {
           </div>
         </div>
       )}
-    </Card>
+      <Link to="/standings" className="view-full-standings-link">
+        <span>VIEW FULL STANDINGS</span>
+        <ArrowRight size={12} />
+      </Link>
+    </div>
   );
 };
 

@@ -1,131 +1,133 @@
 /* LastRaceCard.css */
-.last-race-card {
-  height: auto;
+.last-race-panel {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--motion-ease);
+  height: 100%;
 }
 
-.view-details-link {
+.last-race-panel:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-elevated);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.panel-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.panel-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  color: var(--color-text-secondary);
+  color: var(--color-accent);
   text-decoration: none;
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
   outline: none;
-  border-radius: var(--radius-sm);
-  padding: var(--space-1);
 }
 
-.view-details-link:hover {
-  color: var(--color-accent);
+.panel-link:hover {
+  opacity: 0.8;
 }
 
-.last-race-header {
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-3);
-  margin-bottom: var(--space-3);
+.last-race-subtitle {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) 0;
 }
 
-.last-race-header .race-name {
+.last-race-name {
   font-family: var(--font-heading);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 1px;
   color: var(--color-text-primary);
-  margin: 0;
-  letter-spacing: 0.5px;
 }
 
-.last-race-header .race-date {
-  font-size: 11px;
+.last-race-date {
+  font-size: 10px;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .podium-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  padding: var(--space-3) 0;
 }
 
 .podium-row {
   display: flex;
   align-items: center;
+  padding: var(--space-2) var(--space-4);
   gap: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  background-color: var(--color-surface-light);
-  border: 1px solid var(--color-border);
-  border-left: 3px solid rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-sm);
-  transition: transform var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .podium-row:hover {
-    background-color: rgba(225, 6, 0, 0.05);
-    border-left-color: var(--color-accent);
-    border-color: rgba(225, 6, 0, 0.2);
-    transform: translateX(4px);
-  }
+  position: relative;
 }
 
 .podium-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-2);
-  font-family: var(--font-heading);
-  font-size: 10px;
-  font-weight: 700;
-  min-width: 50px;
   justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-heading);
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+  color: #fff;
 }
 
-.podium-badge.pos-1 {
-  background-color: rgba(255, 215, 0, 0.05);
-  border: 1px solid #ffd700;
-  color: #ffd700;
+.pos-1 {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
 }
 
-.podium-badge.pos-2 {
-  background-color: rgba(192, 192, 192, 0.05);
-  border: 1px solid #c0c0c0;
-  color: #c0c0c0;
+.pos-2 {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
 }
 
-.podium-badge.pos-3 {
-  background-color: rgba(205, 127, 50, 0.05);
-  border: 1px solid #cd7f32;
-  color: #cd7f32;
+.pos-3 {
+  background: linear-gradient(135deg, #b45309, #78350f);
 }
 
 .podium-info {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  flex: 1;
 }
 
 .podium-driver-name {
-  font-weight: 600;
   font-size: 13px;
+  font-weight: 700;
   color: var(--color-text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .podium-team-name {
   font-size: 11px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--color-text-secondary);
 }
 
 .podium-points {
@@ -133,64 +135,64 @@
   align-items: baseline;
   gap: 2px;
   font-family: var(--font-heading);
+}
+
+.pts-val {
+  font-size: 18px;
   font-weight: 900;
-  font-size: 16px;
   color: var(--color-text-primary);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.5px;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .podium-row:hover .podium-points {
-    color: var(--color-accent);
-  }
+.pts-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
 }
 
-.podium-points .pts-lbl {
-  font-size: 8px;
-  color: var(--color-text-secondary);
+/* Fastest Lap Strip */
+.fastest-lap-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background-color: rgba(255, 255, 255, 0.02);
+  border-top: 1px solid var(--color-border);
+  margin-top: auto;
+}
+
+.fastest-lap-icon {
+  color: var(--color-accent);
+}
+
+.fastest-lap-label {
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 1px;
+}
+
+.fastest-lap-driver {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-left: auto;
+}
+
+.fastest-lap-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
   font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.fastest-lap-meta {
+  font-size: 10px;
+  color: var(--color-text-muted);
 }
 
 .empty-results {
   padding: var(--space-4);
   text-align: center;
   color: var(--color-text-secondary);
-}
-
-@media (max-width: 480px) {
-  .last-race-header {
-    padding-bottom: var(--space-2);
-    margin-bottom: var(--space-2);
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 4px;
-  }
-  
-  .last-race-header .race-name {
-    font-size: 13px;
-  }
-
-  .podium-row {
-    padding: var(--space-2) var(--space-2);
-    gap: var(--space-2);
-  }
-  
-  .podium-badge {
-    min-width: 44px;
-    font-size: 9px;
-    padding: 2px 4px;
-  }
-  
-  .podium-driver-name {
-    font-size: 12px;
-  }
-  
-  .podium-team-name {
-    font-size: 10px;
-  }
-  
-  .podium-points {
-    font-size: 12px;
-  }
 }

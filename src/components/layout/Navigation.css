@@ -1,16 +1,6 @@
 /* Navigation.css */
 .navigation {
-  background-color: var(--color-surface);
-  border-right: 1px solid var(--color-border);
-  width: 200px; /* Slimmer for a more professional dashboard look */
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-4) var(--space-3);
-  gap: var(--space-4);
-  box-shadow: 1px 0 0px rgba(0, 0, 0, 0.1);
-  z-index: 90;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
 }
 
 .navigation-backdrop {
@@ -115,6 +105,8 @@
 /* Responsive mobile drawer structure */
 @media (max-width: 768px) {
   .navigation {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 48px; /* Below the 48px header */
     left: 0;

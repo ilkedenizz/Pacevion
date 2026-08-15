@@ -1,8 +1,9 @@
 import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, type TooltipProps } from 'recharts';
 import { useDriverStandings } from '../../../hooks/useF1Data';
-import Card from '../../../components/ui/Card';
 import ErrorState from '../../../components/ui/ErrorState';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
 import './ChampionshipAnalytics.css';
 
 interface ChartDataItem {
@@ -32,22 +33,6 @@ const CustomTooltip: React.FC<TooltipProps<number, string>> = ({ active, payload
 const ChampionshipAnalytics: React.FC = () => {
   const { data: standings, isLoading, isError, refetch } = useDriverStandings();
 
-  if (isLoading) {
-    return (
-      <Card title="Championship Standings Comparison" className="analytics-card-loading">
-        <div className="skeleton" style={{ width: '100%', height: '100%' }} />
-      </Card>
-    );
-  }
-
-  if (isError) {
-    return (
-      <Card title="Championship Standings Comparison">
-        <ErrorState message="Could not load analytics." onRetry={refetch} />
-      </Card>
-    );
-  }
-
   const chartData: ChartDataItem[] = standings
     ? standings.slice(0, 6).map((item) => ({
         name: item.Driver.code || item.Driver.familyName.slice(0, 3).toUpperCase(),
@@ -57,8 +42,42 @@ const ChampionshipAnalytics: React.FC = () => {
       }))
     : [];
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="analytics-container loading">
+        <div className="analytics-header">
+          <h3 className="analytics-title">Championship Standings Comparison</h3>
+        </div>
+        <div className="chart-skeleton">
+          <div className="skeleton" style={{ width: '100%', height: '180px' }} />
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (isError) {
+    return (
+      <div className="analytics-container error">
+        <div className="analytics-header">
+          <h3 className="analytics-title">Championship Standings Comparison</h3>
+        </div>
+        <ErrorState message="Could not load analytics." onRetry={refetch} />
+      </div>
+    );
+  }
+
+  // Main content
   return (
-    <Card title="Driver Standings Comparison" className="championship-analytics-card">
+    <div className="analytics-container">
+      <div className="analytics-header">
+        <h3 className="analytics-title">Driver Standings Comparison</h3>
+        <Link to="/standings" className="view-all-link">
+          <span>FULL STANDINGS</span>
+          <ArrowRight size={14} />
+        </Link>
+      </div>
       <div className="chart-container" style={{ width: '100%', height: 180 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
@@ -88,7 +107,7 @@ const ChampionshipAnalytics: React.FC = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </Card>
+    </div>
   );
 };
 

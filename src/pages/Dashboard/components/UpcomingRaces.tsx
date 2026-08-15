@@ -21,8 +21,8 @@ const UpcomingRaces: React.FC = () => {
       return raceDate > now;
     });
 
-    // Return the next 3
-    return futureRaces.slice(0, 3);
+    // Return the next 4
+    return futureRaces.slice(0, 4);
   }, [races]);
 
   if (isLoading) {
@@ -71,10 +71,10 @@ const UpcomingRaces: React.FC = () => {
         <div className="empty-schedule">No upcoming races found.</div>
       ) : (
         <div className="upcoming-list">
-          {nextThreeRaces.map((race) => (
+          {nextThreeRaces.map((race, index) => (
             <div
               key={`${race.season}-${race.round}`}
-              className="upcoming-row-item"
+              className={`upcoming-row-item${index === 0 ? ' next-race' : ''}`}
               onClick={() => navigate(`/races/${race.season}/${race.round}`)}
               role="button"
               tabIndex={0}

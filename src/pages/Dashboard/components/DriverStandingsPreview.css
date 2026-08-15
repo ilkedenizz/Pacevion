@@ -1,31 +1,46 @@
 /* DriverStandingsPreview.css */
-.driver-standings-preview {
-  height: auto;
+.timing-board-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  padding-bottom: var(--space-3);
+}
+
+.timing-board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-elevated);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+.timing-board-title {
+  font-family: var(--font-heading);
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  margin: 0;
+  letter-spacing: 1px;
 }
 
 .view-all-link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  color: var(--color-text-secondary);
+  color: var(--color-accent);
   text-decoration: none;
   font-family: var(--font-heading);
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  transition: color 0.15s ease;
+  transition: opacity 0.15s ease;
   outline: none;
-  border-radius: var(--radius-sm);
-  padding: var(--space-1);
-}
-
-.view-all-link:focus-visible {
-  color: var(--color-accent);
 }
 
 .view-all-link:hover {
-  color: var(--color-accent);
+  opacity: 0.8;
 }
 
 .standings-table {
@@ -42,7 +57,7 @@
   text-transform: uppercase;
   font-weight: 800;
   color: var(--color-text-muted);
-  border-bottom: 2px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   letter-spacing: 1px;
 }
 
@@ -55,14 +70,55 @@
   display: flex;
   align-items: center;
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border);
   background-color: transparent;
   font-size: 13px;
+  position: relative;
   transition: background-color var(--motion-fast) var(--motion-ease);
 }
 
+.table-row::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: transparent;
+  transition: background-color var(--motion-fast) var(--motion-ease);
+}
+
+.table-row:hover::before {
+  background-color: var(--color-accent);
+}
+
+.table-row:hover .col-pts {
+  color: var(--color-accent);
+}
+
+
 .table-row:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.view-full-standings-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.15s ease;
+}
+
+.view-full-standings-link:hover {
+  color: var(--color-accent);
 }
 
 @media (hover: hover) and (pointer: fine) {

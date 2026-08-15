@@ -29,6 +29,8 @@
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
 
   /* Border radius */
   --radius-sm: 2px;
@@ -66,11 +68,12 @@ body {
   background-color: var(--color-bg);
   background-image: 
     /* Very subtle grid */
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    /* Vignette / spotlight */
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    /* Vignette / spotlight with subtle red glow */
+    radial-gradient(circle at 50% 0%, rgba(225, 6, 0, 0.03) 0%, transparent 40%),
     radial-gradient(circle at top center, rgba(39, 39, 42, 0.4) 0%, var(--color-bg) 70%);
-  background-size: 32px 32px, 32px 32px, 100% 100%;
+  background-size: 32px 32px, 32px 32px, 100% 100%, 100% 100%;
   background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
@@ -90,7 +93,29 @@ body {
   -webkit-backdrop-filter: var(--glass-blur);
 }
 
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.5px;
+}
+.font-heading-condensed {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
 /* Animations & Loaders */
+@keyframes dashboard-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

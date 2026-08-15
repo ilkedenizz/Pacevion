@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Menu, X, Globe, ChevronDown } from 'lucide-react';
 import './Header.css';
 
+import { NavLink } from 'react-router-dom';
 import { useLanguage } from '../../context/LanguageContext';
 import type { Language } from '../../context/LanguageContext';
 
@@ -48,13 +49,18 @@ const Header: React.FC<HeaderProps> = ({ isSidebarOpen, toggleSidebar }) => {
         </div>
       </div>
 
+      <div className="header-center desktop-nav">
+        <nav className="desktop-nav-links">
+          <NavLink to="/" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`} end>{t('overview')}</NavLink>
+          <NavLink to="/calendar" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('calendar')}</NavLink>
+          <NavLink to="/standings" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('standings')}</NavLink>
+          <NavLink to="/drivers" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('drivers')}</NavLink>
+          <NavLink to="/constructors" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('constructors')}</NavLink>
+        </nav>
+      </div>
+
       <div className="header-right">
         <div className="header-status-section">
-          <div className="status-item">
-            <span className="status-label">{t('season')}</span>
-            <span className="status-value font-mono">2026</span>
-          </div>
-          <div className="status-divider" />
           <div className="status-item">
             <span className="status-indicator live" />
             <span className="status-value font-mono">{t('liveFeed')}</span>
