@@ -2,12 +2,33 @@
 .f1-card {
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
+  border-top: 1px solid rgba(255, 255, 255, 0.05); /* Slight highlight on top for depth */
   border-radius: var(--radius-sm);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  position: relative;
+  transition: transform var(--motion-normal) var(--motion-ease), box-shadow var(--motion-normal) var(--motion-ease), border-color var(--motion-normal) var(--motion-ease);
+}
+
+.f1-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 2px;
+  background-color: var(--color-accent);
+}
+
+/* Base hover state for all cards to add depth, not just clickable ones */
+@media (hover: hover) and (pointer: fine) {
+  .f1-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(225, 6, 0, 0.2); /* Subtle red tint on border */
+  }
 }
 
 .f1-card.clickable {
@@ -21,7 +42,6 @@
 
 .f1-card.clickable:hover {
   border-color: var(--color-accent-25);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
 
 .card-header {

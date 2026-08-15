@@ -113,11 +113,19 @@
   margin: 0;
 }
 
+.welcome-para.highlight-text {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 .disclaimer-sub {
   font-size: 11px;
-  border-left: 2px solid var(--color-accent-25);
+  border-left: 2px solid var(--color-border);
   padding-left: var(--space-2);
   margin-top: 4px;
+  color: var(--color-text-secondary);
 }
 
 .welcome-cta-btn {

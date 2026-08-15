@@ -43,9 +43,13 @@ const Dashboard: React.FC = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <span className="dashboard-category">F1 2026</span>
-        <h1 className="dashboard-title">{t('seasonOverview')}</h1>
-        <p className="dashboard-subtitle">{t('realTimeStats')}</p>
+        <div className="dashboard-header-accent"></div>
+        <div className="dashboard-header-content">
+          <span className="dashboard-category">F1 2026</span>
+          <h1 className="dashboard-title">{t('seasonOverview')}</h1>
+          <p className="dashboard-subtitle">{t('realTimeStats')}</p>
+        </div>
+        <div className="dashboard-header-divider"></div>
       </div>
 
       <div className="dashboard-grid">

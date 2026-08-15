@@ -4,8 +4,11 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 var(--space-4);
-  background-color: var(--color-surface);
+  background-color: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
   height: 48px; /* Compact premium header height */
   position: relative;
   z-index: 100;
@@ -53,8 +56,8 @@
 
 .header .title {
   font-family: var(--font-heading);
-  font-size: 14px; /* Slightly smaller for premium look */
-  font-weight: 800;
+  font-size: 16px; /* Stronger for premium look */
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--color-text-primary);
@@ -152,13 +155,13 @@
   border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 600;
-  transition: all 0.15s ease;
+  transition: color var(--motion-fast) var(--motion-ease), background-color var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease);
   outline: none;
 }
 
 .lang-selector-btn:hover {
   color: var(--color-text-primary);
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 255, 255, 0.04);
   border-color: var(--color-border);
 }
 

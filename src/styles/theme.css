@@ -5,14 +5,18 @@
   --color-bg: #0a0a0b;               /* Graphite / near-black background */
   --color-surface: #111113;          /* Surface container */
   --color-surface-elevated: #171719; /* Surface elevated */
+  --color-surface-light: #1e1e20;    /* For inner panels/cards */
   --color-border: #27272a;           /* Border color */
   --color-accent: #e10600;           /* F1-inspired red accent */
   --color-accent-hover: #b90400;
+  --color-accent-strong: #ff1e1a;    /* Brighter red for active/live */
+  --color-accent-subtle: rgba(225, 6, 0, 0.05); /* Extremely subtle red fill */
   --color-accent-10: rgba(225, 6, 0, 0.1);
   --color-accent-25: rgba(225, 6, 0, 0.25);
   
-  --color-text-primary: #f5f5f5;      /* Primary text */
+  --color-text-primary: #ffffff;      /* Brighter primary text */
   --color-text-secondary: #8a8a8f;    /* Secondary text */
+  --color-text-muted: #5e5e62;        /* Technical labels / muted */
   
   --color-success: #22c55e;
   --color-success-10: rgba(34, 197, 94, 0.1);
@@ -45,11 +49,29 @@
   /* Glass‑morphism */
   --glass-bg: rgba(17, 17, 19, 0.7);
   --glass-blur: blur(12px);
+
+  /* Shadows for Depth */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  
+  /* Motion System */
+  --motion-fast: 150ms;
+  --motion-normal: 250ms;
+  --motion-slow: 350ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Apply base colors */
+/* Apply base colors & subtle technical background */
 body {
   background-color: var(--color-bg);
+  background-image: 
+    /* Very subtle grid */
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    /* Vignette / spotlight */
+    radial-gradient(circle at top center, rgba(39, 39, 42, 0.4) 0%, var(--color-bg) 70%);
+  background-size: 32px 32px, 32px 32px, 100% 100%;
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

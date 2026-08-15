@@ -1,4 +1,9 @@
 /* Dashboard.css */
+@keyframes dashboard-reveal {
+  0% { opacity: 0; transform: translateY(12px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 .dashboard-container {
   display: flex;
   flex-direction: column;
@@ -6,12 +11,23 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
+  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) forwards;
 }
 
 .dashboard-header {
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+}
+
+.dashboard-header-accent {
+  width: 40px;
+  height: 4px;
+  background-color: var(--color-accent);
   margin-bottom: var(--space-2);
+}
+
+.dashboard-header-content {
   display: flex;
   flex-direction: column;
 }
@@ -29,7 +45,7 @@
 .dashboard-title {
   font-family: var(--font-heading);
   font-size: 28px;
-  font-weight: 800;
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--color-text-primary);
@@ -43,21 +59,45 @@
   margin: 0;
 }
 
+.dashboard-header-divider {
+  margin-top: var(--space-3);
+  border-bottom: 1px dashed var(--color-border);
+  width: 100%;
+}
+
 .dashboard-grid {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
 }
 
+/* Staggered entrance for rows */
 .grid-hero-row {
   width: 100%;
+  opacity: 0;
+  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 50ms forwards;
 }
 
-/* Season Stats Row */
 .season-stats-row {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-4);
+  opacity: 0;
+  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 100ms forwards;
+}
+
+/* Add prefers-reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-container,
+  .grid-hero-row,
+  .season-stats-row,
+  .grid-content-row,
+  .about-section,
+  .app-footer {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 .stat-card {
@@ -68,28 +108,45 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: border-color 0.15s ease;
+  position: relative;
+  transition: transform var(--motion-normal) var(--motion-ease), box-shadow var(--motion-normal) var(--motion-ease), border-color var(--motion-normal) var(--motion-ease);
 }
 
-.stat-card:hover {
-  border-color: var(--color-accent-25);
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 3px;
+  height: 16px;
+  background-color: var(--color-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stat-card:hover {
+    border-color: rgba(225, 6, 0, 0.15);
+    box-shadow: var(--shadow-sm);
+    transform: translateY(-2px);
+  }
 }
 
 .stat-label {
   font-family: var(--font-heading);
   font-size: 10px;
-  font-weight: 700;
-  color: var(--color-text-secondary);
+  font-weight: 800;
+  color: var(--color-text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
   margin-bottom: var(--space-1);
 }
 
 .stat-value {
   font-family: var(--font-heading);
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 28px;
+  font-weight: 900;
   color: var(--color-text-primary);
+  letter-spacing: -0.5px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Content Columns */
@@ -103,12 +160,16 @@
 .content-column-main {
   display: flex;
   flex-direction: column;
+  opacity: 0;
+  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 150ms forwards;
 }
 
 .content-column-side {
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
+  opacity: 0;
+  animation: dashboard-reveal var(--motion-slow) var(--motion-ease) 200ms forwards;
 }
 
 /* Responsive adjustments */

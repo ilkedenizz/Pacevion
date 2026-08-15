@@ -31,7 +31,7 @@ const WelcomeOverlay: React.FC = () => {
       } catch {
         // Ignore localStorage block silently
       }
-    }, 300); // Animation duration
+    }, 200); // Matches CSS transition duration
   };
 
   if (!show) return null;
@@ -53,16 +53,13 @@ const WelcomeOverlay: React.FC = () => {
         <div className="welcome-divider" />
         
         <div className="welcome-body-section">
-          <h3 id="welcome-title" className="welcome-title">Independent F1 Fan Project</h3>
+          <h3 id="welcome-title" className="welcome-title">Disclaimer & Notice</h3>
           <div id="welcome-desc" className="welcome-text-container">
-            <p className="welcome-para">
-              Pacevion is an independent, unofficial Formula 1 fan-made project created for informational and entertainment purposes.
-            </p>
-            <p className="welcome-para">
-              This website is not affiliated with, endorsed by, or officially connected to Formula 1, the FIA, or any Formula 1 team or driver.
+            <p className="welcome-para highlight-text">
+              Pacevion is an independent, non-commercial fan-made F1 platform built for informational and analysis purposes.
             </p>
             <p className="welcome-para disclaimer-sub">
-              All trademarks, team names, driver names and related properties belong to their respective owners.
+              This platform is completely unofficial and not affiliated in any way with the FIA, Formula 1 teams, or any F1 companies. All trademarks, names, and logos belong to their respective owners.
             </p>
           </div>
         </div>
