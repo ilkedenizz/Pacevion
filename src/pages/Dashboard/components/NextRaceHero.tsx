@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Calendar, MapPin, Clock, ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
+import { circuitLayouts } from '../../../data/circuits';
 import './NextRaceHero.css';
 
 interface Countdown {
@@ -156,26 +157,30 @@ const NextRaceHero: React.FC = () => {
       </div>
 
       <div className="hero-circuit-pane">
-        <svg className="circuit-svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-          {/* Abstract racing line track path */}
-          <path
-            d="M 20 40 C 20 15, 60 10, 80 25 C 95 40, 85 65, 75 70 C 60 75, 55 60, 45 60 C 35 60, 40 85, 25 80 C 10 75, 10 55, 20 40 Z"
-            fill="none"
-            stroke="rgba(225, 6, 0, 0.05)"
-            strokeWidth="8"
-            strokeLinecap="round"
-          />
-          <path
-            d="M 20 40 C 20 15, 60 10, 80 25 C 95 40, 85 65, 75 70 C 60 75, 55 60, 45 60 C 35 60, 40 85, 25 80 C 10 75, 10 55, 20 40 Z"
-            fill="none"
-            stroke="var(--color-accent)"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeDasharray="4 2"
-          />
-          <circle cx="20" cy="40" r="3" fill="#f5f5f5" />
-          <text x="18" y="34" fill="#8a8a8f" fontSize="6" fontWeight="bold">S/F</text>
-        </svg>
+        {nextRace && circuitLayouts[nextRace.Circuit.circuitId] ? (
+          <svg className="circuit-svg" viewBox={circuitLayouts[nextRace.Circuit.circuitId].viewBox} preserveAspectRatio="xMidYMid meet">
+            <path
+              d={circuitLayouts[nextRace.Circuit.circuitId].trackPath}
+              fill="none"
+              stroke="rgba(225, 6, 0, 0.05)"
+              strokeWidth="12"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <path
+              d={circuitLayouts[nextRace.Circuit.circuitId].trackPath}
+              fill="none"
+              stroke="var(--color-accent)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        ) : (
+          <div className="circuit-fallback">
+            <p>CIRCUIT LAYOUT UNAVAILABLE</p>
+          </div>
+        )}
         <span className="circuit-caption">SECTOR MAP & TELEMETRY</span>
       </div>
     </div>
