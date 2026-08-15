@@ -92,7 +92,7 @@ const Drivers: React.FC = () => {
 
               {/* Photo */}
               <div className="drv-card__photo">
-                <img src={vis} alt={`${d.givenName} ${d.familyName}`} loading="eager" fetchpriority="high" />
+                <img src={vis} alt={`${d.givenName} ${d.familyName}`} loading="eager" fetchPriority="high" />
                 <div className="drv-card__photo-gradient" />
               </div>
 
