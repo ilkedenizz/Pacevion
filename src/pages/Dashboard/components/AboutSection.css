@@ -119,7 +119,6 @@
   margin: 0;
 }
 
-/* Responsive breakpoint overrides */
 @media (max-width: 768px) {
   .about-features-grid {
     grid-template-columns: 1fr;
@@ -134,5 +133,48 @@
   .about-highlight-box {
     font-size: 13px;
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-section {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+  
+  .about-main-title {
+    font-size: 18px;
+  }
+  
+  .about-subtitle {
+    font-size: 12px;
+  }
+  
+  .about-content-body {
+    line-height: 1.5;
+    gap: var(--space-2);
+  }
+  
+  .about-paragraph {
+    font-size: 12px;
+  }
+  
+  .about-highlight-box {
+    font-size: 12px;
+    padding: var(--space-2) 0;
+    margin: var(--space-1) 0;
+  }
+  
+  .feature-card {
+    padding: var(--space-3);
+    gap: var(--space-2);
+  }
+  
+  .feature-title {
+    font-size: 13px;
+  }
+  
+  .feature-description {
+    font-size: 11px;
   }
 }

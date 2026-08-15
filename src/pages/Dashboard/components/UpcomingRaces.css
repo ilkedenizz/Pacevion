@@ -127,3 +127,29 @@
   text-align: center;
   color: var(--color-text-secondary);
 }
+
+@media (max-width: 480px) {
+  .upcoming-row-item {
+    padding: var(--space-2) var(--space-3);
+    gap: var(--space-3);
+  }
+  
+  .round-badge {
+    min-width: 40px;
+    font-size: 9px;
+    padding: var(--space-1);
+  }
+  
+  .race-title {
+    font-size: 12px;
+  }
+  
+  .circuit-name-sub {
+    font-size: 10px;
+  }
+  
+  .meta-sub-row {
+    font-size: 9px;
+    gap: var(--space-2);
+  }
+}

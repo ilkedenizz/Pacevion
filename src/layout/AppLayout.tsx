@@ -23,6 +23,17 @@ const AppLayout: React.FC = () => {
     };
   }, [isSidebarOpen]);
 
+  // Close sidebar on Escape keypress
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeSidebar();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="app-layout bg-texture">
       <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

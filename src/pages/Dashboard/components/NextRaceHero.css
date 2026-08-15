@@ -267,6 +267,20 @@
 }
 
 @media (max-width: 480px) {
+  .grand-prix-name {
+    font-size: 20px;
+  }
+  
+  .circuit-name-hero {
+    font-size: 12px;
+    margin-bottom: var(--space-3);
+  }
+  
+  .view-race-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .countdown-container {
     width: 100%;
     justify-content: space-around;

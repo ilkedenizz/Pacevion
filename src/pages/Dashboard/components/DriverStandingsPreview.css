@@ -151,3 +151,27 @@
     width: 45px;
   }
 }
+
+@media (max-width: 480px) {
+  .table-header,
+  .table-row {
+    padding: var(--space-2) var(--space-3);
+  }
+  
+  .col-pos {
+    width: 26px;
+  }
+  
+  .col-driver {
+    font-size: 12px;
+  }
+  
+  .col-team {
+    font-size: 11px;
+  }
+  
+  .col-pts {
+    font-size: 12px;
+    width: 40px;
+  }
+}
