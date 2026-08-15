@@ -56,6 +56,7 @@ const Header: React.FC<HeaderProps> = ({ isSidebarOpen, toggleSidebar }) => {
           <NavLink to="/standings" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('standings')}</NavLink>
           <NavLink to="/drivers" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('drivers')}</NavLink>
           <NavLink to="/constructors" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('constructors')}</NavLink>
+          <NavLink to="/learn" className={({ isActive }) => `desktop-nav-link ${isActive ? 'active' : ''}`}>{t('learn')}</NavLink>
         </nav>
       </div>
 

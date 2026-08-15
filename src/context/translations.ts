@@ -10,6 +10,7 @@ export const translations: Record<Language, Record<string, string>> = {
     standings: 'Standings',
     overview: 'Overview',
     championship: 'Championship',
+    learn: 'LEARN F1',
 
     // Dashboard & Global
     seasonOverview: 'Season Overview',
@@ -52,6 +53,7 @@ export const translations: Record<Language, Record<string, string>> = {
     standings: 'Puan Durumu',
     overview: 'Genel Bakış',
     championship: 'Şampiyona',
+    learn: 'F1 REHBERİ',
 
     // Dashboard & Global
     seasonOverview: 'Sezon Özeti',
