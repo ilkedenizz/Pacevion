@@ -242,6 +242,18 @@
   }
 }
 
+@media (max-width: 768px) {
+  .broadcast-countdown {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+  .cd-sep {
+    display: none;
+  }
+}
+
 @media (max-width: 480px) {
   .nr-hero-container {
     min-height: auto;
@@ -255,14 +267,5 @@
   }
   .cd-block {
     min-width: auto;
-  }
-  .broadcast-countdown {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-4);
-    padding: var(--space-4) var(--space-4);
-  }
-  .cd-sep {
-    display: none;
   }
 }

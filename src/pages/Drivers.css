@@ -91,6 +91,7 @@
 .drv-header-right {
   display: flex;
   gap: var(--space-6);
+  flex-wrap: wrap;
 }
 
 .drv-header-stat {
@@ -329,6 +330,7 @@
   align-items: baseline;
   gap: var(--space-5);
   margin-bottom: var(--space-4);
+  flex-wrap: wrap;
 }
 
 .drv-card__stat-main {

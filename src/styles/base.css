@@ -13,7 +13,8 @@ html, body, #root {
 }
 
 /* Scroll lock on body when mobile sidebar is active */
-body.sidebar-open-scroll-lock {
+body.sidebar-open-scroll-lock,
+body.sidebar-open-scroll-lock .page-container {
   overflow: hidden;
 }
 

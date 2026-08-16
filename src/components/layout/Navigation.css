@@ -5,13 +5,13 @@
 
 .navigation-backdrop {
   position: fixed;
-  top: 48px;
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
-  -webkit-backdrop-filter: blur(2px);
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 85;
   animation: fade-in 0.2s ease-out;
 }
@@ -128,8 +128,8 @@
     top: 48px; /* Below the 48px header */
     left: 0;
     bottom: 0;
-    width: 220px;
-    background-color: var(--color-surface);
+    width: 240px;
+    background-color: var(--color-surface, #111114);
     border-right: 1px solid var(--color-border);
     padding: var(--space-4) var(--space-3);
     box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);

@@ -557,6 +557,11 @@
   }
   .lkc-hero {
     padding: 100px 24px 64px 24px;
+    min-height: auto;
+  }
+  .lkc-hero-diagram {
+    height: auto;
+    min-height: 400px;
   }
   .lkc-section-nav {
     padding: 0 24px;

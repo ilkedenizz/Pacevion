@@ -10,6 +10,17 @@
   --ds-color-surface-light: #16161a;
   --ds-color-surface-elevated: #1a1b20;
 
+  /* Legacy Core Component Colors - mapped here to ensure they exist globally */
+  --color-surface: var(--ds-color-surface);
+  --color-surface-light: var(--ds-color-surface-light);
+  --color-surface-elevated: var(--ds-color-surface-elevated);
+  --color-accent: var(--ds-color-accent-red);
+  --color-accent-hover: var(--ds-color-accent-red-hover);
+  --color-text-primary: var(--ds-color-text-primary);
+  --color-text-secondary: var(--ds-color-text-secondary);
+  --color-text-muted: var(--ds-color-text-muted);
+  --color-border: var(--ds-color-border);
+
   /* Text Colors */
   --ds-color-text-primary: #f3f4f6;
   --ds-color-text-secondary: #9ca3af;

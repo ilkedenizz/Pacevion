@@ -112,6 +112,7 @@
 .cg-team-info {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .cg-team-name {
@@ -122,6 +123,9 @@
   margin: 0;
   color: var(--color-text);
   transition: color 0.3s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cg-card:hover .cg-team-name {

@@ -482,14 +482,17 @@
 }
 
 @media (max-width: 768px) {
-  /* Hide SVG callouts on mobile to prevent overlap */
-  .f1-callout-line,
-  foreignObject {
-    display: none;
-  }
-  
   .f1-diagram-wrapper {
-    max-width: 250px;
+    min-width: 800px; /* Keep diagram large enough so callouts are readable */
+    margin: 0 auto;
+  }
+
+  .f1-diagram-body {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    justify-content: flex-start;
+    padding: 24px;
   }
 
   .f1-diagram-footer {
@@ -504,7 +507,7 @@
   }
 
   .f1-mobile-list {
-    display: flex;
+    display: none; /* Hide the mobile list since we have scrollable diagram now */
   }
   
   .f1-hud-item {
