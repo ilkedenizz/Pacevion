@@ -1,0 +1,76 @@
+/* DataSources.css */
+
+.datasources-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 16px calc(80px + env(safe-area-inset-bottom));
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  animation: fadeUp 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.datasources-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  padding-bottom: 10px;
+}
+
+.datasources-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.datasources-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.datasource-card {
+  background: var(--color-surface, #111118);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-left: 3px solid var(--color-accent, #e10600);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-icon {
+  color: var(--color-accent, #e10600);
+}
+
+.card-title-row h2 {
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.card-quote {
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--color-accent, #e10600);
+  margin: 0;
+  font-style: italic;
+}
+
+.card-desc {
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.65));
+  margin: 0;
+}
