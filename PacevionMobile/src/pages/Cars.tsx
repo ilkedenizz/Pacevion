@@ -1,44 +1,104 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, AlertCircle } from 'lucide-react';
 import { TEAM_DETAILS } from '../data/teamDetails';
+import { getTeamVisual } from '../data/assets';
 import './Cars.css';
 
-const Cars: React.FC = () => {
+export const Cars: React.FC = () => {
   const navigate = useNavigate();
+  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+
+  const teamsList = useMemo(() => {
+    return Object.entries(TEAM_DETAILS).map(([id, details]) => ({
+      id,
+      ...details,
+      visualUrl: getTeamVisual(id),
+    }));
+  }, []);
+
+  const totalTeams = teamsList.length;
+
+  const handleImageError = (id: string) => {
+    setImageErrors((prev) => ({ ...prev, [id]: true }));
+  };
 
   return (
-    <div className="cars-page">
+    <div className="cars-dashboard">
+      {/* Header */}
       <header className="cars-header">
-        <button className="back-btn" onClick={() => navigate(-1)} aria-label="Go back">
-          <ChevronLeft size={24} />
-        </button>
-        <h1>2026 CARS</h1>
+        <div className="cars-header-top">
+          <button className="back-btn" onClick={() => navigate(-1)} aria-label="Go back">
+            <ChevronLeft size={22} />
+          </button>
+          <div className="cars-header-titles">
+            <h1 className="brand-badge font-mono">2026 CARS</h1>
+            <p className="championship-sub font-mono">2026 FIA FORMULA 1 WORLD CHAMPIONSHIP</p>
+          </div>
+        </div>
+        <div className="cars-stats-pill font-mono">
+          {totalTeams} TEAMS · {totalTeams} CARS
+        </div>
       </header>
 
+      {/* Cars Gallery */}
       <div className="cars-list">
-        {Object.entries(TEAM_DETAILS).map(([id, team]) => (
-          <div key={id} className="car-card">
-            <div className="car-card-top-border" style={{ backgroundColor: team.color || '#e10600' }} />
-            <div className="car-card-content">
-              <h2 className="team-name">{team.fullName}</h2>
-              
-              <div className="car-specs">
-                <span className="spec-label">CHASSIS:</span>
-                <span className="spec-value">{team.chassis}</span>
+        {teamsList.map((team) => {
+          const hasImageError = imageErrors[team.id];
+          const hasVisual = team.visualUrl && !hasImageError;
+
+          return (
+            <div
+              key={team.id}
+              className="car-card"
+              style={{ borderTopColor: team.color || 'var(--color-accent)' }}
+            >
+              {/* Header inside card */}
+              <div className="car-card-header">
+                <div className="team-identity">
+                  <h2 className="team-full-name font-heading">{team.fullName}</h2>
+                  <span className="team-color-indicator font-mono" style={{ color: team.color }}>
+                    ● 2026 SPECIFICATION
+                  </span>
+                </div>
               </div>
-              
-              <div className="car-specs">
-                <span className="spec-label">POWER UNIT:</span>
-                <span className="spec-value">{team.powerUnit}</span>
+
+              {/* CAR IMAGE VISUAL CONTAINER */}
+              <div className="car-image-wrapper">
+                {hasVisual ? (
+                  <img
+                    src={team.visualUrl!}
+                    alt={`${team.fullName} 2026 F1 Car`}
+                    className="car-img"
+                    loading="lazy"
+                    onError={() => handleImageError(team.id)}
+                  />
+                ) : (
+                  <div className="car-unavailable-box font-mono">
+                    <AlertCircle size={18} className="unavail-icon" />
+                    <span className="unavail-title">CAR VISUAL UNAVAILABLE</span>
+                    <span className="unavail-sub">{team.fullName}</span>
+                  </div>
+                )}
               </div>
-              
-              <p className="team-desc">{team.description}</p>
-              
-              <div className="team-accent-dot" style={{ backgroundColor: team.color || '#e10600' }} />
+
+              {/* Technical Specifications */}
+              <div className="car-specs-grid font-mono">
+                <div className="spec-item">
+                  <span className="spec-lbl">CHASSIS</span>
+                  <span className="spec-val font-heading">{team.chassis}</span>
+                </div>
+                <div className="spec-item">
+                  <span className="spec-lbl">POWER UNIT</span>
+                  <span className="spec-val font-heading">{team.powerUnit}</span>
+                </div>
+              </div>
+
+              {/* Description */}
+              <p className="team-description">{team.description}</p>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
