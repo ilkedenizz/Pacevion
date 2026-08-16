@@ -127,7 +127,7 @@
 
 .calendar-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   gap: var(--space-5);
 }
 
@@ -135,7 +135,7 @@
   position: relative;
   background-color: var(--color-surface);
   border: 1px solid var(--color-border);
-  height: 200px;
+  min-height: 220px;
   display: flex;
   flex-direction: column;
   cursor: pointer;
@@ -162,42 +162,40 @@
   border-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Background Image Layer */
-.rcc-bg {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 1;
-}
-
-.rcc-bg img {
+/* Content Wrapper - Flex Row */
+.rcc-content-wrapper {
+  display: flex;
+  flex-direction: row;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  opacity: 0.4;
-  filter: grayscale(0.8);
-  transition: all var(--motion-normal) var(--motion-ease);
-}
-
-.rc-grid-card:hover .rcc-bg img {
-  transform: scale(1.1);
-  filter: grayscale(0);
-  opacity: 0.8;
-}
-
-.rcc-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(to bottom, rgba(10,10,15,0.2) 0%, rgba(10,10,15,0.95) 100%);
-}
-
-/* Card Content Layer */
-.rcc-content {
-  position: relative;
   z-index: 2;
+}
+
+/* Left Side: Info Panel */
+.rcc-info-panel {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
   padding: var(--space-4);
+  justify-content: flex-start;
+  min-width: 50%;
+  position: relative;
+  z-index: 3;
+}
+
+/* Right Side: Circuit SVG Panel */
+.rcc-circuit-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2);
+  min-width: 50%;
+  position: relative;
+  overflow: hidden;
+  z-index: 2;
+  /* Add subtle gradient to blend into left side */
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.02) 100%);
 }
 
 .rcc-top {
@@ -297,11 +295,31 @@
   border-color: var(--color-accent);
 }
 
-.card-next .rcc-bg img {
-  opacity: 0.6;
-  filter: grayscale(0.2);
-}
-
 .card-next::after {
   border-color: var(--color-accent);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .calendar-card-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .rc-grid-card {
+    min-height: auto;
+  }
+  
+  .rcc-content-wrapper {
+    flex-direction: column;
+  }
+  
+  .rcc-info-panel {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  
+  .rcc-circuit-panel {
+    padding: var(--space-4);
+    aspect-ratio: 2/1;
+    background: transparent;
+  }
 }

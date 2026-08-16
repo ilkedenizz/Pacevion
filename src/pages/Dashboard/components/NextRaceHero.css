@@ -17,14 +17,18 @@
   overflow: hidden;
 }
 
-.nr-hero-image {
+.nr-hero-bg .circuit-track-container {
   width: 110%;
   height: 110%;
-  object-fit: cover;
-  opacity: 0.35;
+  opacity: 0.25;
   mix-blend-mode: screen;
   transform: translate(-5%, -5%);
   animation: hero-pan 20s linear infinite alternate;
+  justify-content: flex-end; /* Align the track towards the right side of hero */
+}
+
+.nr-hero-bg .circuit-svg-wrapper {
+  padding: 5% 10% 5% 40%; /* Push it to the right */
 }
 
 @keyframes hero-pan {

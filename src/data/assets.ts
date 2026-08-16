@@ -76,7 +76,7 @@ export const ASSETS = {
     default_blue: `${base}assets/img/f1_driver_blue.jpg`
   },
   circuits: {
-    hero: `${base}assets/img/f1_track_hero.jpg`
+    // hero: `${base}assets/img/f1_track_hero.jpg` - removed in favor of CircuitTrack SVG rendering
   },
   learn: {
     aerodynamics: `${base}assets/img/learn_aero.jpg`,

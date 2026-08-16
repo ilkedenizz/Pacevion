@@ -1,0 +1,141 @@
+/* src/components/ui/CircuitTrack.css */
+
+.circuit-track-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Prevent bleeding out of the container */
+  position: relative;
+  background-color: transparent;
+}
+
+.circuit-svg-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 10%; /* Breathing room */
+  box-sizing: border-box;
+}
+
+/* Base SVG styling - ensuring proper scale and no overflow */
+.circuit-svg {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: visible; /* Track path might bleed slightly beyond viewBox, allow it within the padded wrapper */
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+/* The actual track geometry */
+.circuit-path {
+  fill: none;
+  stroke: #ffffff; /* Clean white circuit line */
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+/* Subtle glow behind the track */
+.circuit-path-glow {
+  fill: none;
+  stroke: var(--f1-red, #e10600);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  filter: blur(8px);
+}
+
+/* Hover effects for premium feel */
+.circuit-track-container:hover .circuit-svg {
+  transform: scale(1.05);
+}
+
+.circuit-track-container:hover .circuit-path {
+  stroke: #f8f8f8;
+}
+
+.circuit-track-container:hover .circuit-path-glow {
+  opacity: 0.6;
+}
+
+/* Unavailable Fallback */
+.circuit-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--text-muted, #888);
+  font-family: 'Titillium Web', sans-serif;
+  text-align: center;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  width: 80%;
+  height: auto;
+  aspect-ratio: 16/9;
+}
+
+.cu-icon {
+  font-size: 24px;
+  opacity: 0.5;
+}
+
+.cu-text {
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 1px;
+}
+
+.cu-sub {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+/* ─── VARIANTS ─── */
+
+/* Variant: Hero (Dashboard) */
+.variant-hero .circuit-svg-wrapper {
+  padding: 5%;
+}
+
+.variant-hero .circuit-path {
+  stroke-width: 6;
+}
+
+.variant-hero .circuit-path-glow {
+  stroke-width: 10;
+  opacity: 0.3; /* Always subtle glow in hero */
+}
+
+/* Variant: Detail (Race Details) */
+.variant-detail .circuit-svg-wrapper {
+  padding: 2rem;
+}
+
+.variant-detail .circuit-path {
+  stroke-width: 5;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .circuit-svg-wrapper {
+    padding: 15%;
+  }
+  
+  .circuit-path {
+    stroke-width: 10; /* Thicker on mobile for visibility */
+  }
+}

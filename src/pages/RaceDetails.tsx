@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Trophy, Timer, Award } from 'lucide-react';
 import { useSeasonCalendar, useRaceResults, useQualifyingResults } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
+import CircuitTrack from '../components/ui/CircuitTrack';
 import './RaceDetails.css';
 
 interface Countdown {
@@ -128,16 +129,27 @@ const RaceDetails: React.FC = () => {
       </div>
 
       <div className="rc-hero">
-        <div className="rc-hero-top">
-          <span className="rc-hero-round">ROUND {round}</span>
-          <span className={`rc-hero-status ${isCompleted ? 'status-completed' : 'status-live'}`}>
-            {isCompleted ? 'COMPLETED' : 'UPCOMING'}
-          </span>
+        <div className="rc-hero-content">
+          <div className="rc-hero-top">
+            <span className="rc-hero-round">ROUND {round}</span>
+            <span className={`rc-hero-status ${isCompleted ? 'status-completed' : 'status-live'}`}>
+              {isCompleted ? 'COMPLETED' : 'UPCOMING'}
+            </span>
+          </div>
+          <h1 className="rc-hero-title">{raceInfo.raceName}</h1>
+          <div className="rc-hero-meta">
+            <span className="rc-hero-circuit">{raceInfo.Circuit.circuitName}</span>
+            <span className="rc-hero-loc">{raceInfo.Circuit.Location.locality}, {raceInfo.Circuit.Location.country}</span>
+          </div>
         </div>
-        <h1 className="rc-hero-title">{raceInfo.raceName}</h1>
-        <div className="rc-hero-meta">
-          <span className="rc-hero-circuit">{raceInfo.Circuit.circuitName}</span>
-          <span className="rc-hero-loc">{raceInfo.Circuit.Location.locality}, {raceInfo.Circuit.Location.country}</span>
+
+        <div className="rc-hero-circuit-bg">
+          <CircuitTrack 
+            circuitId={raceInfo.Circuit.circuitId}
+            circuitName={raceInfo.Circuit.circuitName}
+            country={raceInfo.Circuit.Location.country}
+            variant="hero"
+          />
         </div>
       </div>
 

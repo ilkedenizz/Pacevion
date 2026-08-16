@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
-import { ASSETS } from '../../../data/assets';
+import CircuitTrack from '../../../components/ui/CircuitTrack';
 import './NextRaceHero.css';
 
 interface Countdown {
@@ -69,7 +69,12 @@ const NextRaceHero: React.FC = () => {
   return (
     <div className="nr-hero-container">
       <div className="nr-hero-bg">
-        <img src={ASSETS.circuits.hero} alt="Circuit Night" className="nr-hero-image" />
+        <CircuitTrack 
+          circuitId={nextRace.Circuit.circuitId}
+          circuitName={nextRace.Circuit.circuitName}
+          country={nextRace.Circuit.Location.country}
+          variant="hero"
+        />
       </div>
 
       <div className="nr-hero-content">

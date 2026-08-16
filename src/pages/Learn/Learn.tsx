@@ -114,13 +114,9 @@ const Learn: React.FC = () => {
                 id={section.id}
                 className="learn-section-card"
               >
-                {section.visual ? (
+                {section.visual && (
                   <div className="ls-visual">
                     <img src={section.visual} alt={section.title} className="ls-img" loading="lazy" />
-                  </div>
-                ) : (
-                  <div className="ls-visual">
-                    <img src={ASSETS.circuits.hero} alt={section.title} className="ls-img" loading="lazy" />
                   </div>
                 )}
                 <div className="ls-content">

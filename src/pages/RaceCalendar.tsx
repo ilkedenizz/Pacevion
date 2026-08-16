@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
-import { ASSETS } from '../data/assets';
+import CircuitTrack from '../components/ui/CircuitTrack';
 import './RaceCalendar.css';
 
 const RaceCalendar: React.FC = () => {
@@ -129,25 +129,33 @@ const RaceCalendar: React.FC = () => {
                   className={cardClass}
                   onClick={() => handleRowClick(race.season, race.round)}
                 >
-                  <div className="rcc-bg">
-                    <img src={ASSETS.circuits.hero} alt="Circuit" />
-                    <div className="rcc-overlay" />
-                  </div>
-                  
-                  <div className="rcc-content">
-                    <div className="rcc-top">
-                      <span className="rcc-round">R{String(race.round).padStart(2, '0')}</span>
-                      <span className={`rcc-status ${isNext ? 'rcc-status-next' : ''}`}>{statusLabel}</span>
+                  <div className="rcc-content-wrapper">
+                    {/* Left Side: Info */}
+                    <div className="rcc-info-panel">
+                      <div className="rcc-top">
+                        <span className="rcc-round">ROUND {String(race.round).padStart(2, '0')}</span>
+                        <span className={`rcc-status ${isNext ? 'rcc-status-next' : ''}`}>{statusLabel}</span>
+                      </div>
+                      
+                      <div className="rcc-middle">
+                        <span className="rcc-gp-name">{race.raceName}</span>
+                        <span className="rcc-circuit">{race.Circuit.circuitName}</span>
+                      </div>
+                      
+                      <div className="rcc-bottom">
+                        <span className="rcc-date">{formatDate(race.date)}</span>
+                        <span className="rcc-country">{race.Circuit.Location.country}</span>
+                      </div>
                     </div>
-                    
-                    <div className="rcc-middle">
-                      <span className="rcc-gp-name">{race.raceName}</span>
-                      <span className="rcc-circuit">{race.Circuit.circuitName}</span>
-                    </div>
-                    
-                    <div className="rcc-bottom">
-                      <span className="rcc-date">{formatDate(race.date)}</span>
-                      <span className="rcc-country">{race.Circuit.Location.country}</span>
+
+                    {/* Right Side: Circuit Geometry */}
+                    <div className="rcc-circuit-panel">
+                      <CircuitTrack 
+                        circuitId={race.Circuit.circuitId}
+                        circuitName={race.Circuit.circuitName}
+                        country={race.Circuit.Location.country}
+                        variant="card"
+                      />
                     </div>
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { useCalendar } from '../../../hooks/useF1Data';
 import ErrorState from '../../../components/ui/ErrorState';
 import { formatLocalTime } from '../../../utils/dateUtils';
-import { ASSETS } from '../../../data/assets';
+import CircuitTrack from '../../../components/ui/CircuitTrack';
 import './UpcomingRaces.css';
 
 const UpcomingRaces: React.FC = () => {
@@ -65,7 +65,12 @@ const UpcomingRaces: React.FC = () => {
               className={`upcoming-row-item${index === 0 ? ' next-race' : ''}`}
             >
               <div className="ur-thumb-col">
-                <img src={ASSETS.circuits.hero} alt="Track" className="ur-track-thumb" />
+                <CircuitTrack 
+                  circuitId={race.Circuit.circuitId}
+                  circuitName={race.Circuit.circuitName}
+                  country={race.Circuit.Location.country}
+                  variant="compact"
+                />
                 <div className="ur-round-badge">R{race.round}</div>
               </div>
               
