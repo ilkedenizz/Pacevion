@@ -19,7 +19,7 @@
 
 .lkc-section-title {
   font-family: var(--ds-font-heading, monospace);
-  font-size: clamp(42px, 5vw, 64px);
+  font-size: clamp(28px, 8vw, 64px);
   font-weight: 900;
   text-transform: uppercase;
   margin: 0 0 16px 0;
@@ -90,7 +90,7 @@
 
 .lkc-hero-title {
   font-family: var(--ds-font-heading, monospace);
-  font-size: clamp(56px, 8vw, 100px);
+  font-size: clamp(32px, 10vw, 100px);
   font-weight: 900;
   line-height: 0.9;
   margin: 0 0 24px 0;
@@ -133,6 +133,7 @@
   gap: 48px;
   overflow-x: auto;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 .lkc-section-nav-inner::-webkit-scrollbar { display: none; }
 
