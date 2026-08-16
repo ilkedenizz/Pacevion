@@ -85,7 +85,7 @@ const LastRaceCard: React.FC = () => {
       {topThree.length > 0 && (
         <div className="last-race-winner-visual">
           <img src={getTeamVisual(topThree[0].Constructor?.constructorId) || undefined} alt="Winner Team" className="lr-team-img" />
-          <img src={getDriverVisual(topThree[0].Driver?.driverId, topThree[0].Constructor?.constructorId)} alt="Winner Driver" className="lr-driver-img" />
+          <img src={getDriverVisual(topThree[0].Driver?.driverId, topThree[0].Constructor?.constructorId) || undefined} alt="Winner Driver" className="lr-driver-img" />
           <div className="lr-winner-overlay">
             <span className="lr-winner-label">RACE WINNER</span>
             <span className="lr-winner-name">{topThree[0].Driver.familyName}</span>

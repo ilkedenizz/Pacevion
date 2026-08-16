@@ -65,7 +65,7 @@ const DriverProfile: React.FC = () => {
 
       <div className="driver-profile-hero">
         <div className="dp-hero-image">
-          <img src={driverVisual} alt={`${driver.givenName} ${driver.familyName}`} />
+          <img src={driverVisual || undefined} alt={driver.familyName} className="dp-hero-driver" />
         </div>
         <div className="dp-hero-bg">
           <span className="dp-hero-bg-number">{driver.permanentNumber || ''}</span>

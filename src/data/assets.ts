@@ -60,7 +60,18 @@ const TEAM_CARS: Record<string, string> = {
   alfa: `${base}assets/img/cars/kick-sauber-2026.png`,
   williams: `${base}assets/img/cars/williams-2026.png`,
   aston_martin: `${base}assets/img/cars/aston-martin-2026.png`,
-  // audi and cadillac missing on purpose until genuine assets are added
+  
+  // Audi mappings
+  audi: `${base}assets/img/cars/audi-r26.webp`,
+  audi_f1: `${base}assets/img/cars/audi-r26.webp`,
+  "audi-f1": `${base}assets/img/cars/audi-r26.webp`,
+  "audi-f1-team": `${base}assets/img/cars/audi-r26.webp`,
+
+  // Cadillac mappings
+  cadillac: `${base}assets/img/cars/cadillac-2026.webp`,
+  cadillac_f1: `${base}assets/img/cars/cadillac-2026.webp`,
+  "cadillac-f1": `${base}assets/img/cars/cadillac-2026.webp`,
+  "cadillac-f1-team": `${base}assets/img/cars/cadillac-2026.webp`,
 };
 
 // ─── STATIC ASSETS ───────────────────────────────────────────────────────────
@@ -69,9 +80,7 @@ export const ASSETS = {
     // defaults removed entirely as per strict requirement
   },
   drivers: {
-    ...DRIVER_HEADSHOTS,
-    default_red: `${base}assets/img/f1_driver_red.jpg`,
-    default_blue: `${base}assets/img/f1_driver_blue.jpg`
+    ...DRIVER_HEADSHOTS
   },
   circuits: {},
   learn: {
@@ -83,16 +92,13 @@ export const ASSETS = {
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
-export const getDriverVisual = (driverId?: string, _constructorId?: string): string => {
-  if (!driverId) return ASSETS.drivers.default_blue;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const getDriverVisual = (driverId?: string, _constructorId?: string): string | null => {
+  if (!driverId) return null;
   if (DRIVER_HEADSHOTS[driverId]) {
     return DRIVER_HEADSHOTS[driverId];
   }
-  const redTeams = ['ferrari', 'alfa', 'haas', 'haas_f1_team'];
-  if (_constructorId && redTeams.includes(_constructorId)) {
-    return ASSETS.drivers.default_red;
-  }
-  return ASSETS.drivers.default_blue;
+  return null;
 };
 
 /**

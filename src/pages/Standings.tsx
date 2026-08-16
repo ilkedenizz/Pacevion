@@ -115,7 +115,7 @@ const Standings: React.FC = () => {
                     </div>
                     <div className="tb-col-driver">
                       <img 
-                        src={getDriverVisual(row.Driver.driverId, row.Constructors[0]?.constructorId)} 
+                        src={getDriverVisual(row.Driver.driverId, row.Constructors[0]?.constructorId) || undefined} 
                         alt={driverName}
                         className="tb-driver-thumb" 
                         loading="lazy"

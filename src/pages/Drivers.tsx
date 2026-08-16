@@ -92,7 +92,7 @@ const Drivers: React.FC = () => {
 
               {/* Photo */}
               <div className="drv-card__photo">
-                <img src={vis} alt={`${d.givenName} ${d.familyName}`} loading="eager" fetchPriority="high" />
+                <img src={vis || undefined} alt={`${d.givenName} ${d.familyName}`} loading="eager" fetchPriority="high" />
                 <div className="drv-card__photo-gradient" />
               </div>
 
@@ -141,7 +141,7 @@ const Drivers: React.FC = () => {
               <span className="drv-card__bg-num drv-card__bg-num--sm">{d.permanentNumber || ''}</span>
 
               <div className="drv-card__photo drv-card__photo--sm">
-                <img src={vis} alt={`${d.givenName} ${d.familyName}`} loading="lazy" decoding="async" />
+                <img src={vis || undefined} alt={`${d.givenName} ${d.familyName}`} loading="lazy" decoding="async" />
                 <div className="drv-card__photo-gradient" />
               </div>
 
