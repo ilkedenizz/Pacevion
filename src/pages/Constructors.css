@@ -1,256 +1,242 @@
-/* Constructors.css */
 .constructors-board-container {
-  display: flex;
-  flex-direction: column;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 2rem 1.5rem;
   width: 100%;
-  padding: var(--space-6) 0;
-}
-
-/* Background Atmosphere */
-.constructors-board-container {
-  position: relative;
-}
-
-.constructors-board-container::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-  background-size: 40px 40px;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.5;
 }
 
 .cb-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 2px solid var(--color-border);
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.cbh-titles {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 1.5rem;
 }
 
 .cbh-main {
-  font-family: var(--font-heading);
-  font-size: 32px;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
   margin: 0;
-  line-height: 1;
+  color: var(--color-text-primary);
 }
 
 .cbh-sub {
-  font-family: var(--font-mono);
-  font-size: 14px;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  color: var(--color-primary);
   font-weight: 700;
-  color: var(--color-accent);
-  letter-spacing: 2px;
+  letter-spacing: 0.1em;
 }
 
-/* Showcase Grid */
 .constructors-showcase-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .constructor-showcase-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
   display: flex;
-  flex-direction: column;
-  position: relative;
+  background-color: var(--color-surface-hover);
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
   overflow: hidden;
-  transition: all var(--motion-normal) var(--motion-ease);
-  min-height: 320px;
-}
-
-.constructor-showcase-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 4px;
-  height: 100%;
-  background-color: var(--color-accent);
-  transform: scaleY(0);
-  transform-origin: bottom;
-  transition: transform var(--motion-fast) var(--motion-ease);
-  z-index: 3;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  position: relative;
 }
 
 .constructor-showcase-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
 }
 
-.constructor-showcase-card:hover::after {
-  transform: scaleY(1);
+.leader-card {
+  border-left: 4px solid var(--color-primary);
 }
 
-.csc-car-visual {
-  width: 100%;
-  height: 200px;
-  background: linear-gradient(135deg, rgba(30, 30, 35, 1) 0%, rgba(10, 10, 15, 1) 100%);
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.csc-car-visual img {
-  width: 110%;
-  height: 110%;
-  object-fit: contain;
-  transition: transform 0.8s var(--motion-ease);
-  pointer-events: none;
-}
-
-.constructor-showcase-card:hover .csc-car-visual img {
-  transform: scale(1.05);
-}
-
-.csc-content {
-  padding: var(--space-5);
+.csc-content-left {
+  flex: 1;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  gap: 1.5rem;
+  z-index: 2;
 }
 
-.csc-header {
+.csc-brand-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-3);
+  gap: 1rem;
 }
 
-.csc-pos {
-  font-family: var(--font-heading);
-  font-size: 16px;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4px 12px;
-  letter-spacing: 1px;
-}
-
-.csc-pts {
-  font-family: var(--font-heading);
-  font-size: 24px;
-  font-weight: 900;
-  color: var(--color-accent);
+.csc-brand-names {
+  display: flex;
+  flex-direction: column;
 }
 
 .csc-team-name {
-  font-family: var(--font-heading);
-  font-size: 32px;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0 0 var(--space-4) 0;
-  line-height: 1;
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.1;
 }
 
-.csc-meta {
+.csc-full-name {
+  font-family: var(--font-secondary);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.csc-performance-row {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: auto;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: var(--space-4);
+  gap: 2rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
-.csc-nat {
-  font-family: var(--font-mono);
-  font-size: 12px;
+.csc-perf-stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.perf-val {
+  font-family: var(--font-secondary);
+  font-size: 1.75rem;
   font-weight: 700;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  color: var(--color-text-primary);
 }
 
-.csc-wins {
-  font-family: var(--font-mono);
-  font-size: 14px;
+.perf-lbl {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.05em;
+}
+
+.csc-drivers-list {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.csc-driver-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--color-surface);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+}
+
+.csc-d-num {
+  font-family: var(--font-secondary);
   font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.csc-d-name {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.csc-team-info {
+  margin: 0;
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
   color: var(--color-text-secondary);
-  letter-spacing: 1px;
+  line-height: 1.5;
+  max-width: 600px;
 }
 
-/* Leader Card Overrides */
-.constructor-showcase-card.leader-card {
-  grid-column: span 2;
-  flex-direction: row;
-  min-height: 400px;
-  border-left: 4px solid var(--color-accent);
-}
-
-.constructor-showcase-card.leader-card::after {
-  display: none;
-}
-
-.constructor-showcase-card.leader-card .csc-car-visual {
-  height: auto;
-  width: 60%;
-  border-bottom: none;
-  border-right: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.constructor-showcase-card.leader-card .csc-car-visual img {
-  width: 140%;
-  height: 140%;
-}
-
-.constructor-showcase-card.leader-card .csc-content {
-  width: 40%;
+.csc-visual-right {
+  width: 400px;
+  position: relative;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  padding: var(--space-6);
+  padding: 2rem;
 }
 
-.constructor-showcase-card.leader-card .csc-team-name {
-  font-size: 48px;
-  margin-bottom: var(--space-6);
+.csc-bg-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  z-index: 0;
+  pointer-events: none;
 }
 
-.constructor-showcase-card.leader-card .csc-pos {
-  background: var(--color-accent);
-  color: #fff;
+.csc-car-preview {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  z-index: 1;
+  transform: rotate(-5deg);
+  transition: transform 0.3s ease;
 }
 
-@media (max-width: 1024px) {
-  .constructors-showcase-grid {
-    grid-template-columns: 1fr;
+.constructor-showcase-card:hover .csc-car-preview {
+  transform: rotate(0deg) scale(1.05);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .constructor-showcase-card {
+    flex-direction: column-reverse;
   }
   
-  .constructor-showcase-card.leader-card {
-    grid-column: span 1;
+  .csc-visual-right {
+    width: 100%;
+    height: 200px;
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .csc-bg-glow {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .csc-performance-row {
+    gap: 1rem;
+    justify-content: space-between;
+  }
+  
+  .csc-drivers-list {
     flex-direction: column;
+    gap: 0.5rem;
   }
   
-  .constructor-showcase-card.leader-card .csc-car-visual {
-    width: 100%;
-    height: 300px;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  .csc-content-left {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .cbh-main {
+    font-size: 2rem;
   }
   
-  .constructor-showcase-card.leader-card .csc-content {
-    width: 100%;
+  .csc-performance-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .csc-visual-right {
+    height: 160px;
+  }
+}
+
+@media (max-width: 320px) {
+  .cb-header {
+    margin-bottom: 2rem;
   }
 }

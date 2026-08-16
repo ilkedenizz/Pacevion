@@ -69,6 +69,8 @@ const UpcomingRaces: React.FC = () => {
                   circuitId={race.Circuit.circuitId}
                   circuitName={race.Circuit.circuitName}
                   country={race.Circuit.Location.country}
+                  raceName={race.raceName}
+                  round={race.round}
                   variant="compact"
                 />
                 <div className="ur-round-badge">R{race.round}</div>

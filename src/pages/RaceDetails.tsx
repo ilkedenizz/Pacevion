@@ -148,6 +148,8 @@ const RaceDetails: React.FC = () => {
             circuitId={raceInfo.Circuit.circuitId}
             circuitName={raceInfo.Circuit.circuitName}
             country={raceInfo.Circuit.Location.country}
+            raceName={raceInfo.raceName}
+            round={raceInfo.round}
             variant="hero"
           />
         </div>

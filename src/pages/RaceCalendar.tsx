@@ -154,6 +154,8 @@ const RaceCalendar: React.FC = () => {
                         circuitId={race.Circuit.circuitId}
                         circuitName={race.Circuit.circuitName}
                         country={race.Circuit.Location.country}
+                        raceName={race.raceName}
+                        round={race.round}
                         variant="card"
                       />
                     </div>

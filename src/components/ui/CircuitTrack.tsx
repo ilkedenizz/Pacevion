@@ -6,6 +6,8 @@ interface CircuitTrackProps {
   circuitId: string;
   circuitName: string;
   country: string;
+  raceName?: string;
+  round?: string;
   variant?: 'card' | 'hero' | 'compact' | 'detail';
   className?: string;
 }
@@ -37,14 +39,48 @@ const ErgastToInternalMapping: Record<string, string> = {
   yas_marina: 'yas_marina',
 };
 
+function resolveCanonicalCircuitId(
+  circuitId: string, 
+  circuitName: string, 
+  _country: string, 
+  raceName?: string
+): string | null {
+  const cn = circuitName.toLowerCase();
+  const rn = (raceName || '').toLowerCase();
+  
+  // 1. Check for Bahrain
+  // Some APIs mistakenly return 'sepang' or say 'Bahrain Grand Prix in Malaysia'
+  if (
+    rn.includes('bahrain') || 
+    cn.includes('bahrain') || 
+    circuitId === 'bahrain'
+  ) {
+    return 'bahrain';
+  }
+
+  // 2. Check for Spanish Grand Prix (Madrid vs Catalunya)
+  if (rn.includes('spanish grand prix') || circuitId === 'madring' || cn.includes('madring')) {
+    // 2026 Spanish GP is in Madrid (madring) -> no geometry yet
+    return null; 
+  }
+  
+  if (rn.includes('barcelona') || circuitId === 'catalunya' || cn.includes('catalunya')) {
+    return 'catalunya';
+  }
+
+  // 3. Fallback to normal dictionary mapping
+  return ErgastToInternalMapping[circuitId] || null;
+}
+
 const CircuitTrack: React.FC<CircuitTrackProps> = ({ 
   circuitId, 
   circuitName,
   country,
+  raceName,
   variant = 'card',
   className = '' 
 }) => {
-  const internalId = ErgastToInternalMapping[circuitId];
+  const internalId = resolveCanonicalCircuitId(circuitId, circuitName, country, raceName);
   const layout = internalId ? circuitLayouts[internalId] : null;
 
   return (

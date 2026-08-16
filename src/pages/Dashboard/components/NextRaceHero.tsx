@@ -73,6 +73,8 @@ const NextRaceHero: React.FC = () => {
           circuitId={nextRace.Circuit.circuitId}
           circuitName={nextRace.Circuit.circuitName}
           country={nextRace.Circuit.Location.country}
+          raceName={nextRace.raceName}
+          round={nextRace.round}
           variant="hero"
         />
       </div>
