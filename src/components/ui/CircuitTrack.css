@@ -132,10 +132,46 @@
 /* Mobile Adjustments */
 @media (max-width: 768px) {
   .circuit-svg-wrapper {
-    padding: 15%;
+    padding: 10%; /* Reduced from 15% to 10% as general mobile padding */
   }
   
   .circuit-path {
     stroke-width: 10; /* Thicker on mobile for visibility */
+  }
+  
+  /* Calendar Card Variant Specific Sizing on Mobile */
+  .variant-card .circuit-svg-wrapper {
+    padding: 0;
+  }
+
+  .variant-card .circuit-svg {
+    width: 60%;
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Specific standard mobile breakpoints to precisely hit the 55-75% target */
+@media (max-width: 430px) {
+  .variant-card .circuit-svg {
+    width: 72%;
+  }
+}
+
+@media (max-width: 390px) {
+  .variant-card .circuit-svg {
+    width: 68%;
+  }
+}
+
+@media (max-width: 375px) {
+  .variant-card .circuit-svg {
+    width: 65%;
+  }
+}
+
+@media (max-width: 320px) {
+  .variant-card .circuit-svg {
+    width: 55%;
   }
 }

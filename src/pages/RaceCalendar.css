@@ -321,8 +321,8 @@
   }
   
   .rcc-circuit-panel {
-    padding: var(--space-4);
-    aspect-ratio: 2/1;
+    padding: var(--space-4) 0;
+    /* Removed aspect-ratio: 2/1 to let it scale naturally based on the circuit's intrinsic proportions */
     background: transparent;
   }
   
