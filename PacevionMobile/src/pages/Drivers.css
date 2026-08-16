@@ -1,98 +1,260 @@
-.drivers-container {
-  padding: 16px;
+/* src/pages/Drivers.css - Mobile First F1 Broadcast Driver Gallery */
+
+.drivers-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 16px calc(80px + env(safe-area-inset-bottom));
+  width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  animation: fadeUp 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header */
 .drivers-header {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  padding-bottom: 10px;
 }
 
-.drivers-header .title {
-  font-size: 32px;
-  color: #fff;
-  margin: 0 0 4px 0;
-  text-transform: uppercase;
-}
-
-.drivers-header .subtitle {
-  font-size: 12px;
-  color: #888;
-  margin: 0;
+.drivers-stats-pill {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 4px;
   letter-spacing: 1px;
+}
+
+/* Main Content */
+.drivers-body {
+  width: 100%;
 }
 
 .drivers-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
+/* DRIVER CARD */
 .driver-card {
-  position: relative;
-  background-color: var(--color-surface, #15151e);
-  border: 1px solid var(--color-border, #2a2a35);
-  border-left-width: 3px;
-  border-left-style: solid;
-  border-radius: 8px;
-  padding: 20px;
+  background: var(--color-surface, #111118);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.07));
+  border-left: 3px solid var(--color-border, rgba(255, 255, 255, 0.2));
+  border-radius: 10px;
+  padding: 12px;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
+  cursor: pointer;
+  position: relative;
   overflow: hidden;
 }
 
-.driver-number {
-  position: absolute;
-  right: 16px;
-  top: -10px;
-  font-size: 80px;
-  color: rgba(255, 255, 255, 0.03);
-  z-index: 0;
-  pointer-events: none;
+.driver-card:active {
+  transform: scale(0.99);
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+/* Avatar / Number Box */
+.driver-avatar-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.driver-num-val {
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.driver-initials-val {
+  font-size: 14px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.avatar-icon {
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.3));
+  position: absolute;
+  bottom: 3px;
+  right: 3px;
+}
+
+/* Center Details */
 .driver-details {
   display: flex;
   flex-direction: column;
-  z-index: 1;
+  flex: 1;
+  min-width: 0;
 }
 
 .driver-given-name {
-  font-size: 14px;
-  color: #888;
+  font-size: 11px;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.55));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .driver-family-name {
-  font-size: 24px;
-  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  color: #ffffff;
   text-transform: uppercase;
-  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+  margin: 1px 0;
+  line-height: 1.15;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.driver-team {
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.driver-nationality {
+.driver-team-name {
   font-size: 10px;
-  color: #666;
-  text-transform: uppercase;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.driver-stats {
+.driver-nat {
+  font-size: 9px;
+  color: var(--color-text-muted, rgba(255, 255, 255, 0.35));
+  margin-top: 2px;
+}
+
+/* Right Stats Box */
+.driver-stats-box {
   display: flex;
+  flex-direction: column;
   align-items: flex-end;
-  z-index: 1;
+  flex-shrink: 0;
+  gap: 2px;
 }
 
-.driver-points {
-  font-size: 24px;
+.driver-rank {
+  font-size: 10px;
+  font-weight: 800;
   color: var(--color-accent, #e10600);
-  font-weight: bold;
+  background: rgba(225, 6, 0, 0.1);
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: 1px;
 }
 
-.driver-points .pts {
-  font-size: 14px;
-  color: #888;
-  font-weight: normal;
+.driver-pts-row {
+  font-size: 17px;
+  font-weight: 900;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-top: 2px;
+}
+
+.pts-unit {
+  font-size: 9px;
+  color: var(--color-accent, #e10600);
+  font-weight: 800;
+}
+
+.driver-wins {
+  font-size: 8px;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+}
+
+/* Skeleton & Error States */
+.skeleton-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.driver-card-skeleton {
+  height: 72px;
+  border-radius: 10px;
+}
+
+.error-card,
+.empty-card {
+  background: var(--color-surface, #111118);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 24px;
+  text-align: center;
+  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.retry-btn {
+  background: var(--color-accent, #e10600);
+  border: none;
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 1px;
+}
+
+/* SCREEN SPECIFIC BREAKPOINTS */
+@media (max-width: 360px) {
+  .driver-card {
+    padding: 10px;
+    gap: 8px;
+  }
+  .driver-avatar-box {
+    width: 40px;
+    height: 40px;
+  }
+  .driver-num-val {
+    font-size: 14px;
+  }
+  .driver-family-name {
+    font-size: 14px;
+  }
+  .driver-pts-row {
+    font-size: 15px;
+  }
 }
