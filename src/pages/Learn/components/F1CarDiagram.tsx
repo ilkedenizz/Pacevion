@@ -18,17 +18,17 @@ interface CarComponent {
 }
 
 const componentsInfo: CarComponent[] = [
-  { id: 'front-wing', num: '01', name: 'FRONT WING', desc: 'Generates downforce and directs airflow around the front tyres and under the floor.', role: 'AERODYNAMICS', group: 'AERO', cx: 250, cy: 90, tx: 100, ty: 70, pulse: true },
+  { id: 'front-wing', num: '01', name: 'FRONT WING', desc: 'Generates downforce and directs airflow around the front tyres. 2026 introduces Active Aero (Z-Mode for corners, X-Mode for straights).', role: 'AERODYNAMICS', group: 'AERO', cx: 250, cy: 90, tx: 100, ty: 70, pulse: true },
   { id: 'front-tyres', num: '02', name: 'FRONT TYRES', desc: '18-inch Pirelli tyres providing mechanical grip and steering input.', role: 'MECHANICAL GRIP', group: 'CHASSIS', cx: 160, cy: 200, tx: 70, ty: 180 },
-  { id: 'nose', num: '03', name: 'NOSE', desc: 'Structural crash structure that channels air to the floor and sidepods.', role: 'STRUCTURE / AERO', group: 'CHASSIS', cx: 250, cy: 160, tx: 380, ty: 140 },
-  { id: 'suspension', num: '04', name: 'FRONT SUSPENSION', desc: 'Connects wheels to chassis and manages weight transfer during cornering and braking.', role: 'DYNAMICS', group: 'CHASSIS', cx: 210, cy: 210, tx: 400, ty: 220 },
-  { id: 'monocoque', num: '05', name: 'MONOCOQUE', desc: 'The survival cell protecting the driver, housing the cockpit and fuel cell.', role: 'SURVIVAL CELL', group: 'CHASSIS', cx: 250, cy: 380, tx: 100, ty: 350 },
-  { id: 'halo', num: '06', name: 'HALO', desc: 'Titanium structure protecting the driver\'s head from flying debris.', role: 'SAFETY', group: 'CHASSIS', cx: 250, cy: 330, tx: 380, ty: 310, pulse: true },
-  { id: 'sidepods', num: '07', name: 'SIDE PODS', desc: 'Housings for the radiators to cool the power unit, shaped to manage airflow.', role: 'COOLING / AERO', group: 'AERO', cx: 170, cy: 450, tx: 70, ty: 470, pulse: true },
-  { id: 'floor', num: '08', name: 'FLOOR', desc: 'Creates the majority of the car\'s downforce through ground effect venturi tunnels.', role: 'GROUND EFFECT', group: 'AERO', cx: 150, cy: 580, tx: 70, ty: 600 },
-  { id: 'rear-tyres', num: '09', name: 'REAR TYRES', desc: 'Wider than front tyres, responsible for putting the hybrid power unit\'s torque to the ground.', role: 'TRACTION', group: 'POWER', cx: 160, cy: 750, tx: 70, ty: 730 },
-  { id: 'power-unit', num: '10', name: 'POWER UNIT', desc: 'Complex 1.6L V6 hybrid engine combining internal combustion and electrical energy.', role: 'PROPULSION', group: 'POWER', cx: 250, cy: 600, tx: 380, ty: 580, pulse: true },
-  { id: 'rear-wing', num: '11', name: 'REAR WING', desc: 'Produces rear downforce and houses the Drag Reduction System (DRS) flap.', role: 'AERODYNAMICS', group: 'AERO', cx: 250, cy: 860, tx: 380, ty: 840, pulse: true },
+  { id: 'nose', num: '03', name: 'NOSE', desc: 'Structural crash structure that channels air to the floor and sidepods.', role: 'STRUCTURE / AERO', group: 'CHASSIS', cx: 250, cy: 160, tx: 400, ty: 140 },
+  { id: 'suspension', num: '04', name: 'FRONT SUSPENSION', desc: 'Connects wheels to chassis and manages weight transfer during cornering and braking.', role: 'DYNAMICS', group: 'CHASSIS', cx: 210, cy: 210, tx: 420, ty: 220 },
+  { id: 'monocoque', num: '05', name: 'MONOCOQUE', desc: 'The survival cell protecting the driver, housing the cockpit and fuel cell.', role: 'SURVIVAL CELL', group: 'CHASSIS', cx: 250, cy: 380, tx: 80, ty: 350 },
+  { id: 'halo', num: '06', name: 'HALO', desc: 'Titanium structure protecting the driver\'s head from flying debris.', role: 'SAFETY', group: 'CHASSIS', cx: 250, cy: 330, tx: 400, ty: 310, pulse: true },
+  { id: 'sidepods', num: '07', name: 'SIDE PODS', desc: 'Housings for the radiators to cool the power unit, shaped to manage airflow.', role: 'COOLING / AERO', group: 'AERO', cx: 170, cy: 450, tx: 60, ty: 470, pulse: true },
+  { id: 'floor', num: '08', name: 'FLOOR', desc: 'Creates the majority of the car\'s downforce through ground effect venturi tunnels.', role: 'GROUND EFFECT', group: 'AERO', cx: 150, cy: 580, tx: 60, ty: 600 },
+  { id: 'rear-tyres', num: '09', name: 'REAR TYRES', desc: 'Wider than front tyres, responsible for putting the hybrid power unit\'s massive torque to the ground.', role: 'TRACTION', group: 'POWER', cx: 160, cy: 750, tx: 70, ty: 730 },
+  { id: 'power-unit', num: '10', name: 'POWER UNIT', desc: '1.6L V6 hybrid with a near 50/50 power split between ICE (400kW) and electrical (350kW). MGU-H removed for 2026.', role: 'PROPULSION', group: 'POWER', cx: 250, cy: 600, tx: 420, ty: 580, pulse: true },
+  { id: 'rear-wing', num: '11', name: 'REAR WING', desc: 'Produces rear downforce. Features Active Aero to shed drag on straights.', role: 'AERODYNAMICS', group: 'AERO', cx: 250, cy: 860, tx: 400, ty: 840, pulse: true },
   { id: 'diffuser', num: '12', name: 'DIFFUSER', desc: 'Expands air exiting from under the floor to increase ground effect downforce.', role: 'GROUND EFFECT', group: 'AERO', cx: 250, cy: 910, tx: 100, ty: 930 },
 ];
 
