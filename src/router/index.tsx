@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import AppLayout from '../layout/AppLayout';
 import Loader from '../components/ui/Loader';
 
@@ -8,7 +8,6 @@ const RaceCalendarPage = lazy(() => import('../pages/RaceCalendar'));
 const RaceDetailsPage = lazy(() => import('../pages/RaceDetails'));
 const DriversPage = lazy(() => import('../pages/Drivers'));
 const DriverProfilePage = lazy(() => import('../pages/DriverProfile'));
-const ConstructorsPage = lazy(() => import('../pages/Constructors'));
 const CarsPage = lazy(() => import('../pages/Cars'));
 const StandingsPage = lazy(() => import('../pages/Standings'));
 const LearnPage = lazy(() => import('../pages/Learn'));
@@ -58,11 +57,7 @@ const Router: React.FC = () => (
       />
       <Route
         path="/constructors"
-        element={
-          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
-            <ConstructorsPage />
-          </Suspense>
-        }
+        element={<Navigate to="/cars" replace />}
       />
       <Route
         path="/cars"

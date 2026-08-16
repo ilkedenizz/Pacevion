@@ -1,284 +1,287 @@
 .cars-gallery-page {
-  max-width: 1200px;
+  padding: 2rem;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-  width: 100%;
 }
 
 .cg-header {
   margin-bottom: 3rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  border-bottom: 1px solid var(--color-border);
-  padding-bottom: 1.5rem;
+  text-align: center;
 }
 
 .cg-header-top {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .cg-tag {
   background: var(--color-primary);
   color: #fff;
   padding: 0.25rem 0.75rem;
-  font-family: var(--font-secondary);
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
+  letter-spacing: 2px;
   border-radius: 4px;
-  letter-spacing: 0.05em;
 }
 
 .cg-title {
-  font-family: var(--font-primary);
-  font-size: 3rem;
-  font-weight: 800;
-  margin: 0;
-  color: var(--color-text-primary);
-  letter-spacing: -0.02em;
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
 }
 
 .cg-desc {
-  font-family: var(--font-secondary);
-  color: var(--color-text-secondary);
-  font-size: 1.125rem;
-  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  max-width: 600px;
+  margin: 0 auto;
 }
 
 .cars-gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 2rem;
 }
 
-.car-gallery-card {
+@media (min-width: 768px) {
+  .cars-gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cars-gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .cars-gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cg-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 12px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   position: relative;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  isolation: isolate;
 }
 
-.car-gallery-card:hover {
+.cg-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  border-color: var(--team-color, var(--color-primary));
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
-.cgc-top-stripe {
-  height: 4px;
+.cg-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(180deg, var(--team-color) 0%, transparent 50%);
+  opacity: 0.03;
+  z-index: -1;
+  transition: opacity 0.3s ease;
+}
+
+.cg-card:hover::before {
+  opacity: 0.08;
+}
+
+/* Card Header */
+.cg-card-header {
+  padding: 1.25rem 1.25rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.cg-team-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cg-team-name {
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.5px;
+  margin: 0;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+}
+
+.cg-card:hover .cg-team-name {
+  color: var(--team-color, var(--color-text));
+}
+
+.cg-chassis {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 600;
+  margin-top: 0.25rem;
+}
+
+.cg-perf-badge {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cg-points {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: var(--color-text);
+}
+
+.cg-points-lbl {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* CAR VISUAL (CRITICAL: standardized size) */
+.cg-car-visual {
   width: 100%;
-}
-
-.cgc-image-container {
-  height: 250px;
-  background: #111;
-  position: relative;
+  height: 240px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  position: relative;
+  padding: 1rem;
   overflow: hidden;
 }
 
-.cgc-bg-pattern {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.3;
-}
-
-.cgc-car-img {
-  width: 100%;
+.cg-car-img {
+  width: 90%;
   height: 100%;
   object-fit: contain;
-  z-index: 2;
-  transition: transform 0.3s ease;
+  object-position: center;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
 }
 
-.car-gallery-card:hover .cgc-car-img {
+.cg-card:hover .cg-car-img {
   transform: scale(1.05);
 }
 
-.cgc-content {
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  flex: 1;
-}
-
-.cgc-title-block {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.cgc-team {
-  font-family: var(--font-secondary);
-  font-size: 0.875rem;
-  color: var(--color-text-secondary);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.cgc-chassis {
-  font-family: var(--font-primary);
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--color-text-primary);
-  margin: 0;
-}
-
-.cgc-specs-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  background: var(--color-surface-hover);
-  padding: 1rem;
-  border-radius: 8px;
-}
-
-.cgc-spec-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.spec-icon {
-  margin-top: 2px;
-}
-
-.spec-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.spec-lbl {
-  font-family: var(--font-primary);
-  font-size: 0.65rem;
-  color: var(--color-text-secondary);
-  letter-spacing: 0.05em;
-}
-
-.spec-val {
-  font-family: var(--font-secondary);
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-text-primary);
-}
-
-.cgc-drivers-block {
-  margin-top: auto;
-  border-top: 1px solid var(--color-border);
-  padding-top: 1.25rem;
-}
-
-.cgc-d-header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-primary);
-  font-size: 0.75rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1rem;
-}
-
-.cgc-d-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.cgc-driver-pill {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  text-align: left;
-  transition: opacity 0.2s ease;
-}
-
-.cgc-driver-pill:hover {
-  opacity: 0.8;
-}
-
-.cgc-d-num {
-  font-family: var(--font-secondary);
-  font-size: 1rem;
-  font-weight: 800;
-  min-width: 24px;
-}
-
-.cgc-d-name {
-  font-family: var(--font-primary);
-  font-size: 1rem;
-  color: var(--color-text-primary);
-  font-weight: 600;
-}
-
-.cgc-car-unavailable {
+.cg-car-unavailable {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100%;
-  min-height: 200px;
-  background: rgba(0, 0, 0, 0.4);
+  width: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px dashed var(--color-border);
   border-radius: 8px;
-  border: 1px dashed rgba(255, 255, 255, 0.2);
 }
 
 .unavailable-text {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: 2px;
+  color: var(--color-text-muted);
 }
 
-.unavailable-team {
-  font-size: 1.2rem;
+/* Metadata Footer */
+.cg-card-footer {
+  padding: 0.5rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.cg-drivers {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cg-driver-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-background);
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  transition: border-color 0.3s ease;
+}
+
+.cg-card:hover .cg-driver-row {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.cg-driver-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.cg-driver-num {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--team-color, var(--color-text-muted));
+  font-family: var(--font-mono, monospace);
+}
+
+.cg-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.cg-status-lbl {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.cg-status-val {
+  font-size: 1rem;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.5);
-  letter-spacing: 4px;
-  margin-top: 8px;
+  color: var(--team-color, var(--color-text));
 }
 
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .cars-gallery-grid {
-    grid-template-columns: 1fr;
-  }
+/* Error and Loading states */
+.cars-gallery-page.loading .skeleton-grid {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 }
 
-@media (max-width: 430px) {
-  .cg-title {
-    font-size: 2.25rem;
+/* Mobile specific tweaks */
+@media (max-width: 480px) {
+  .cars-gallery-page {
+    padding: 1rem;
   }
   
-  .cgc-image-container {
+  .cg-title {
+    font-size: 1.8rem;
+  }
+  
+  .cg-car-visual {
     height: 200px;
-  }
-  
-  .cgc-specs-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .cgc-content {
-    padding: 1.5rem;
-  }
-}
-
-@media (max-width: 320px) {
-  .cg-title {
-    font-size: 1.75rem;
   }
 }

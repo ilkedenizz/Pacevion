@@ -1,15 +1,12 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useConstructorStandings, useDriverStandings } from '../hooks/useF1Data';
 import { useSEO } from '../hooks/useSEO';
 import { getTeamVisual } from '../data/assets';
 import { getTeamDetails } from '../data/teamDetails';
 import ErrorState from '../components/ui/ErrorState';
-import { Settings, Zap, Users } from 'lucide-react';
 import './Cars.css';
 
 const Cars: React.FC = () => {
-  const navigate = useNavigate();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data: constructors, isLoading: cLoading, isError: cError, refetch: cRefetch } = useConstructorStandings() as { data: any[], isLoading: boolean, isError: boolean, refetch: () => void };
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,10 +40,10 @@ const Cars: React.FC = () => {
   if (isLoading) {
     return (
       <div className="cars-gallery-page loading">
-        <div className="skeleton" style={{ width: '300px', height: '40px', marginBottom: '20px' }} />
-        <div className="skeleton-grid">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="skeleton" style={{ height: '500px' }} />
+        <div className="skeleton" style={{ width: '300px', height: '40px', marginBottom: '20px', margin: '0 auto' }} />
+        <div className="skeleton-grid" style={{ display: 'grid', gap: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+          {[1, 2, 3, 4, 5, 6].map(i => (
+            <div key={i} className="skeleton" style={{ height: '450px', borderRadius: '12px' }} />
           ))}
         </div>
       </div>
@@ -56,24 +53,21 @@ const Cars: React.FC = () => {
   if (isError || !constructors || constructors.length === 0) {
     return (
       <div className="cars-gallery-page error">
-        <ErrorState message="Unable to load F1 Cars." onRetry={cRefetch} />
+        <ErrorState message="Unable to load 2026 F1 Cars Gallery." onRetry={cRefetch} />
       </div>
     );
   }
-
-  const handleDriverClick = (e: React.MouseEvent | React.KeyboardEvent, id: string) => {
-    e.stopPropagation();
-    navigate(`/drivers/${id}`);
-  };
 
   return (
     <div className="cars-gallery-page">
       <header className="cg-header">
         <div className="cg-header-top">
-          <span className="cg-tag">TECHNICAL CENTER</span>
+          <span className="cg-tag">2026 SEASON // CAR GALLERY</span>
         </div>
-        <h1 className="cg-title">THE 2026 F1 CARS</h1>
-        <p className="cg-desc">A deep dive into the engineering marvels of the current season.</p>
+        <h1 className="cg-title">THE MACHINES OF FORMULA 1</h1>
+        <p className="cg-desc">
+          2026 sezonundaki tüm takımları, araçlarını, sürücülerini ve constructor performanslarını tek yerde incele.
+        </p>
       </header>
 
       <div className="cars-gallery-grid">
@@ -82,73 +76,55 @@ const Cars: React.FC = () => {
           const details = getTeamDetails(team.constructorId);
           const tDrivers = teamDriversMap[team.constructorId] || [];
           const visual = getTeamVisual(team.constructorId);
-          const isEager = index < 2;
-
+          const isEager = index < 4;
+          
           return (
-            <div key={team.constructorId} className="car-gallery-card">
-              <div className="cgc-top-stripe" style={{ backgroundColor: details.color }}></div>
+            <div 
+              key={team.constructorId} 
+              className="cg-card"
+              style={{ '--team-color': details.color } as React.CSSProperties}
+            >
+              <div className="cg-card-header">
+                <div className="cg-team-info">
+                  <h2 className="cg-team-name">{team.name}</h2>
+                  <span className="cg-chassis">{details.chassis}</span>
+                </div>
+                <div className="cg-perf-badge">
+                  <span className="cg-points">{standing.points}</span>
+                  <span className="cg-points-lbl">PTS</span>
+                </div>
+              </div>
               
-              <div className="cgc-image-container">
-                <div className="cgc-bg-pattern"></div>
+              <div className="cg-car-visual">
                 {visual ? (
                   <img 
                     src={visual} 
-                    alt={`${team.name} ${details.chassis}`} 
-                    className="cgc-car-img"
+                    alt={`${team.name} ${details.chassis} F1 Car`} 
+                    className="cg-car-img"
                     loading={isEager ? 'eager' : 'lazy'}
                     fetchPriority={isEager ? 'high' : 'auto'}
                     decoding={isEager ? 'auto' : 'async'}
                   />
                 ) : (
-                  <div className="cgc-car-unavailable">
+                  <div className="cg-car-unavailable">
                     <span className="unavailable-text">CAR VISUAL UNAVAILABLE</span>
-                    <span className="unavailable-team">{team.name.toUpperCase()}</span>
                   </div>
                 )}
               </div>
 
-              <div className="cgc-content">
-                <div className="cgc-title-block">
-                  <span className="cgc-team">{team.name}</span>
-                  <h2 className="cgc-chassis">{details.chassis}</h2>
-                </div>
-
-                <div className="cgc-specs-grid">
-                  <div className="cgc-spec-item">
-                    <Settings size={16} className="spec-icon" style={{ color: details.color }} />
-                    <div className="spec-text">
-                      <span className="spec-lbl">CHASSIS</span>
-                      <span className="spec-val">{details.chassis}</span>
+              <div className="cg-card-footer">
+                <div className="cg-drivers">
+                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                  {tDrivers.map((d: any) => (
+                    <div key={d.driverId} className="cg-driver-row">
+                      <span className="cg-driver-name">{d.givenName} {d.familyName}</span>
+                      <span className="cg-driver-num">#{d.permanentNumber || '—'}</span>
                     </div>
-                  </div>
-                  <div className="cgc-spec-item">
-                    <Zap size={16} className="spec-icon" style={{ color: details.color }} />
-                    <div className="spec-text">
-                      <span className="spec-lbl">POWER UNIT</span>
-                      <span className="spec-val">{details.powerUnit}</span>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-
-                <div className="cgc-drivers-block">
-                  <div className="cgc-d-header">
-                    <Users size={16} /> <span>DRIVER PAIRING</span>
-                  </div>
-                  <div className="cgc-d-list">
-                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                    {tDrivers.map((d: any) => (
-                      <button
-                        key={d.driverId}
-                        className="cgc-driver-pill"
-                        onClick={(e) => handleDriverClick(e, d.driverId)}
-                      >
-                        <span className="cgc-d-num" style={{ color: details.color }}>
-                          {d.permanentNumber || '—'}
-                        </span>
-                        <span className="cgc-d-name">{d.givenName} {d.familyName}</span>
-                      </button>
-                    ))}
-                  </div>
+                <div className="cg-status-bar">
+                  <span className="cg-status-lbl">CONSTRUCTOR CHAMPIONSHIP</span>
+                  <span className="cg-status-val">P{standing.position}</span>
                 </div>
               </div>
             </div>
