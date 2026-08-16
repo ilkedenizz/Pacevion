@@ -1,41 +1,95 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
+  /* ==================================================
+     GLOBAL DESIGN TOKENS (PACEVION 2.0)
+     ================================================== */
+
+  /* --- COLORS --- */
+  /* Base Backgrounds */
+  --ds-color-bg-graphite: #09090b;
+  --ds-color-surface: #111114;
+  --ds-color-surface-light: #16161a;
+  --ds-color-surface-elevated: #1a1b20;
+
+  /* Text Colors */
+  --ds-color-text-primary: #f3f4f6;
+  --ds-color-text-secondary: #9ca3af;
+  --ds-color-text-muted: #6b7280;
+  --ds-color-text-dark: #08060d; /* For light mode fallbacks if needed */
+
+  /* Accents & States */
+  --ds-color-accent-red: #E10600;
+  --ds-color-accent-red-hover: #ff1a12;
+  --ds-color-accent-red-glow: rgba(225, 6, 0, 0.15);
+  
+  --ds-color-success: #10b981;
+  --ds-color-warning: #f59e0b;
+
+  /* Borders & Dividers */
+  --ds-color-border: #2e303a;
+  --ds-color-border-light: rgba(255, 255, 255, 0.1);
+
+  /* --- TYPOGRAPHY --- */
+  --ds-font-display: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ds-font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ds-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --ds-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* --- SPACING --- */
+  --ds-space-xs: 4px;
+  --ds-space-sm: 8px;
+  --ds-space-md: 16px;
+  --ds-space-lg: 24px;
+  --ds-space-xl: 32px;
+  --ds-space-2xl: 48px;
+  --ds-space-section: 64px;
+
+  /* --- RADIUS --- */
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-xl: 16px;
+
+  /* --- MOTION --- */
+  --ds-transition-fast: 150ms;
+  --ds-transition-normal: 300ms;
+  --ds-transition-slow: 500ms;
+  --ds-ease-standard: cubic-bezier(0.25, 0.8, 0.25, 1);
+  --ds-ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+
+  /* --- SHADOW & GLOW --- */
+  --ds-shadow-card: 0 4px 20px rgba(0, 0, 0, 0.3);
+  --ds-shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.4);
+  --ds-glow-accent: 0 0 15px var(--ds-color-accent-red-glow);
+
+  /* ==================================================
+     LEGACY FALLBACKS (PREVENTS BREAKING CURRENT PAGES)
+     ================================================== */
   --bg: #fff;
+  --text: #6b6375;
+  --text-h: var(--ds-color-text-dark);
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-  
-  --transition-fast: 150ms;
-  --transition-normal: 250ms;
-  --transition-slow: 500ms;
-  --motion-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  
-  /* Technical Radiuses */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 8px;
+  --sans: var(--ds-font-body);
+  --heading: var(--ds-font-heading);
+  --mono: var(--ds-font-mono);
 
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-8: 48px;
-  --space-10: 64px;
+  --transition-fast: var(--ds-transition-fast);
+  --transition-normal: var(--ds-transition-normal);
+  --transition-slow: var(--ds-transition-slow);
+  --motion-ease: var(--ds-ease-standard);
 
-  font: 18px/145% var(--sans);
+  --radius-sm: var(--ds-radius-sm);
+  --radius-md: var(--ds-radius-md);
+  --radius-lg: var(--ds-radius-lg);
+
+  /* Font settings */
+  font: 18px/145% var(--ds-font-body);
   letter-spacing: 0.18px;
   color-scheme: light dark;
   color: var(--text);
@@ -44,42 +98,42 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (max-width: 1024px) {
+@media (max-width: 1024px) {
+  :root {
     font-size: 16px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #09090b; /* Deep graphite base */
-    --border: #2e303a;
-    --code-bg: #1f2028;
+    /* Legacy overrides mapping to new DS tokens */
+    --text: var(--ds-color-text-secondary);
+    --text-h: var(--ds-color-text-primary);
+    --bg: var(--ds-color-bg-graphite);
+    --border: var(--ds-color-border);
+    --code-bg: var(--ds-color-surface-light);
     
-    /* Pacevion Red */
-    --color-accent: #E10600;
-    --color-accent-hover: #ff1a12;
+    --color-accent: var(--ds-color-accent-red);
+    --color-accent-hover: var(--ds-color-accent-red-hover);
     --color-accent-strong: #cc0500;
     
-    /* Surface Colors */
-    --color-surface: #111114;
-    --color-surface-light: #16161a;
-    --color-surface-elevated: #1a1b20;
+    --color-surface: var(--ds-color-surface);
+    --color-surface-light: var(--ds-color-surface-light);
+    --color-surface-elevated: var(--ds-color-surface-elevated);
     
-    /* Text Colors */
-    --color-text-primary: #f3f4f6;
-    --color-text-secondary: #9ca3af;
-    --color-text-muted: #6b7280;
+    --color-text-primary: var(--ds-color-text-primary);
+    --color-text-secondary: var(--ds-color-text-secondary);
+    --color-text-muted: var(--ds-color-text-muted);
     
-    --color-border: #2e303a;
+    --color-border: var(--ds-color-border);
 
     --accent: var(--color-accent);
-    --accent-bg: rgba(225, 6, 0, 0.05);
+    --accent-bg: var(--ds-color-accent-red-glow);
     --accent-border: rgba(225, 6, 0, 0.3);
     --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.6) 0 10px 20px -3px, rgba(0, 0, 0, 0.4) 0 4px 6px -2px;
+    --shadow: var(--ds-shadow-card);
   }
 
   #social .button-icon {
@@ -87,16 +141,9 @@
   }
 }
 
-/* Typography Utilities */
-.font-heading { font-family: var(--heading); }
-.font-sans { font-family: var(--sans); }
-.font-mono { font-family: var(--mono); }
-.font-condensed { font-stretch: condensed; }
-.text-primary { color: var(--color-text-primary); }
-.text-secondary { color: var(--color-text-secondary); }
-.text-muted { color: var(--color-text-muted); }
-.text-accent { color: var(--color-accent); }
-
+/* ==================================================
+   GLOBAL BASE
+   ================================================== */
 #root {
   width: 100%;
   max-width: 100%;
@@ -109,58 +156,62 @@
 body {
   margin: 0;
   background-color: var(--bg);
-  /* Atmospheric layers: subtle red/white radial focus at top, technical grid, horizontal lines */
+  /* Premium broadcast background with subtle grid */
   background-image: 
-    radial-gradient(circle at 50% -10%, rgba(225, 6, 0, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.02) 0%, transparent 30%),
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 100px);
-  background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px, 100% 100px;
+    radial-gradient(circle at 50% -10%, rgba(225, 6, 0, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.015) 0%, transparent 30%),
+    linear-gradient(rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 60px 60px, 60px 60px;
   background-attachment: fixed;
   background-position: top center;
 }
 
 @media (max-width: 768px) {
   body {
-    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 100% 100px;
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
   }
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ds-font-heading);
   font-weight: 500;
   color: var(--text-h);
+  margin: 0;
 }
 
 h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
-  @media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
+  h1 {
     font-size: 36px;
     margin: 20px 0;
   }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
+}
+@media (max-width: 1024px) {
+  h2 {
     font-size: 20px;
   }
 }
+
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
+code, .counter {
+  font-family: var(--ds-font-mono);
   display: inline-flex;
-  border-radius: 4px;
+  border-radius: var(--ds-radius-sm);
   color: var(--text-h);
 }
 
@@ -171,21 +222,178 @@ code {
   background: var(--code-bg);
 }
 
+
+/* ==================================================
+   DESIGN SYSTEM UTILITIES & COMPONENTS
+   ================================================== */
+
+/* Typography Utilities */
+.font-heading { font-family: var(--ds-font-heading); }
+.font-sans { font-family: var(--ds-font-body); }
+.font-mono { font-family: var(--ds-font-mono); }
+.font-condensed { font-stretch: condensed; }
+
+.text-primary { color: var(--ds-color-text-primary); }
+.text-secondary { color: var(--ds-color-text-secondary); }
+.text-muted { color: var(--ds-color-text-muted); }
+.text-accent { color: var(--ds-color-accent-red); }
+
+/* Editorial Metadata Label (e.g. 01 / SEASON OVERVIEW) */
+.ds-section-label {
+  font-family: var(--ds-font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ds-color-accent-red);
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-sm);
+  margin-bottom: var(--ds-space-sm);
+}
+
+/* Premium Card */
+.ds-card {
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
+  border-radius: var(--ds-radius-lg);
+  box-shadow: var(--ds-shadow-card);
+  transition: transform var(--ds-transition-normal) var(--ds-ease-standard), 
+              box-shadow var(--ds-transition-normal) var(--ds-ease-standard),
+              border-color var(--ds-transition-normal) var(--ds-ease-standard);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.ds-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.ds-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--ds-shadow-hover);
+  border-color: var(--ds-color-border-light);
+}
+
+/* Button System */
+.ds-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ds-space-sm) var(--ds-space-md);
+  border-radius: var(--ds-radius-md);
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all var(--ds-transition-fast) var(--ds-ease-standard);
+  cursor: pointer;
+  border: 1px solid transparent;
+  font-family: var(--ds-font-body);
+}
+
+.ds-btn-primary {
+  background: var(--ds-color-accent-red);
+  color: #fff;
+  border-color: var(--ds-color-accent-red);
+}
+.ds-btn-primary:hover {
+  background: var(--ds-color-accent-red-hover);
+  border-color: var(--ds-color-accent-red-hover);
+  box-shadow: var(--ds-glow-accent);
+}
+
+.ds-btn-secondary {
+  background: var(--ds-color-surface-elevated);
+  color: var(--ds-color-text-primary);
+  border-color: var(--ds-color-border);
+}
+.ds-btn-secondary:hover {
+  background: var(--ds-color-border);
+  border-color: var(--ds-color-border-light);
+}
+
+.ds-btn-ghost {
+  background: transparent;
+  color: var(--ds-color-text-secondary);
+}
+.ds-btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ds-color-text-primary);
+}
+
+/* Navigation Active State */
+.ds-nav-active {
+  position: relative;
+  color: var(--ds-color-text-primary) !important;
+}
+.ds-nav-active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--ds-color-accent-red);
+  box-shadow: 0 0 8px var(--ds-color-accent-red);
+  border-radius: 2px;
+}
+
 /* Global Section Transition Utilities */
 .reveal-on-scroll {
   opacity: 0;
   transform: translateY(12px);
-  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition: opacity 0.5s var(--ds-ease-standard), transform 0.5s var(--ds-ease-standard);
   will-change: opacity, transform;
 }
 .reveal-on-scroll.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ==================================================
+   CIRCUIT VISUAL SYSTEM 
+   ================================================== */
+.ds-circuit-path {
+  fill: none;
+  stroke: var(--ds-color-border);
+  stroke-width: 2px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke var(--ds-transition-normal) var(--ds-ease-standard),
+              filter var(--ds-transition-normal) var(--ds-ease-standard);
+}
+
+.ds-circuit-path.active {
+  stroke: var(--ds-color-accent-red);
+}
+
+.ds-circuit-path:hover {
+  stroke: var(--ds-color-accent-red-hover);
+  filter: drop-shadow(0 0 6px rgba(225, 6, 0, 0.4));
+}
+
+/* ==================================================
+   RESPONSIVE & ACCESSIBILITY 
+   ================================================== */
 @media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
   .reveal-on-scroll {
     transition: opacity 0.5s ease;
     transform: none;
   }
+  
+  .ds-card:hover {
+    transform: none;
+  }
 }
-
