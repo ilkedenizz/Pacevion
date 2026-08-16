@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Router from './router';
 
 import { LanguageProvider } from './context/LanguageContext';
+import ScrollToTop from './components/utils/ScrollToTop';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,6 +19,7 @@ const App: React.FC = () => (
   <LanguageProvider>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <ScrollToTop />
         <Router />
       </BrowserRouter>
     </QueryClientProvider>

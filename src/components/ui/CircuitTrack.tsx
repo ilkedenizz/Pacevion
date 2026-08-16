@@ -58,14 +58,17 @@ function resolveCanonicalCircuitId(
     return 'bahrain';
   }
 
-  // 2. Check for Spanish Grand Prix (Madrid vs Catalunya)
-  if (rn.includes('spanish grand prix') || circuitId === 'madring' || cn.includes('madring')) {
-    // 2026 Spanish GP is in Madrid (madring) -> no geometry yet
-    return null; 
+  // 2. Check explicit identifiers first
+  if (circuitId === 'madring' || cn.includes('madrid') || cn.includes('madring')) {
+    return null; // Madrid has no geometry yet
+  }
+  if (circuitId === 'catalunya' || cn.includes('catalunya') || cn.includes('barcelona')) {
+    return 'catalunya';
   }
   
-  if (rn.includes('barcelona') || circuitId === 'catalunya' || cn.includes('catalunya')) {
-    return 'catalunya';
+  if (rn.includes('spanish grand prix') || rn.includes('spain')) {
+    // If it's the Spanish GP but we didn't match Catalunya above, it's Madrid (2026+)
+    return null; 
   }
 
   // 3. Fallback to normal dictionary mapping

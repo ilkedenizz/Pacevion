@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, Calendar, Users, Shield, Trophy } from 'lucide-react';
+import { LayoutDashboard, Calendar, Users, Shield, Trophy, BookOpen } from 'lucide-react';
 import './Navigation.css';
 
 import { useLanguage } from '../../context/LanguageContext';
@@ -84,6 +84,16 @@ const Navigation: React.FC<NavigationProps> = ({ isOpen, onClose }) => {
               >
                 <Trophy className="nav-icon" size={16} />
                 <span className="nav-text">{t('standings')}</span>
+              </NavLink>
+            </li>
+            <li className="nav-item">
+              <NavLink
+                to="/learn"
+                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                onClick={onClose}
+              >
+                <BookOpen className="nav-icon" size={16} />
+                <span className="nav-text">{t('learn')}</span>
               </NavLink>
             </li>
           </ul>

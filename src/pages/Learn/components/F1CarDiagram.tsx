@@ -122,68 +122,114 @@ const F1CarDiagram: React.FC = () => {
               {/* CAR COMPONENTS (Must be before callouts so callouts are on top) */}
               <g>
                 {/* FLOOR */}
-                <g onMouseEnter={() => setActiveId('floor')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('floor')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'floor' ? null : 'floor')}
+                >
                   <path d="M 160 400 L 340 400 L 380 600 L 360 780 L 250 820 L 140 780 L 120 600 Z" className="f1-svg-hit-area" />
                   <path id="floor" d="M 160 400 L 340 400 L 380 600 L 360 780 L 250 820 L 140 780 L 120 600 Z" fill="url(#carbonGrad)" stroke="#3f3f46" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'floor')!)} />
                 </g>
                 
                 {/* DIFFUSER */}
-                <g onMouseEnter={() => setActiveId('diffuser')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('diffuser')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'diffuser' ? null : 'diffuser')}
+                >
                   <path d="M 190 820 L 310 820 L 330 920 L 170 920 Z" className="f1-svg-hit-area" />
                   <path id="diffuser" d="M 190 820 L 310 820 L 330 920 L 170 920 Z" fill="url(#carbonGrad)" stroke="#52525b" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'diffuser')!)} />
                 </g>
 
                 {/* REAR WING */}
-                <g onMouseEnter={() => setActiveId('rear-wing')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('rear-wing')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'rear-wing' ? null : 'rear-wing')}
+                >
                   <path d="M 150 840 L 350 840 L 350 890 L 150 890 Z" className="f1-svg-hit-area" />
                   <path id="rear-wing" d="M 150 840 L 350 840 L 350 890 L 150 890 Z" fill="url(#wingGrad)" stroke="#52525b" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'rear-wing')!)} />
                   <path d="M 220 800 L 280 800 L 280 850 L 220 850 Z" className="f1-svg-path" style={{fill: '#27272a', stroke: '#52525b', strokeWidth: 2}} />
                 </g>
                 
                 {/* POWER UNIT (Engine Cover) */}
-                <g onMouseEnter={() => setActiveId('power-unit')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('power-unit')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'power-unit' ? null : 'power-unit')}
+                >
                   <path d="M 230 450 L 270 450 L 280 750 L 220 750 Z" className="f1-svg-hit-area" />
                   <path id="power-unit" d="M 230 450 L 270 450 L 280 750 L 220 750 Z" fill="url(#bodyGrad)" stroke="#6b7280" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'power-unit')!)} />
                 </g>
                 
                 {/* SIDEPODS */}
-                <g onMouseEnter={() => setActiveId('sidepods')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('sidepods')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'sidepods' ? null : 'sidepods')}
+                >
                   <path d="M 170 420 L 230 400 L 230 650 L 190 650 Z M 330 420 L 270 400 L 270 650 L 310 650 Z" className="f1-svg-hit-area" />
                   <path id="sidepods" d="M 170 420 L 230 400 L 230 650 L 190 650 Z M 330 420 L 270 400 L 270 650 L 310 650 Z" fill="url(#bodyGrad)" stroke="#6b7280" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'sidepods')!)} />
                 </g>
                 
                 {/* MONOCOQUE (Cockpit Area) */}
-                <g onMouseEnter={() => setActiveId('monocoque')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('monocoque')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'monocoque' ? null : 'monocoque')}
+                >
                   <path d="M 220 250 L 280 250 L 280 400 L 220 400 Z" className="f1-svg-hit-area" />
                   <path id="monocoque" d="M 220 250 L 280 250 L 280 400 L 220 400 Z" fill="url(#bodyGrad)" stroke="#9ca3af" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'monocoque')!)} />
                 </g>
                 
                 {/* HALO */}
-                <g onMouseEnter={() => setActiveId('halo')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('halo')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'halo' ? null : 'halo')}
+                >
                   <path d="M 250 310 L 220 360 L 225 365 L 250 320 L 275 365 L 280 360 Z" className="f1-svg-hit-area" />
                   <path id="halo" d="M 250 310 L 220 360 L 225 365 L 250 320 L 275 365 L 280 360 Z" className={getPathClass(componentsInfo.find(c => c.id === 'halo')!)} style={{fill: '#e5e7eb', stroke: '#fff', strokeWidth: 2}} />
                 </g>
 
                 {/* NOSE */}
-                <g onMouseEnter={() => setActiveId('nose')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('nose')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'nose' ? null : 'nose')}
+                >
                   <path d="M 240 100 L 260 100 L 270 250 L 230 250 Z" className="f1-svg-hit-area" />
                   <path id="nose" d="M 240 100 L 260 100 L 270 250 L 230 250 Z" fill="url(#bodyGrad)" stroke="#9ca3af" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'nose')!)} />
                 </g>
                 
                 {/* FRONT SUSPENSION */}
-                <g onMouseEnter={() => setActiveId('suspension')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('suspension')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'suspension' ? null : 'suspension')}
+                >
                   <path d="M 230 200 L 140 210 L 140 220 L 230 220 Z M 270 200 L 360 210 L 360 220 L 270 220 Z M 230 180 L 140 190 L 140 195 L 230 195 Z M 270 180 L 360 190 L 360 195 L 270 195 Z" className="f1-svg-hit-area" />
                   <path id="suspension" d="M 230 200 L 140 210 L 140 220 L 230 220 Z M 270 200 L 360 210 L 360 220 L 270 220 Z M 230 180 L 140 190 L 140 195 L 230 195 Z M 270 180 L 360 190 L 360 195 L 270 195 Z" fill="#111" stroke="#52525b" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'suspension')!)} />
                 </g>
                 
                 {/* FRONT WING */}
-                <g onMouseEnter={() => setActiveId('front-wing')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  onMouseEnter={() => setActiveId('front-wing')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'front-wing' ? null : 'front-wing')}
+                >
                   <path d="M 120 60 L 380 60 L 390 120 L 350 130 L 250 100 L 150 130 L 110 120 Z" className="f1-svg-hit-area" />
                   <path id="front-wing" d="M 120 60 L 380 60 L 390 120 L 350 130 L 250 100 L 150 130 L 110 120 Z" fill="url(#wingGrad)" stroke="#52525b" strokeWidth="2" className={getPathClass(componentsInfo.find(c => c.id === 'front-wing')!)} />
                 </g>
                 
                 {/* FRONT TYRES */}
-                <g id="front-tyres" className={getPathClass(componentsInfo.find(c => c.id === 'front-tyres')!)} onMouseEnter={() => setActiveId('front-tyres')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  id="front-tyres" 
+                  className={getPathClass(componentsInfo.find(c => c.id === 'front-tyres')!)} 
+                  onMouseEnter={() => setActiveId('front-tyres')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'front-tyres' ? null : 'front-tyres')}
+                >
                   <rect x="90" y="150" width="50" height="110" className="f1-svg-hit-area" style={{strokeWidth: '20px'}} />
                   <rect x="90" y="150" width="50" height="110" rx="10" fill="url(#tyreGrad)" stroke="#27272a" strokeWidth="2" style={{pointerEvents: 'none'}} />
                   
@@ -192,7 +238,13 @@ const F1CarDiagram: React.FC = () => {
                 </g>
                 
                 {/* REAR TYRES */}
-                <g id="rear-tyres" className={getPathClass(componentsInfo.find(c => c.id === 'rear-tyres')!)} onMouseEnter={() => setActiveId('rear-tyres')} onMouseLeave={() => setActiveId(null)}>
+                <g 
+                  id="rear-tyres" 
+                  className={getPathClass(componentsInfo.find(c => c.id === 'rear-tyres')!)} 
+                  onMouseEnter={() => setActiveId('rear-tyres')} 
+                  onMouseLeave={() => setActiveId(null)}
+                  onClick={() => setActiveId(activeId === 'rear-tyres' ? null : 'rear-tyres')}
+                >
                   <rect x="80" y="700" width="60" height="120" className="f1-svg-hit-area" style={{strokeWidth: '20px'}} />
                   <rect x="80" y="700" width="60" height="120" rx="10" fill="url(#tyreGrad)" stroke="#27272a" strokeWidth="2" style={{pointerEvents: 'none'}} />
                   
