@@ -1,0 +1,78 @@
+.learn-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--color-background, #0a0a0f);
+  color: #ffffff;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.learn-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.learn-header h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.topics-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topic-card {
+  background-color: var(--color-surface, #1a1a1f);
+  border: 1px solid var(--color-border, #2a2a2f);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.topic-card-header {
+  width: 100%;
+  min-height: 48px;
+  padding: 16px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.topic-card-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.topic-chevron {
+  color: var(--color-text-muted, #8a8a8f);
+  transition: transform 0.3s ease;
+}
+
+.topic-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+.topic-card-content {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.topic-card-content p {
+  padding: 0 16px 16px 16px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-muted, #8a8a8f);
+  line-height: 1.5;
+}

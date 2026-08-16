@@ -1,0 +1,98 @@
+.drivers-container {
+  padding: 16px;
+}
+
+.drivers-header {
+  margin-bottom: 24px;
+}
+
+.drivers-header .title {
+  font-size: 32px;
+  color: #fff;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+}
+
+.drivers-header .subtitle {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.drivers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.driver-card {
+  position: relative;
+  background-color: var(--color-surface, #15151e);
+  border: 1px solid var(--color-border, #2a2a35);
+  border-left-width: 3px;
+  border-left-style: solid;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.driver-number {
+  position: absolute;
+  right: 16px;
+  top: -10px;
+  font-size: 80px;
+  color: rgba(255, 255, 255, 0.03);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.driver-details {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.driver-given-name {
+  font-size: 14px;
+  color: #888;
+}
+
+.driver-family-name {
+  font-size: 24px;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.driver-team {
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.driver-nationality {
+  font-size: 10px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.driver-stats {
+  display: flex;
+  align-items: flex-end;
+  z-index: 1;
+}
+
+.driver-points {
+  font-size: 24px;
+  color: var(--color-accent, #e10600);
+  font-weight: bold;
+}
+
+.driver-points .pts {
+  font-size: 14px;
+  color: #888;
+  font-weight: normal;
+}
