@@ -9,7 +9,7 @@ const AboutSection: React.FC = () => {
   return (
     <section className="manifesto-section" aria-labelledby="about-title">
       <div className="manifesto-bg">
-        <img src={ASSETS.cars.default_red} alt="F1 Editorial" />
+        <img src={ASSETS.learn.aerodynamics} alt="F1 Editorial" />
         <div className="manifesto-overlay" />
       </div>
       

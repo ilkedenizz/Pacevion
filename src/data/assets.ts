@@ -42,42 +42,38 @@ const DRIVER_HEADSHOTS: Record<string, string> = {
 };
 
 // ─── TEAM CAR MAPPING ────────────────────────────────────────────────────────
-// Official F1 2024/2026 team cars from media.formula1.com
+// Official F1 2026 team cars
 // Keys match the Ergast API constructorId values or variations
 const TEAM_CARS: Record<string, string> = {
-  ferrari: `${base}assets/img/cars/ferrari.png`,
-  mercedes: `${base}assets/img/cars/mercedes.png`,
-  mclaren: `${base}assets/img/cars/mclaren.png`,
-  red_bull: `${base}assets/img/cars/red-bull-racing.png`,
-  redbull: `${base}assets/img/cars/red-bull-racing.png`,
-  rb: `${base}assets/img/cars/rb.png`,
-  alphatauri: `${base}assets/img/cars/rb.png`,
-  alpine: `${base}assets/img/cars/alpine.png`,
-  haas: `${base}assets/img/cars/haas.png`,
-  haas_f1_team: `${base}assets/img/cars/haas.png`,
-  sauber: `${base}assets/img/cars/kick-sauber.png`,
-  kick_sauber: `${base}assets/img/cars/kick-sauber.png`,
-  alfa: `${base}assets/img/cars/kick-sauber.png`,
-  williams: `${base}assets/img/cars/williams.png`,
-  aston_martin: `${base}assets/img/cars/aston-martin.png`,
+  ferrari: `${base}assets/img/cars/ferrari-2026.png`,
+  mercedes: `${base}assets/img/cars/mercedes-2026.png`,
+  mclaren: `${base}assets/img/cars/mclaren-2026.png`,
+  red_bull: `${base}assets/img/cars/red-bull-racing-2026.png`,
+  redbull: `${base}assets/img/cars/red-bull-racing-2026.png`,
+  rb: `${base}assets/img/cars/rb-2026.png`,
+  alphatauri: `${base}assets/img/cars/rb-2026.png`,
+  alpine: `${base}assets/img/cars/alpine-2026.png`,
+  haas: `${base}assets/img/cars/haas-2026.png`,
+  haas_f1_team: `${base}assets/img/cars/haas-2026.png`,
+  sauber: `${base}assets/img/cars/kick-sauber-2026.png`,
+  kick_sauber: `${base}assets/img/cars/kick-sauber-2026.png`,
+  alfa: `${base}assets/img/cars/kick-sauber-2026.png`,
+  williams: `${base}assets/img/cars/williams-2026.png`,
+  aston_martin: `${base}assets/img/cars/aston-martin-2026.png`,
+  // audi and cadillac missing on purpose until genuine assets are added
 };
 
 // ─── STATIC ASSETS ───────────────────────────────────────────────────────────
 export const ASSETS = {
   cars: {
-    ferrari: `${base}assets/img/f1_car_red.jpg`,
-    red_bull: `${base}assets/img/f1_car_blue.jpg`,
-    default_red: `${base}assets/img/f1_car_red.jpg`,
-    default_blue: `${base}assets/img/f1_car_blue.jpg`
+    // defaults removed entirely as per strict requirement
   },
   drivers: {
     ...DRIVER_HEADSHOTS,
     default_red: `${base}assets/img/f1_driver_red.jpg`,
     default_blue: `${base}assets/img/f1_driver_blue.jpg`
   },
-  circuits: {
-    // hero: `${base}assets/img/f1_track_hero.jpg` - removed in favor of CircuitTrack SVG rendering
-  },
+  circuits: {},
   learn: {
     aerodynamics: `${base}assets/img/learn_aero.jpg`,
     powerUnit: `${base}assets/img/learn_pu.jpg`,
@@ -87,19 +83,11 @@ export const ASSETS = {
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 
-/**
- * Returns the best available visual for a driver.
- * Priority: real headshot → team-color generic fallback.
- */
 export const getDriverVisual = (driverId?: string, _constructorId?: string): string => {
   if (!driverId) return ASSETS.drivers.default_blue;
-
-  // Direct headshot lookup
   if (DRIVER_HEADSHOTS[driverId]) {
     return DRIVER_HEADSHOTS[driverId];
   }
-
-  // Fallback: team-color generic
   const redTeams = ['ferrari', 'alfa', 'haas', 'haas_f1_team'];
   if (_constructorId && redTeams.includes(_constructorId)) {
     return ASSETS.drivers.default_red;
@@ -108,27 +96,38 @@ export const getDriverVisual = (driverId?: string, _constructorId?: string): str
 };
 
 /**
- * Returns the best available team car visual.
- * Priority: real car png -> team-color generic fallback.
+ * Returns the exact team car visual or null if genuinely missing.
+ * NO GENERIC FALLBACKS ALLOWED.
  */
-export const getTeamVisual = (constructorId?: string): string => {
-  if (!constructorId) return ASSETS.cars.default_blue;
-  
-  // Direct real car lookup
+export const getTeamVisual = (constructorId?: string): string | null => {
+  if (!constructorId) return null;
   if (TEAM_CARS[constructorId]) {
     return TEAM_CARS[constructorId];
   }
+  return null;
+};
 
-  // Fallback to ASSETS.cars if it exists
-  if (ASSETS.cars[constructorId as keyof typeof ASSETS.cars]) {
-    return ASSETS.cars[constructorId as keyof typeof ASSETS.cars];
-  }
-
-  // Fallback generic
-  const redTeams = ['ferrari', 'alfa', 'haas', 'haas_f1_team'];
-  if (redTeams.includes(constructorId)) {
-    return ASSETS.cars.default_red;
-  }
+export const validateTeamAssets = () => {
+  console.log("Validating Team Assets mapping...");
   
-  return ASSETS.cars.default_blue;
+  const expectedTeams = ['audi', 'cadillac', 'ferrari', 'mercedes', 'mclaren', 'red_bull', 'aston_martin', 'alpine', 'williams', 'haas', 'rb'];
+  const reverseMap = new Map<string, string[]>();
+
+  expectedTeams.forEach(teamId => {
+    const visual = getTeamVisual(teamId);
+    if (!visual) {
+      console.error(`VALIDATION ERROR: Missing asset for team: ${teamId}`);
+    } else {
+      if (!reverseMap.has(visual)) reverseMap.set(visual, []);
+      reverseMap.get(visual)!.push(teamId);
+    }
+  });
+
+  // Check for duplicated assignments
+  reverseMap.forEach((teams, visual) => {
+    // Only warn if distinct teams share the same visual. (E.g. red_bull and redbull sharing is fine, but they aren't distinct in expectedTeams).
+    if (teams.length > 1) {
+      console.error(`VALIDATION ERROR: Multiple teams sharing the same visual (${visual}): ${teams.join(', ')}`);
+    }
+  });
 };

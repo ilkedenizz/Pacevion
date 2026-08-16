@@ -90,14 +90,21 @@ const Cars: React.FC = () => {
               
               <div className="cgc-image-container">
                 <div className="cgc-bg-pattern"></div>
-                <img 
-                  src={visual} 
-                  alt={`${team.name} ${details.chassis}`} 
-                  className="cgc-car-img"
-                  loading={isEager ? 'eager' : 'lazy'}
-                  fetchPriority={isEager ? 'high' : 'auto'}
-                  decoding={isEager ? 'auto' : 'async'}
-                />
+                {visual ? (
+                  <img 
+                    src={visual} 
+                    alt={`${team.name} ${details.chassis}`} 
+                    className="cgc-car-img"
+                    loading={isEager ? 'eager' : 'lazy'}
+                    fetchPriority={isEager ? 'high' : 'auto'}
+                    decoding={isEager ? 'auto' : 'async'}
+                  />
+                ) : (
+                  <div className="cgc-car-unavailable">
+                    <span className="unavailable-text">CAR VISUAL UNAVAILABLE</span>
+                    <span className="unavailable-team">{team.name.toUpperCase()}</span>
+                  </div>
+                )}
               </div>
 
               <div className="cgc-content">

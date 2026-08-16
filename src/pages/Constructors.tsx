@@ -133,7 +133,14 @@ const Constructors: React.FC = () => {
 
               <div className="csc-visual-right">
                 <div className="csc-bg-glow" style={{ backgroundColor: details.color }}></div>
-                <img src={teamVisual} alt={`${team.name} F1 Car preview`} className="csc-car-preview" loading="lazy" />
+                {teamVisual ? (
+                  <img src={teamVisual} alt={`${team.name} F1 Car preview`} className="csc-car-preview" loading="lazy" />
+                ) : (
+                  <div className="csc-car-unavailable">
+                    <span className="unavailable-text">CAR VISUAL UNAVAILABLE</span>
+                    <span className="unavailable-team">{team.name.toUpperCase()}</span>
+                  </div>
+                )}
               </div>
             </div>
           );
