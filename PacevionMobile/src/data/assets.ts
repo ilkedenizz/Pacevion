@@ -56,9 +56,9 @@ export const getDriverVisual = (driverId?: string): string | null => {
     'leclerc', 'lindblad', 'max_verstappen', 'norris', 'ocon', 'perez', 
     'piastri', 'russell', 'sainz', 'stroll'
   ];
-  if (id === 'verstappen') return `${base}assets/img/drivers/max_verstappen.webp`;
+  if (id === 'verstappen') return `${base}assets/img/drivers/portraits/max_verstappen-portrait.webp`;
   if (DRIVERS.includes(id)) {
-    return `${base}assets/img/drivers/${id}.webp`;
+    return `${base}assets/img/drivers/portraits/${id}-portrait.webp`;
   }
   return null;
 }; 
