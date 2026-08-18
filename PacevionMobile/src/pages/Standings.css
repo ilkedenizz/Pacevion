@@ -6,10 +6,6 @@
   min-height: 100vh;
 }
 
-.brand-header {
-  margin-bottom: 0;
-}
-
 .st-tabs {
   display: flex;
   gap: var(--space-4);
@@ -73,21 +69,23 @@
 
 .slf-pos {
   position: absolute;
-  top: var(--space-3);
-  right: var(--space-4);
-  font-size: 48px;
-  color: rgba(255,255,255,0.05);
+  top: var(--space-2);
+  right: var(--space-3);
+  font-size: 64px;
+  color: rgba(255,255,255,0.03);
+  line-height: 1;
 }
 
 .slf-portrait-box {
-  width: 72px;
-  height: 72px;
-  border-radius: 36px;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
   background: var(--color-bg);
-  border: 1px solid var(--color-border);
+  border: 2px solid var(--color-border);
   overflow: hidden;
   margin-right: var(--space-4);
   z-index: 2;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
 .slf-portrait {
@@ -109,8 +107,8 @@
 }
 
 .slf-name {
-  font-size: 16px;
-  line-height: 1.1;
+  font-size: 18px;
+  line-height: 1.05;
   margin: 4px 0;
 }
 
@@ -118,7 +116,7 @@
   margin-top: 2px;
 }
 
-.slf-pts {
+.slf-pts-box {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -126,7 +124,7 @@
 }
 
 .slf-pts-val {
-  font-size: 24px;
+  font-size: 28px;
   color: #fff;
 }
 
@@ -142,13 +140,14 @@
 .st-board-header {
   display: flex;
   padding: 12px 16px;
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.4);
   border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .sbh-pos { width: 32px; }
 .sbh-driver { flex: 1; }
 .sbh-pts { width: 40px; text-align: right; }
+.sbh-trend { width: 32px; }
 
 .st-row {
   display: flex;
@@ -174,15 +173,15 @@
 
 .st-row-teamline {
   width: 3px;
-  height: 14px;
+  height: 16px;
   border-radius: 2px;
   margin-right: 12px;
 }
 
 .st-row-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
   background: var(--color-bg);
   overflow: hidden;
   margin-right: 12px;
@@ -200,9 +199,24 @@
   flex-direction: column;
 }
 
+.st-row-ln {
+  font-size: 15px;
+}
+
+.st-row-team {
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
 .st-row-pts {
   width: 40px;
   text-align: right;
-  font-size: 14px;
+  font-size: 15px;
   color: #fff;
+}
+
+.st-row-trend {
+  width: 32px;
+  display: flex;
+  justify-content: flex-end;
 }

@@ -20,7 +20,7 @@ export const Home = () => {
   }
 
   const raceDate = new Date(nextRace.date);
-  const formattedDate = `${raceDate.getDate() - 2}–${raceDate.getDate()} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
+  const formattedDate = `${raceDate.getDate() - 2}—${String(raceDate.getDate()).padStart(2, '0')} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
 
   return (
     <div className="home-page fade-in">
@@ -28,20 +28,20 @@ export const Home = () => {
       <header className="home-brand-header">
         <div className="hbh-left">
           <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
-          <span className="hbh-season font-mono">2026 SEASON</span>
+          <span className="hbh-season font-mono">F1 2026</span>
         </div>
         <div className="hbh-status">
-          <div className="hbh-dot" />
+          <div className="hbh-pulse-dot" />
           <span className="font-mono">SYSTEM ONLINE</span>
         </div>
       </header>
 
-      {/* EDITORIAL HERO */}
-      <div className="editorial-hero">
-        <div className="eh-bg-grid" />
-        <div className="eh-accent-line" />
+      {/* EDITORIAL BROADCAST HERO */}
+      <div className="home-broadcast-hero">
+        <div className="hbh-grid-bg" />
+        <div className="hbh-accent-top" />
         
-        <div className="eh-circuit-bg">
+        <div className="hbh-circuit-wrapper">
           <CircuitTrack 
             circuitId={nextRace.Circuit.circuitId}
             circuitName={nextRace.Circuit.circuitName}
@@ -50,120 +50,110 @@ export const Home = () => {
             variant="hero"
           />
         </div>
-        
-        <div className="eh-content">
-          <div className="eh-top">
-            <span className="eh-badge font-mono">ROUND {nextRace.round}</span>
-            <h2 className="eh-title font-heading editorial-headline">{nextRace.raceName}</h2>
-            <h3 className="eh-subtitle font-heading">{nextRace.Circuit.Location.locality}</h3>
+
+        <div className="hbh-content">
+          <div className="hbh-top">
+            <div className="hbh-badge font-mono">NEXT RACE</div>
+            <h2 className="hbh-race-name font-heading editorial-headline">{nextRace.raceName}</h2>
+            <div className="hbh-race-loc font-mono">{nextRace.Circuit.Location.locality} // ROUND {nextRace.round.padStart(2, '0')}</div>
           </div>
-          
-          <div className="eh-bottom">
-            <div className="eh-countdown">
-              <div className="eh-cd-block">
-                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
-                <span className="eh-cd-lbl font-mono editorial-label">DAYS</span>
+
+          <div className="hbh-middle">
+            <div className="hbh-cd-group">
+              <div className="hbh-cd-item">
+                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
+                <span className="hbh-cd-lbl editorial-label">DAYS</span>
               </div>
-              <div className="eh-cd-block">
-                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
-                <span className="eh-cd-lbl font-mono editorial-label">HOURS</span>
+              <div className="hbh-cd-item">
+                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
+                <span className="hbh-cd-lbl editorial-label">HOURS</span>
               </div>
-              <div className="eh-cd-block">
-                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
-                <span className="eh-cd-lbl font-mono editorial-label">MIN</span>
+              <div className="hbh-cd-item">
+                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
+                <span className="hbh-cd-lbl editorial-label">MIN</span>
               </div>
             </div>
-            
-            <div className="eh-meta">
-              <span className="eh-meta-item font-mono">{formattedDate}</span>
-              <span className="eh-meta-item font-mono">{nextRace.Circuit.Location.locality}</span>
-              <span className="eh-meta-item font-mono">53 LAPS</span>
-              <span className="eh-meta-item font-mono">306.7 KM</span>
+          </div>
+
+          <div className="hbh-bottom">
+            <div className="hbh-meta-box">
+              <span className="editorial-label">DATE</span>
+              <span className="font-mono hbh-meta-val">{formattedDate}</span>
+            </div>
+            <div className="hbh-meta-box">
+              <span className="editorial-label">LAPS</span>
+              <span className="font-mono hbh-meta-val">53</span>
+            </div>
+            <div className="hbh-meta-box">
+              <span className="editorial-label">LENGTH</span>
+              <span className="font-mono hbh-meta-val">306.7 KM</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* QUICK STATS */}
-      <div className="qs-grid">
-        <div className="qs-card">
-          <span className="qs-lbl editorial-label">CHAMPIONSHIP LEADER</span>
-          <span className="qs-val font-heading editorial-headline">
-            {standings?.[0] ? `${standings[0].Driver.givenName[0]}. ${standings[0].Driver.familyName}` : 'L. NORRIS'}
-          </span>
+      {/* DYNAMIC VISUAL MODULES */}
+      <div className="home-modules-grid">
+        <div className="hm-card hm-championship">
+          <div className="hm-header">
+            <span className="editorial-label">CHAMPIONSHIP</span>
+            <span className="editorial-label hm-trend">↑ P1</span>
+          </div>
+          <div className="hm-body">
+            <img src={getDriverVisual(standings?.[0]?.Driver?.driverId || 'norris') || ''} className="hm-avatar" alt="Leader" />
+            <div className="hm-info">
+              <span className="font-heading editorial-headline hm-name">
+                {standings?.[0] ? `${standings[0].Driver.givenName[0]}. ${standings[0].Driver.familyName}` : 'L. NORRIS'}
+              </span>
+              <span className="font-mono editorial-num hm-pts">{standings?.[0]?.points || 285} PTS</span>
+            </div>
+          </div>
         </div>
-        <div className="qs-card">
-          <span className="qs-lbl editorial-label">CURRENT ROUND</span>
-          <span className="qs-val font-heading editorial-headline editorial-num">{nextRace.round}</span>
+
+        <div className="hm-card hm-session">
+          <div className="hm-header">
+            <span className="editorial-label">NEXT SESSION</span>
+          </div>
+          <div className="hm-body hm-col">
+            <span className="font-heading editorial-headline hm-title">QUALIFYING</span>
+            <span className="font-mono hm-time">FRI 14:00</span>
+          </div>
         </div>
-        <div className="qs-card">
-          <span className="qs-lbl editorial-label">NEXT SESSION</span>
-          <span className="qs-val font-heading editorial-headline">QUALIFYING</span>
-        </div>
-        <div className="qs-card qs-card-dark">
-          <div className="qs-status-dot" />
-          <span className="qs-lbl editorial-label">TRACK STATUS</span>
-          <span className="qs-val font-heading editorial-headline" style={{ color: '#00FF66' }}>GREEN</span>
+
+        <div className="hm-card hm-track">
+          <div className="hm-header">
+            <span className="editorial-label">TRACK STATUS</span>
+            <div className="hm-status-dot green" />
+          </div>
+          <div className="hm-body hm-col">
+            <span className="font-heading editorial-headline hm-title" style={{ color: '#00FF66' }}>CLEAR</span>
+            <div className="hm-sectors">
+              <div className="hm-sector s-green" />
+              <div className="hm-sector s-green" />
+              <div className="hm-sector s-green" />
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* PODIUM */}
+      {/* RECENT RACE PODIUM */}
       <div className="home-section">
-        <h3 className="hs-title font-heading editorial-headline">RECENT RACE</h3>
-        <div className="home-podium">
-          <div className="hp-step hp-p2">
-            <img src={getDriverVisual('piastri') || ''} alt="Piastri" className="hp-img" />
-            <span className="hp-pos editorial-num font-mono">2</span>
-            <span className="hp-name font-heading editorial-label">PIASTRI</span>
+        <h3 className="hs-title font-heading editorial-headline">LAST RACE PODIUM</h3>
+        <div className="home-podium-v2">
+          <div className="hp2-step hp2-p2">
+            <div className="hp2-img-wrap"><img src={getDriverVisual('piastri') || ''} alt="P2" /></div>
+            <div className="hp2-num font-mono editorial-num">2</div>
+            <div className="hp2-team-line" style={{ background: '#FF8000' }} />
           </div>
-          <div className="hp-step hp-p1">
-            <img src={getDriverVisual('leclerc') || ''} alt="Leclerc" className="hp-img" />
-            <span className="hp-pos editorial-num font-mono">1</span>
-            <span className="hp-name font-heading editorial-label">LECLERC</span>
+          <div className="hp2-step hp2-p1">
+            <div className="hp2-img-wrap"><img src={getDriverVisual('leclerc') || ''} alt="P1" /></div>
+            <div className="hp2-num font-mono editorial-num">1</div>
+            <div className="hp2-team-line" style={{ background: '#E80020' }} />
           </div>
-          <div className="hp-step hp-p3">
-            <img src={getDriverVisual('norris') || ''} alt="Norris" className="hp-img" />
-            <span className="hp-pos editorial-num font-mono">3</span>
-            <span className="hp-name font-heading editorial-label">NORRIS</span>
-          </div>
-        </div>
-      </div>
-
-      {/* TIMELINE */}
-      <div className="home-section">
-        <h3 className="hs-title font-heading editorial-headline">UPCOMING SESSIONS</h3>
-        <div className="home-timeline">
-          <div className="htl-row">
-            <div className="htl-time font-mono">14:30</div>
-            <div className="htl-marker"><div className="htl-dot" /></div>
-            <div className="htl-info">
-              <span className="htl-name font-heading editorial-headline">PRACTICE 1</span>
-              <span className="htl-date font-mono editorial-label">FRI, 05 SEP • FINISHED</span>
-            </div>
-          </div>
-          <div className="htl-row">
-            <div className="htl-time font-mono">18:00</div>
-            <div className="htl-marker"><div className="htl-dot" /></div>
-            <div className="htl-info">
-              <span className="htl-name font-heading editorial-headline">PRACTICE 2</span>
-              <span className="htl-date font-mono editorial-label">FRI, 05 SEP • FINISHED</span>
-            </div>
-          </div>
-          <div className="htl-row htl-active">
-            <div className="htl-time font-mono" style={{ color: 'var(--color-accent)' }}>17:00</div>
-            <div className="htl-marker"><div className="htl-dot" /></div>
-            <div className="htl-info">
-              <span className="htl-name font-heading editorial-headline">QUALIFYING</span>
-              <span className="htl-date font-mono editorial-label" style={{ color: 'var(--color-text-primary)' }}>SAT, 06 SEP • UPCOMING</span>
-            </div>
-          </div>
-          <div className="htl-row">
-            <div className="htl-time font-mono">16:00</div>
-            <div className="htl-marker"><div className="htl-dot" /></div>
-            <div className="htl-info">
-              <span className="htl-name font-heading editorial-headline">RACE</span>
-              <span className="htl-date font-mono editorial-label">SUN, 07 SEP</span>
-            </div>
+          <div className="hp2-step hp2-p3">
+            <div className="hp2-img-wrap"><img src={getDriverVisual('norris') || ''} alt="P3" /></div>
+            <div className="hp2-num font-mono editorial-num">3</div>
+            <div className="hp2-team-line" style={{ background: '#FF8000' }} />
           </div>
         </div>
       </div>

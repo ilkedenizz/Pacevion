@@ -18,10 +18,17 @@ export const Standings: React.FC = () => {
   const topConstructor = constructors[0];
   const otherConstructors = constructors.slice(1);
 
+  // Mock trend data for visuals
+  const getTrend = (idx: number) => {
+    if (idx % 3 === 0) return { icon: '↑', class: 'trend-up' };
+    if (idx % 4 === 0) return { icon: '↓', class: 'trend-down' };
+    return { icon: '—', class: 'trend-same' };
+  };
+
   return (
     <div className="standings-page fade-in">
       <header className="brand-header">
-        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>CHAMPIONSHIP</h1>
+        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>2026 CHAMPIONSHIP</h1>
       </header>
 
       <div className="st-tabs font-heading">
@@ -66,7 +73,7 @@ export const Standings: React.FC = () => {
                     <div className="slf-team editorial-label">{topDriver.Constructors[0]?.name}</div>
                   </div>
                   
-                  <div className="slf-pts">
+                  <div className="slf-pts-box">
                     <span className="slf-pts-val editorial-num">{topDriver.points}</span>
                     <span className="slf-pts-lbl editorial-label">PTS</span>
                   </div>
@@ -79,11 +86,13 @@ export const Standings: React.FC = () => {
                 <span className="sbh-pos">POS</span>
                 <span className="sbh-driver">DRIVER</span>
                 <span className="sbh-pts">PTS</span>
+                <span className="sbh-trend"></span>
               </div>
               
-              {otherDrivers.map((standing: any) => {
+              {otherDrivers.map((standing: any, idx: number) => {
                 const imgUrl = getDriverVisual(standing.Driver.driverId);
                 const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
+                const trend = getTrend(idx + 1);
                 return (
                   <div key={standing.Driver.driverId} className="st-row">
                     <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
@@ -94,12 +103,13 @@ export const Standings: React.FC = () => {
                         {imgUrl && <img src={imgUrl} className="st-row-img" alt={standing.Driver.familyName} />}
                       </div>
                       <div className="st-row-names">
-                        <span className="st-row-ln font-heading editorial-headline" style={{ fontSize: '14px' }}>{standing.Driver.familyName}</span>
-                        <span className="st-row-team editorial-label" style={{ fontSize: '8px' }}>{standing.Constructors[0]?.name}</span>
+                        <span className="st-row-ln font-heading editorial-headline">{standing.Driver.familyName}</span>
+                        <span className="st-row-team editorial-label">{standing.Constructors[0]?.name}</span>
                       </div>
                     </div>
                     
                     <div className="st-row-pts font-mono">{standing.points}</div>
+                    <div className={`st-row-trend trend-indicator ${trend.class}`}>{trend.icon}</div>
                   </div>
                 );
               })}
@@ -122,7 +132,7 @@ export const Standings: React.FC = () => {
                     <div className="slf-team editorial-label">{topConstructor.Constructor.nationality}</div>
                   </div>
                   
-                  <div className="slf-pts">
+                  <div className="slf-pts-box">
                     <span className="slf-pts-val editorial-num">{topConstructor.points}</span>
                     <span className="slf-pts-lbl editorial-label">PTS</span>
                   </div>
@@ -135,10 +145,12 @@ export const Standings: React.FC = () => {
                 <span className="sbh-pos">POS</span>
                 <span className="sbh-driver">TEAM</span>
                 <span className="sbh-pts">PTS</span>
+                <span className="sbh-trend"></span>
               </div>
               
-              {otherConstructors.map((standing: any) => {
+              {otherConstructors.map((standing: any, idx: number) => {
                 const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
+                const trend = getTrend(idx + 1);
                 return (
                   <div key={standing.Constructor.constructorId} className="st-row">
                     <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
@@ -146,12 +158,13 @@ export const Standings: React.FC = () => {
                     <div className="st-row-driver">
                       <div className="st-row-teamline" style={{ background: teamColor }} />
                       <div className="st-row-names" style={{ marginLeft: 0 }}>
-                        <span className="st-row-ln font-heading editorial-headline" style={{ fontSize: '14px' }}>{standing.Constructor.name}</span>
-                        <span className="st-row-team editorial-label" style={{ fontSize: '8px' }}>{standing.Constructor.nationality}</span>
+                        <span className="st-row-ln font-heading editorial-headline">{standing.Constructor.name}</span>
+                        <span className="st-row-team editorial-label">{standing.Constructor.nationality}</span>
                       </div>
                     </div>
                     
                     <div className="st-row-pts font-mono">{standing.points}</div>
+                    <div className={`st-row-trend trend-indicator ${trend.class}`}>{trend.icon}</div>
                   </div>
                 );
               })}

@@ -15,6 +15,10 @@
   
   --color-accent: #E10600;
   --color-accent-bright: #FF2A23;
+
+  --color-trend-up: #00FF66;
+  --color-trend-down: #FF3B30;
+  --color-trend-same: #9298A3;
   
   --space-1: 4px;
   --space-2: 8px;
@@ -23,7 +27,6 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
-  --space-12: 48px;
 }
 
 * {
@@ -40,6 +43,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
   overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 .font-heading {
@@ -72,6 +76,7 @@ body {
   color: var(--color-text-primary);
 }
 
+/* Animations */
 .skeleton {
   background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-elevated) 50%, var(--color-surface) 75%);
   background-size: 200% 100%;
@@ -92,6 +97,60 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(225, 6, 0, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(225, 6, 0, 0); }
+  100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(225, 6, 0, 0); }
+}
+
+@keyframes pulse-ring-green {
+  0% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 102, 0); }
+  100% { transform: scale(0.8); box-shadow: 0 0 0 0 rgba(0, 255, 102, 0); }
+}
+
 button {
   -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+/* Data Viz Elements */
+.trend-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  font-size: 14px;
+  font-weight: 900;
+}
+.trend-up { color: var(--color-trend-up); }
+.trend-down { color: var(--color-trend-down); }
+.trend-same { color: var(--color-trend-same); }
+
+.form-dots {
+  display: flex;
+  gap: 2px;
+}
+.form-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--color-surface-elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  font-weight: 800;
+  color: #fff;
+}
+.form-dot.win { background: #FFB800; color: #000; }
+.form-dot.podium { background: #C0C0C0; color: #000; }
+.form-dot.dnf { background: var(--color-accent); }
+
+/* Common UI */
+.brand-header {
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
 }

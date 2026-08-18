@@ -18,21 +18,18 @@ export const Cars: React.FC = () => {
 
   return (
     <div className="cars-page fade-in">
-      <header className="brand-header">
-        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>CARS</h1>
-      </header>
 
       {isLoading || !selectedConst ? (
         <div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
       ) : (
         <>
           <div className="car-showroom">
-            <div className="csr-bg" style={{ background: `radial-gradient(circle at center, ${getTeamDetails(selectedConst.Constructor.constructorId).color}33 0%, transparent 70%)` }} />
+            <div className="csr-bg" style={{ background: `radial-gradient(ellipse at center, ${getTeamDetails(selectedConst.Constructor.constructorId).color}33 0%, transparent 60%)` }} />
             
             <div className="csr-header">
+              <span className="font-mono editorial-label">2026 CHALLENGER</span>
               <h2 className="csr-team font-heading editorial-headline">{selectedConst.Constructor.name}</h2>
               <div className="csr-chassis font-mono">{getTeamDetails(selectedConst.Constructor.constructorId).chassis}</div>
-              <div className="csr-season editorial-label">2026 CHALLENGER</div>
             </div>
 
             <div className="csr-render-box">
@@ -42,31 +39,29 @@ export const Cars: React.FC = () => {
                 <div className="csr-placeholder font-mono">RENDER NOT AVAILABLE</div>
               )}
             </div>
+            
+            <div className="csr-gradient-floor" />
           </div>
 
           <div className="car-tech-specs">
             <div className="cts-row">
               <div className="cts-box">
                 <span className="cts-lbl editorial-label">POWER UNIT</span>
-                <span className="cts-val font-heading editorial-headline" style={{ fontSize: '18px' }}>
-                  {getTeamDetails(selectedConst.Constructor.constructorId).powerUnit}
-                </span>
+                <span className="cts-val font-heading editorial-headline">{getTeamDetails(selectedConst.Constructor.constructorId).powerUnit}</span>
               </div>
               <div className="cts-box">
-                <span className="cts-lbl editorial-label">BASE</span>
-                <span className="cts-val font-heading editorial-headline" style={{ fontSize: '18px' }}>
-                  {selectedConst.Constructor.nationality}
-                </span>
+                <span className="cts-lbl editorial-label">ENGINE</span>
+                <span className="cts-val font-heading editorial-headline">1.6L V6 TURBO</span>
               </div>
             </div>
             <div className="cts-row">
               <div className="cts-box">
-                <span className="cts-lbl editorial-label">CHAMPIONSHIP POINTS</span>
-                <span className="cts-val font-heading editorial-num">{selectedConst.points}</span>
+                <span className="cts-lbl editorial-label">TOP SPEED</span>
+                <span className="cts-val font-heading editorial-num">350+ <span style={{fontSize: '12px'}}>KM/H</span></span>
               </div>
               <div className="cts-box">
-                <span className="cts-lbl editorial-label">WINS</span>
-                <span className="cts-val font-heading editorial-num">{selectedConst.wins}</span>
+                <span className="cts-lbl editorial-label">TEAM BASE</span>
+                <span className="cts-val font-heading editorial-headline">{selectedConst.Constructor.nationality}</span>
               </div>
             </div>
           </div>

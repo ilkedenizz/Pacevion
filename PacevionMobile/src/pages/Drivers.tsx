@@ -15,6 +15,15 @@ export const Drivers: React.FC = () => {
   }
 
   const selectedDriver = drivers.find(d => d.Driver.driverId === selectedDriverId) || drivers[0];
+  const teamColor = getTeamDetails(selectedDriver?.Constructors[0]?.constructorId).color || '#444';
+
+  const mockForm = [
+    { type: 'win', val: '1' },
+    { type: 'podium', val: '3' },
+    { type: 'podium', val: '2' },
+    { type: 'points', val: '4' },
+    { type: 'win', val: '1' }
+  ];
 
   return (
     <div className="drivers-page fade-in">
@@ -26,7 +35,8 @@ export const Drivers: React.FC = () => {
         <div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
       ) : (
         <div className="driver-feature">
-          <div className="df-bg" style={{ background: `linear-gradient(180deg, ${getTeamDetails(selectedDriver.Constructors[0]?.constructorId).color}33 0%, rgba(0,0,0,0) 100%)` }} />
+          <div className="df-bg" style={{ background: `radial-gradient(circle at bottom right, ${teamColor}44 0%, rgba(0,0,0,0) 70%)` }} />
+          <div className="df-grid-bg" />
           
           <div className="df-top">
             <div className="df-number editorial-num">{selectedDriver.Driver.permanentNumber || '1'}</div>
@@ -42,7 +52,18 @@ export const Drivers: React.FC = () => {
               <span className="df-fn">{selectedDriver.Driver.givenName}</span>
               <span className="df-ln">{selectedDriver.Driver.familyName}</span>
             </h2>
-            <div className="df-team editorial-label">{selectedDriver.Constructors[0]?.name}</div>
+            <div className="df-team editorial-label" style={{ color: teamColor }}>
+              {selectedDriver.Constructors[0]?.name}
+            </div>
+            
+            <div className="df-form">
+              <span className="editorial-label">FORM</span>
+              <div className="form-dots">
+                {mockForm.map((f, i) => (
+                  <div key={i} className={`form-dot ${f.type}`}>P{f.val}</div>
+                ))}
+              </div>
+            </div>
           </div>
           
           <div className="df-stats">
@@ -63,18 +84,17 @@ export const Drivers: React.FC = () => {
       )}
 
       <div className="driver-grid-section">
-        <h3 className="dgs-title editorial-label">DRIVER GRID</h3>
         <div className="dgs-scroll">
           {drivers.map(d => {
             const isActive = d.Driver.driverId === selectedDriverId;
-            const teamColor = getTeamDetails(d.Constructors[0]?.constructorId).color || '#444';
+            const tColor = getTeamDetails(d.Constructors[0]?.constructorId).color || '#444';
             return (
               <button 
                 key={d.Driver.driverId} 
                 className={`dg-btn ${isActive ? 'active' : ''}`}
                 onClick={() => setSelectedDriverId(d.Driver.driverId)}
               >
-                <div className="dg-btn-accent" style={{ background: isActive ? teamColor : 'transparent' }} />
+                <div className="dg-btn-accent" style={{ background: isActive ? tColor : 'transparent' }} />
                 <span className="dg-btn-ln font-heading editorial-headline">{d.Driver.familyName}</span>
               </button>
             );
