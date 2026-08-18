@@ -4,81 +4,53 @@ import CircuitTrack from '../components/common/CircuitTrack';
 import './Calendar.css';
 
 export const Calendar: React.FC = () => {
-  const { data: calendarData, isLoading, error } = useCalendar();
+  const { data: calendar, isLoading } = useCalendar('2026');
 
-  const now = new Date().getTime();
+  if (isLoading) {
+    return <div className="calendar-page"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>;
+  }
+
+  const races = calendar || [];
+  
+  // Find next race based on date (mock logic)
+  const nextRaceIndex = races.findIndex(r => new Date(r.date) > new Date('2026-08-15'));
+  const nextRaceObj = nextRaceIndex !== -1 ? races[nextRaceIndex] : null;
 
   return (
-    <div className="calendar-page page-content">
-      <header className="calendar-header">
-        <h1 className="page-title font-heading">2026 RACE CALENDAR</h1>
-        <p className="rounds-count font-mono">{calendarData ? `${calendarData.length} ROUNDS` : '...'}</p>
+    <div className="calendar-page fade-in">
+      <header className="brand-header">
+        <h1 className="brand-title font-heading">CALENDAR</h1>
       </header>
 
-      {isLoading ? (
-        <div className="calendar-list skeleton-list">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="skeleton calendar-card-skeleton" />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="error-state font-mono">
-          <p>Failed to load calendar data</p>
-          <button onClick={() => window.location.reload()} className="retry-btn">
-            Retry
-          </button>
-        </div>
-      ) : calendarData ? (
-        <div className="calendar-list">
-          {calendarData.map((race) => {
-            const raceTime = new Date(race.date).getTime();
-            const isCompleted = raceTime < now;
-            const isNext =
-              !isCompleted &&
-              calendarData.find((r) => new Date(r.date).getTime() >= now)?.round === race.round;
-
-            let status = 'UPCOMING';
-            if (isCompleted) status = 'COMPLETED';
-            if (isNext) status = 'NEXT';
-
-            return (
-              <div key={race.round} className={`race-card ${status.toLowerCase()}`}>
-                <div className="race-card-header font-mono">
-                  <span className="round-badge">R{String(race.round).padStart(2, '0')}</span>
-                  <span className="status-badge">{status}</span>
+      <div className="cal-list">
+        {races.map((race) => {
+          const isNext = nextRaceObj && nextRaceObj.round === race.round;
+          return (
+            <div key={race.round} className={`cal-card ${isNext ? 'cal-next' : ''}`}>
+              {isNext && <div className="cal-next-badge font-mono">NEXT RACE</div>}
+              
+              <div className="cal-content">
+                <div className="cal-info">
+                  <div className="cal-round font-mono">ROUND {race.round.padStart(2, '0')}</div>
+                  <h3 className="cal-title font-heading">{race.raceName}</h3>
+                  <div className="cal-loc font-mono">{race.Circuit.Location.locality}</div>
+                  <div className="cal-date font-heading">{new Date(race.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' }).toUpperCase()}</div>
                 </div>
-
-                <div className="race-card-body">
-                  <div className="race-card-content">
-                    <h2 className="race-name font-heading">{race.raceName}</h2>
-                    <p className="circuit-name font-mono">{race.Circuit.circuitName}</p>
-
-                    <div className="race-meta font-mono">
-                      <span className="race-date">
-                        {new Date(race.date).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </span>
-                      <span className="race-country">📍 {race.Circuit.Location.country}</span>
-                    </div>
-                  </div>
-
-                  <div className="circuit-map-container">
-                    <CircuitTrack
-                      circuitId={race.Circuit.circuitId}
-                      circuitName={race.Circuit.circuitName}
-                      country={race.Circuit.Location.country}
-                      raceName={race.raceName}
-                      variant="card"
-                    />
-                  </div>
+                
+                <div className="cal-circuit-graphic">
+                  <CircuitTrack 
+                    circuitId={race.Circuit.circuitId}
+                    circuitName={race.Circuit.circuitName}
+                    country={race.Circuit.Location.country}
+                    raceName={race.raceName}
+                    variant="compact"
+                  />
                 </div>
               </div>
-            );
-          })}
-        </div>
-      ) : null}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

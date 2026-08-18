@@ -1,99 +1,81 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Colors */
-  --bg-color: #0a0a0f;
-  --surface-color: #111118;
-  --surface-elevated: #1a1a24;
-  --border-color: rgba(255, 255, 255, 0.08);
-  --accent-color: #e10600;
+  /* Core Colors */
+  --color-bg: #0B0C0E;
+  --color-bg-secondary: #111316;
+  --color-surface: #17191D;
+  --color-surface-elevated: #1D2025;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
   
-  /* Text Colors */
-  --text-primary: #f5f5f5;
-  --text-secondary: rgba(255, 255, 255, 0.55);
-  --text-muted: rgba(255, 255, 255, 0.3);
+  /* Accents */
+  --color-accent: #E10600;
+  --color-accent-bright: #FF2A23;
   
-  /* Typography */
-  --font-heading: 'Titillium Web', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  /* Text */
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #9298A3;
+  --color-text-muted: rgba(255, 255, 255, 0.4);
 
   /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-7: 28px;
-  --space-8: 32px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  /* Typography */
+  --font-heading: 'Titillium Web', 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', system-ui, sans-serif;
 }
 
-*, *::before, *::after {
+* {
   box-sizing: border-box;
-}
-
-html, body, #root {
-  height: 100%;
-  width: 100%;
   margin: 0;
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-tap-highlight-color: transparent;
-}
-
 body {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
   font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  padding-bottom: env(safe-area-inset-bottom);
-  padding-top: env(safe-area-inset-top);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  touch-action: manipulation;
 }
 
-/* Utilities */
+.font-heading {
+  font-family: var(--font-heading);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
 .text-accent {
-  color: var(--accent-color);
-}
-
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--surface-color) 0%,
-    var(--surface-elevated) 50%,
-    var(--surface-color) 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 4px;
-}
-
-/* Animations */
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  color: var(--color-accent);
 }
 
 .fade-in {
-  animation: fade-in 0.3s ease-in-out forwards;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-elevated) 50%, var(--color-surface) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

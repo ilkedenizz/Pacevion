@@ -44,3 +44,21 @@ export const getTeamVisual = (constructorId?: string): string | null => {
   }
   return null;
 };
+
+export const getDriverVisual = (driverId?: string): string | null => {
+  if (!driverId) return null;
+  const id = driverId.toLowerCase();
+  // Most drivers have their last name as ID or full name. We map common ones.
+  // We have webp files in public/assets/img/drivers/
+  const DRIVERS = [
+    'albon', 'alonso', 'antonelli', 'bearman', 'bortoleto', 'bottas', 
+    'colapinto', 'gasly', 'hadjar', 'hamilton', 'hulkenberg', 'lawson', 
+    'leclerc', 'lindblad', 'max_verstappen', 'norris', 'ocon', 'perez', 
+    'piastri', 'russell', 'sainz', 'stroll'
+  ];
+  if (id === 'verstappen') return `${base}assets/img/drivers/max_verstappen.webp`;
+  if (DRIVERS.includes(id)) {
+    return `${base}assets/img/drivers/${id}.webp`;
+  }
+  return null;
+}; 

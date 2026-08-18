@@ -1,104 +1,93 @@
-import React, { useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronLeft, AlertCircle } from 'lucide-react';
-import { TEAM_DETAILS } from '../data/teamDetails';
+import React, { useState } from 'react';
+import { useConstructorStandings } from '../hooks/useF1Data';
+import { getTeamDetails } from '../data/teamDetails';
 import { getTeamVisual } from '../data/assets';
 import './Cars.css';
 
 export const Cars: React.FC = () => {
-  const navigate = useNavigate();
-  const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
+  const { data: constructorsData, isLoading } = useConstructorStandings('2026');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const teamsList = useMemo(() => {
-    return Object.entries(TEAM_DETAILS).map(([id, details]) => ({
-      id,
-      ...details,
-      visualUrl: getTeamVisual(id),
-    }));
-  }, []);
+  const constructors = constructorsData || [];
+  
+  // Ensure we have a selected ID
+  if (!selectedId && constructors.length > 0) {
+    setSelectedId(constructors[0].Constructor.constructorId);
+  }
 
-  const totalTeams = teamsList.length;
+  const selectedConst = constructors.find(c => c.Constructor.constructorId === selectedId) || constructors[0];
 
-  const handleImageError = (id: string) => {
-    setImageErrors((prev) => ({ ...prev, [id]: true }));
-  };
+  if (isLoading || !selectedConst) {
+    return <div className="cars-page"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>;
+  }
+
+  const tDetails = getTeamDetails(selectedConst.Constructor.constructorId);
+  const carVisual = getTeamVisual(selectedConst.Constructor.constructorId);
 
   return (
-    <div className="cars-dashboard">
-      {/* Header */}
-      <header className="cars-header">
-        <div className="cars-header-top">
-          <button className="back-btn" onClick={() => navigate(-1)} aria-label="Go back">
-            <ChevronLeft size={22} />
-          </button>
-          <div className="cars-header-titles">
-            <h1 className="brand-badge font-mono">2026 CARS</h1>
-            <p className="championship-sub font-mono">2026 FIA FORMULA 1 WORLD CHAMPIONSHIP</p>
-          </div>
-        </div>
-        <div className="cars-stats-pill font-mono">
-          {totalTeams} TEAMS · {totalTeams} CARS
-        </div>
+    <div className="cars-page fade-in">
+      <header className="brand-header">
+        <h1 className="brand-title font-heading">CARS</h1>
       </header>
 
-      {/* Cars Gallery */}
-      <div className="cars-list">
-        {teamsList.map((team) => {
-          const hasImageError = imageErrors[team.id];
-          const hasVisual = team.visualUrl && !hasImageError;
+      <div className="car-hero-area">
+        <div className="car-hero-bg" style={{ background: `linear-gradient(135deg, ${tDetails.color}33 0%, rgba(0,0,0,0) 100%)` }} />
+        
+        <div className="car-hero-text">
+          <h2 className="car-team-name font-heading">{selectedConst.Constructor.name}</h2>
+          <h3 className="car-chassis-name font-mono">2026 CHALLENGER</h3>
+        </div>
 
-          return (
-            <div
-              key={team.id}
-              className="car-card"
-              style={{ borderTopColor: team.color || 'var(--color-accent)' }}
-            >
-              {/* Header inside card */}
-              <div className="car-card-header">
-                <div className="team-identity">
-                  <h2 className="team-full-name font-heading">{team.fullName}</h2>
-                  <span className="team-color-indicator font-mono" style={{ color: team.color }}>
-                    ● 2026 SPECIFICATION
-                  </span>
-                </div>
-              </div>
+        <div className="car-render-container">
+          {carVisual ? (
+            <img src={carVisual} alt={selectedConst.Constructor.name} className="car-render-img" />
+          ) : (
+            <div className="car-render-placeholder font-mono">CAR RENDER UNAVAILABLE</div>
+          )}
+        </div>
+      </div>
 
-              {/* CAR IMAGE VISUAL CONTAINER */}
-              <div className="car-image-wrapper">
-                {hasVisual ? (
-                  <img
-                    src={team.visualUrl!}
-                    alt={`${team.fullName} 2026 F1 Car`}
-                    className="car-img"
-                    loading="lazy"
-                    onError={() => handleImageError(team.id)}
-                  />
-                ) : (
-                  <div className="car-unavailable-box font-mono">
-                    <AlertCircle size={18} className="unavail-icon" />
-                    <span className="unavail-title">CAR VISUAL UNAVAILABLE</span>
-                    <span className="unavail-sub">{team.fullName}</span>
-                  </div>
-                )}
-              </div>
+      <div className="car-tech-panel">
+        <div className="ct-row">
+          <div className="ct-box">
+            <span className="ct-lbl font-mono">POWER UNIT</span>
+            <span className="ct-val font-heading">{tDetails.powerUnit}</span>
+          </div>
+          <div className="ct-box">
+            <span className="ct-lbl font-mono">BASE</span>
+            <span className="ct-val font-heading">{selectedConst.Constructor.nationality}</span>
+          </div>
+        </div>
+        <div className="ct-row">
+          <div className="ct-box">
+            <span className="ct-lbl font-mono">POINTS</span>
+            <span className="ct-val font-heading">{selectedConst.points}</span>
+          </div>
+          <div className="ct-box">
+            <span className="ct-lbl font-mono">WINS</span>
+            <span className="ct-val font-heading">{selectedConst.wins}</span>
+          </div>
+        </div>
+      </div>
 
-              {/* Technical Specifications */}
-              <div className="car-specs-grid font-mono">
-                <div className="spec-item">
-                  <span className="spec-lbl">CHASSIS</span>
-                  <span className="spec-val font-heading">{team.chassis}</span>
-                </div>
-                <div className="spec-item">
-                  <span className="spec-lbl">POWER UNIT</span>
-                  <span className="spec-val font-heading">{team.powerUnit}</span>
-                </div>
-              </div>
-
-              {/* Description */}
-              <p className="team-description">{team.description}</p>
-            </div>
-          );
-        })}
+      <div className="car-selector-section">
+        <h4 className="cs-title font-heading">SELECT TEAM</h4>
+        <div className="cs-scroll">
+          {constructors.map(c => {
+            const tColor = getTeamDetails(c.Constructor.constructorId).color || '#444';
+            const isActive = c.Constructor.constructorId === selectedId;
+            return (
+              <button 
+                key={c.Constructor.constructorId}
+                className={`cs-btn ${isActive ? 'active' : ''}`}
+                onClick={() => setSelectedId(c.Constructor.constructorId)}
+                style={{ borderBottomColor: isActive ? tColor : 'transparent' }}
+              >
+                <span className="cs-btn-text font-heading">{c.Constructor.name}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

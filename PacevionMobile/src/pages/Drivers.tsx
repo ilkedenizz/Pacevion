@@ -1,105 +1,96 @@
-import React, { useMemo } from 'react';
-import { RefreshCw, User } from 'lucide-react';
+import React from 'react';
 import { useDriverStandings } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
+import { getDriverVisual } from '../data/assets';
 import './Drivers.css';
 
 export const Drivers: React.FC = () => {
-  const { data: drivers, isLoading, error, refetch } = useDriverStandings();
+  const { data: driverData, isLoading } = useDriverStandings('2026');
 
-  // Dynamic driver and team counts
-  const { totalDrivers, totalTeams } = useMemo(() => {
-    if (!drivers || drivers.length === 0) {
-      return { totalDrivers: 0, totalTeams: 0 };
-    }
-    const teamSet = new Set(drivers.map((d) => d.Constructors[0]?.constructorId).filter(Boolean));
-    return {
-      totalDrivers: drivers.length,
-      totalTeams: teamSet.size,
-    };
-  }, [drivers]);
+  const drivers = driverData || [];
+  const topDriver = drivers[0];
+  const otherDrivers = drivers.slice(1);
 
   return (
-    <div className="drivers-dashboard">
-      {/* Header */}
-      <header className="drivers-header">
-        <h1 className="brand-badge font-mono">DRIVERS</h1>
-        <p className="championship-sub font-mono">2026 FIA FORMULA 1 WORLD CHAMPIONSHIP</p>
-        <div className="drivers-stats-pill font-mono">
-          {isLoading ? (
-            'LOADING DRIVERS...'
-          ) : (
-            `${totalDrivers} DRIVERS · ${totalTeams} TEAMS`
-          )}
-        </div>
+    <div className="drivers-page fade-in">
+      <header className="brand-header">
+        <h1 className="brand-title font-heading">DRIVERS</h1>
       </header>
 
-      {/* Main Content */}
-      <div className="drivers-body">
-        {isLoading ? (
-          <div className="skeleton-container">
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="skeleton driver-card-skeleton" />
-            ))}
+      {isLoading ? (
+        <div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
+      ) : topDriver ? (
+        <div className="driver-hero-card">
+          <div className="dh-accent" style={{ background: getTeamDetails(topDriver.Constructors[0]?.constructorId).color || '#E10600' }} />
+          
+          <div className="dh-content">
+            <div className="dh-number font-heading">#{topDriver.Driver.permanentNumber || '1'}</div>
+            
+            <div className="dh-portrait-wrapper">
+              <img 
+                src={getDriverVisual(topDriver.Driver.driverId)!} 
+                alt={topDriver.Driver.familyName} 
+                className="dh-portrait"
+              />
+            </div>
+            
+            <div className="dh-info">
+              <h2 className="dh-name font-heading">
+                <span className="dh-first">{topDriver.Driver.givenName}</span>
+                <span className="dh-last">{topDriver.Driver.familyName}</span>
+              </h2>
+              <div className="dh-team font-mono">{topDriver.Constructors[0]?.name}</div>
+            </div>
           </div>
-        ) : error ? (
-          <div className="error-card font-mono">
-            <p>DRIVER DATA UNAVAILABLE</p>
-            <button className="retry-btn font-mono" onClick={() => refetch()}>
-              <RefreshCw size={12} /> RETRY
-            </button>
+          
+          <div className="dh-stats">
+            <div className="dh-stat">
+              <div className="dh-stat-val font-heading">{topDriver.points}</div>
+              <div className="dh-stat-lbl font-mono">POINTS</div>
+            </div>
+            <div className="dh-stat">
+              <div className="dh-stat-val font-heading">{topDriver.wins}</div>
+              <div className="dh-stat-lbl font-mono">WINS</div>
+            </div>
+            <div className="dh-stat">
+              <div className="dh-stat-val font-heading">0</div>
+              <div className="dh-stat-lbl font-mono">PODIUMS</div>
+            </div>
           </div>
-        ) : drivers && drivers.length > 0 ? (
-          <div className="drivers-list">
-            {drivers.map((standing) => {
-              const driver = standing.Driver;
-              const constructor = standing.Constructors[0];
-              const team = getTeamDetails(constructor?.constructorId || '');
-              const initials = `${driver.givenName.charAt(0)}${driver.familyName.charAt(0)}`.toUpperCase();
+        </div>
+      ) : null}
 
-              return (
-                <div
-                  key={driver.driverId}
-                  className="driver-card"
-                  style={{ borderLeftColor: team.color || 'var(--color-border)' }}
-                >
-                  {/* Left Avatar / Number Badge */}
-                  <div className="driver-avatar-box" style={{ borderColor: team.color || 'rgba(255,255,255,0.1)' }}>
-                    {driver.permanentNumber ? (
-                      <span className="driver-num-val font-heading">#{driver.permanentNumber}</span>
-                    ) : (
-                      <span className="driver-initials-val font-mono">{initials}</span>
-                    )}
-                    <User size={12} className="avatar-icon" />
-                  </div>
-
-                  {/* Center Details */}
-                  <div className="driver-details">
-                    <span className="driver-given-name">{driver.givenName}</span>
-                    <h3 className="driver-family-name font-heading">{driver.familyName}</h3>
-                    <span className="driver-team-name font-mono" style={{ color: team.color }}>
-                      {constructor?.name || 'F1 Team'}
-                    </span>
-                    <span className="driver-nat font-mono">{driver.nationality}</span>
-                  </div>
-
-                  {/* Right Stats & Rank */}
-                  <div className="driver-stats-box">
-                    <span className="driver-rank font-mono">P{standing.position}</span>
-                    <div className="driver-pts-row font-heading">
-                      {standing.points} <span className="pts-unit font-mono">PTS</span>
-                    </div>
-                    {parseInt(standing.wins) > 0 && (
-                      <span className="driver-wins font-mono">{standing.wins} WINS</span>
-                    )}
-                  </div>
+      <div className="other-drivers-list">
+        {otherDrivers.map((standing: any) => {
+          const imgUrl = getDriverVisual(standing.Driver.driverId);
+          const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
+          
+          return (
+            <div key={standing.Driver.driverId} className="od-row">
+              <div className="od-pos font-mono">{standing.position}</div>
+              
+              <div className="od-avatar-container">
+                <div className="od-avatar-border" style={{ borderColor: teamColor }} />
+                <div className="od-avatar">
+                  {imgUrl ? <img src={imgUrl} alt="Avatar" className="od-img" /> : null}
                 </div>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="empty-card font-mono">No drivers available</div>
-        )}
+              </div>
+              
+              <div className="od-details">
+                <div className="od-name font-heading">
+                  <span className="od-fn">{standing.Driver.givenName}</span>
+                  <span className="od-ln">{standing.Driver.familyName}</span>
+                </div>
+                <div className="od-team font-mono">{standing.Constructors[0]?.name}</div>
+              </div>
+              
+              <div className="od-points">
+                <span className="od-pts font-heading">{standing.points}</span>
+                <span className="od-pts-lbl font-mono">PTS</span>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

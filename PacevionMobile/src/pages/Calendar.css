@@ -1,155 +1,93 @@
 .calendar-page {
-  padding: 16px 16px calc(80px + env(safe-area-inset-bottom));
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(80px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 16px;
-  box-sizing: border-box;
+  min-height: 100vh;
 }
 
-.calendar-header {
+.cal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cal-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.cal-next {
+  border-color: var(--color-accent);
+  background: var(--color-surface-elevated);
+}
+
+.cal-next-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-bottom-left-radius: 8px;
+  letter-spacing: 1px;
+}
+
+.cal-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.cal-round {
+  font-size: 10px;
+  color: var(--color-text-secondary);
   margin-bottom: 4px;
 }
 
-.page-title {
-  font-size: 22px;
+.cal-title {
+  font-size: 18px;
   font-weight: 900;
   color: #fff;
-  margin: 0 0 4px 0;
-  letter-spacing: 0.5px;
-}
-
-.rounds-count {
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--color-accent, #e10600);
+  line-height: 1.1;
+  margin-bottom: 2px;
   text-transform: uppercase;
-  margin: 0;
-  letter-spacing: 1px;
 }
 
-.calendar-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.race-card {
-  background: var(--color-surface, #111118);
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  border-radius: 12px;
-  overflow: hidden;
-  border-left: 3px solid var(--color-border, rgba(255, 255, 255, 0.15));
-  transition: opacity 0.2s ease;
-}
-
-.race-card.next {
-  border-left-color: var(--color-accent, #e10600);
-  background: linear-gradient(135deg, rgba(225, 6, 0, 0.06) 0%, var(--color-surface, #111118) 70%);
-}
-
-.race-card.completed {
-  opacity: 0.7;
-}
-
-.race-card.completed:hover, .race-card.completed:active {
-  opacity: 1;
-}
-
-.race-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.round-badge {
-  font-weight: 800;
+.cal-loc {
   font-size: 12px;
-  color: #fff;
-  letter-spacing: 1px;
-}
-
-.status-badge {
-  font-size: 9px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
-  letter-spacing: 1px;
-}
-
-.race-card.next .status-badge {
-  background: var(--color-accent, #e10600);
-  color: #fff;
-}
-
-.race-card-body {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 14px;
-  gap: 12px;
-}
-
-.race-card-content {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.race-name {
-  font-size: 16px;
-  font-weight: 900;
-  color: #fff;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
   text-transform: uppercase;
-  margin: 0;
-  line-height: 1.2;
 }
 
-.circuit-name {
-  font-size: 11px;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
-  margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.race-meta {
-  display: flex;
-  gap: 10px;
-  font-size: 11px;
+.cal-date {
+  font-size: 14px;
+  font-weight: 800;
   color: #fff;
-  margin-top: 4px;
+  background: rgba(255,255,255,0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  width: fit-content;
 }
 
-.race-date {
-  font-weight: 700;
-  color: var(--color-accent, #e10600);
-}
-
-.race-country {
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.7));
-}
-
-.circuit-map-container {
-  width: 90px;
-  height: 90px;
-  flex-shrink: 0;
+.cal-circuit-graphic {
+  width: 80px;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.25);
-  border-radius: 8px;
-  padding: 4px;
-  box-sizing: border-box;
-}
-
-.calendar-card-skeleton {
-  height: 120px;
-  border-radius: 12px;
+  opacity: 0.8;
 }

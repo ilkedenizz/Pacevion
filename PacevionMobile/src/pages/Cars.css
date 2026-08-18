@@ -1,239 +1,158 @@
-/* src/pages/Cars.css - Mobile First 2026 F1 Car Gallery */
-
-.cars-dashboard {
+.cars-page {
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(80px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding: 16px 16px calc(80px + env(safe-area-inset-bottom));
+  gap: 24px;
+  min-height: 100vh;
+}
+
+.car-hero-area {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.car-hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  box-sizing: border-box;
-  overflow-x: hidden;
-  animation: fadeUp 350ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  height: 100%;
+  z-index: 1;
 }
 
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.car-hero-text {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 24px;
 }
 
-/* Header */
-.cars-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  padding-bottom: 10px;
+.car-team-name {
+  font-size: 28px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  text-transform: uppercase;
 }
 
-.cars-header-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.car-chassis-name {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  letter-spacing: 2px;
+  margin-top: 4px;
 }
 
-.back-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #ffffff;
-  border-radius: 8px;
-  width: 36px;
-  height: 36px;
+.car-render-container {
+  position: relative;
+  z-index: 3;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 150ms ease;
+  margin-top: auto;
 }
 
-.back-btn:active {
-  background: rgba(255, 255, 255, 0.15);
+.car-render-img {
+  width: 140%;
+  max-width: 500px;
+  object-fit: contain;
+  margin-left: -20%;
+  filter: drop-shadow(0 20px 20px rgba(0,0,0,0.8));
 }
 
-.cars-header-titles {
+.car-render-placeholder {
+  color: var(--color-text-muted);
+  font-size: 12px;
+}
+
+.car-tech-panel {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-}
-
-.cars-stats-pill {
-  font-size: 10px;
-  font-weight: 800;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 3px 8px;
-  border-radius: 4px;
-  display: inline-block;
-  align-self: flex-start;
-  letter-spacing: 1px;
-}
-
-/* Cars List Grid */
-.cars-list {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-/* CAR CARD */
-.car-card {
-  background: var(--color-surface, #111118);
-  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  border-top: 4px solid var(--color-accent, #e10600);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
+}
+
+.ct-row {
+  display: flex;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.ct-row:last-child {
+  border-bottom: none;
+}
+
+.ct-box {
+  flex: 1;
   padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  box-sizing: border-box;
-  transition: transform 120ms ease, background 120ms ease, box-shadow 120ms ease;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+  border-right: 1px solid var(--color-border-subtle);
+}
+.ct-box:last-child {
+  border-right: none;
 }
 
-.car-card:active {
-  transform: scale(0.99);
-  background: rgba(255, 255, 255, 0.03);
+.ct-lbl {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
 }
 
-/* Card Inner Header */
-.car-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+.ct-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #fff;
+  text-transform: uppercase;
 }
 
-.team-identity {
+.car-selector-section {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 12px;
 }
 
-.team-full-name {
-  font-size: 18px;
-  font-weight: 900;
-  color: #ffffff;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.team-color-indicator {
-  font-size: 9px;
-  font-weight: 800;
+.cs-title {
+  font-size: 12px;
+  color: var(--color-text-secondary);
   letter-spacing: 1.5px;
 }
 
-/* CAR IMAGE WRAPPER (Visual Sizing Equalization) */
-.car-image-wrapper {
-  width: 100%;
-  height: 140px;
+.cs-scroll {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, rgba(0, 0, 0, 0.3) 100%);
+  overflow-x: auto;
+  gap: 12px;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+}
+.cs-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cs-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-bottom-width: 3px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.04);
-  padding: 8px 12px;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
+  padding: 16px 24px;
+  min-width: max-content;
+  cursor: pointer;
+  transition: all 0.2s;
 }
 
-.car-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.6));
-  transition: transform 200ms ease;
+.cs-btn.active {
+  background: var(--color-surface-elevated);
+  border-color: rgba(255,255,255,0.15);
 }
 
-.car-unavailable-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
-  text-align: center;
-  padding: 12px;
-}
-
-.unavail-icon {
-  color: var(--color-accent, #e10600);
-}
-
-.unavail-title {
-  font-size: 10px;
+.cs-btn-text {
+  font-size: 14px;
   font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 1px;
-}
-
-.unavail-sub {
-  font-size: 9px;
-  color: var(--color-text-muted, rgba(255, 255, 255, 0.4));
-}
-
-/* Technical Specs Grid */
-.car-specs-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  background: rgba(0, 0, 0, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 6px;
-  padding: 8px 12px;
-}
-
-.spec-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spec-lbl {
-  font-size: 8px;
-  font-weight: 800;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.5));
-  letter-spacing: 1px;
-}
-
-.spec-val {
-  font-size: 13px;
-  font-weight: 800;
-  color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.team-description {
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--color-text-secondary, rgba(255, 255, 255, 0.6));
-  margin: 0;
-}
-
-/* SCREEN SPECIFIC BREAKPOINTS */
-@media (max-width: 360px) {
-  .team-full-name {
-    font-size: 16px;
-  }
-  .car-image-wrapper {
-    height: 120px;
-  }
-  .spec-val {
-    font-size: 11px;
-  }
+  color: #fff;
 }
