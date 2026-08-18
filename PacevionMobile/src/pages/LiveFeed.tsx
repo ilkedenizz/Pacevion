@@ -15,61 +15,71 @@ export const LiveFeed: React.FC = () => {
   return (
     <div className="live-page fade-in">
       
-      <div className="live-header">
-        <div className="lh-status">
-          <div className="lh-dot" />
-          <span className="lh-text font-heading">LIVE</span>
+      <div className="live-header-box">
+        <div className="lhb-status">
+          <div className="lhb-dot" />
+          <span className="font-mono editorial-label" style={{ color: 'var(--color-accent)' }}>LIVE</span>
         </div>
-        <div className="lh-session font-heading">QUALIFYING</div>
+        <h1 className="lhb-title font-heading editorial-headline">QUALIFYING</h1>
       </div>
 
-      <div className="live-tech-grid font-mono">
-        <div className="lt-box">
-          <span className="lt-lbl">CURRENT LAP</span>
-          <span className="lt-val font-heading">Q3</span>
+      <div className="live-tech-grid">
+        <div className="lt-cell">
+          <span className="editorial-label">CURRENT LAP</span>
+          <span className="lt-cell-val font-mono">Q3</span>
         </div>
-        <div className="lt-box">
-          <span className="lt-lbl">TRACK STATUS</span>
-          <span className="lt-val font-heading text-green">GREEN</span>
-        </div>
-        <div className="lt-box">
-          <span className="lt-lbl">AIR TEMP</span>
-          <span className="lt-val font-heading">24°C</span>
-        </div>
-        <div className="lt-box">
-          <span className="lt-lbl">TRACK TEMP</span>
-          <span className="lt-val font-heading">38°C</span>
+        <div className="lt-cell">
+          <span className="editorial-label">TRACK STATUS</span>
+          <span className="lt-cell-val font-mono" style={{ color: '#00FF66' }}>GREEN</span>
         </div>
       </div>
 
-      <div className="timing-board-container">
-        <div className="tb-col-header font-mono">
-          <span className="tc-p">P</span>
-          <span className="tc-driver">DRIVER</span>
-          <span className="tc-time">TIME</span>
-          <span className="tc-gap">GAP</span>
+      <div className="live-timing-board">
+        <div className="ltb-header editorial-label">
+          <span className="ltbh-pos">P</span>
+          <span className="ltbh-driver">DRIVER</span>
+          <span className="ltbh-time">TIME</span>
+          <span className="ltbh-gap">GAP</span>
         </div>
 
-        <div className="tb-rows">
-          {mockTiming.map((t) => {
+        <div className="ltb-body">
+          {mockTiming.map((t, idx) => {
             const visual = getDriverVisual(t.id);
+            const isLeader = idx === 0;
             return (
-              <div key={t.pos} className="tb-row">
-                <span className="tr-pos font-mono">{t.pos.padStart(2, '0')}</span>
+              <div key={t.pos} className={`ltb-row ${isLeader ? 'ltb-leader' : ''}`}>
+                <span className="ltr-pos font-mono">{t.pos.padStart(2, '0')}</span>
                 
-                <div className="tr-driver">
-                  <div className="tr-team-accent" style={{ background: t.teamColor }} />
-                  <div className="tr-avatar">
-                    {visual ? <img src={visual} alt={t.name} className="tr-avatar-img" /> : null}
+                <div className="ltr-driver">
+                  <div className="ltr-accent" style={{ background: t.teamColor }} />
+                  <div className="ltr-avatar">
+                    {visual && <img src={visual} alt={t.name} className="ltr-img" />}
                   </div>
-                  <span className="tr-name font-heading">{t.name}</span>
+                  <span className="ltr-name font-heading editorial-headline" style={{ fontSize: '15px' }}>{t.name}</span>
                 </div>
 
-                <span className="tr-time font-mono">{t.time}</span>
-                <span className="tr-gap font-mono">{t.gap}</span>
+                <span className="ltr-time font-mono" style={{ color: isLeader ? 'var(--color-text-primary)' : 'var(--color-text-secondary)' }}>
+                  {t.time}
+                </span>
+                <span className="ltr-gap font-mono">{t.gap}</span>
               </div>
             );
           })}
+        </div>
+      </div>
+
+      <div className="live-weather">
+        <div className="lw-box">
+          <span className="editorial-label">TRACK TEMP</span>
+          <span className="lw-val font-heading editorial-num">38°</span>
+        </div>
+        <div className="lw-box">
+          <span className="editorial-label">AIR TEMP</span>
+          <span className="lw-val font-heading editorial-num">24°</span>
+        </div>
+        <div className="lw-box">
+          <span className="editorial-label">WIND</span>
+          <span className="lw-val font-heading editorial-num">12<span style={{ fontSize: '12px' }}>KM/H</span></span>
         </div>
       </div>
 

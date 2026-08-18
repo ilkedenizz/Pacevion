@@ -21,7 +21,7 @@ export const Standings: React.FC = () => {
   return (
     <div className="standings-page fade-in">
       <header className="brand-header">
-        <h1 className="brand-title font-heading">CHAMPIONSHIP</h1>
+        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>CHAMPIONSHIP</h1>
       </header>
 
       <div className="st-tabs font-heading">
@@ -42,66 +42,64 @@ export const Standings: React.FC = () => {
       {tab === 'drivers' ? (
         dLoading ? <div className="skeleton" style={{ height: 400, borderRadius: 16 }} /> : (
           <div className="st-content">
-            {/* LEADER */}
             {topDriver && (
-              <div className="st-leader-card">
-                <div className="st-leader-accent" style={{ background: getTeamDetails(topDriver.Constructors[0]?.constructorId).color || '#E10600' }} />
-                <div className="st-leader-content">
-                  <div className="st-leader-pos font-heading">01</div>
+              <div className="st-leader-feature">
+                <div className="slf-accent" style={{ background: getTeamDetails(topDriver.Constructors[0]?.constructorId).color || '#E10600' }} />
+                
+                <div className="slf-inner">
+                  <div className="slf-pos editorial-num">01</div>
                   
-                  <div className="st-leader-portrait-wrap">
+                  <div className="slf-portrait-box">
                     <img 
                       src={getDriverVisual(topDriver.Driver.driverId)!} 
                       alt={topDriver.Driver.familyName} 
-                      className="st-leader-portrait" 
+                      className="slf-portrait" 
                     />
                   </div>
-
-                  <div className="st-leader-info">
-                    <div className="st-leader-num font-heading">#{topDriver.Driver.permanentNumber || '1'}</div>
-                    <div className="st-leader-name font-heading">
-                      {topDriver.Driver.givenName} <br />
-                      <strong>{topDriver.Driver.familyName}</strong>
+                  
+                  <div className="slf-info">
+                    <div className="slf-num font-mono">#{topDriver.Driver.permanentNumber || '1'}</div>
+                    <div className="slf-name font-heading editorial-headline">
+                      {topDriver.Driver.givenName} <br/>
+                      {topDriver.Driver.familyName}
                     </div>
-                    <div className="st-leader-team font-mono">{topDriver.Constructors[0]?.name}</div>
+                    <div className="slf-team editorial-label">{topDriver.Constructors[0]?.name}</div>
                   </div>
                   
-                  <div className="st-leader-pts">
-                    <span className="sl-val font-heading">{topDriver.points}</span>
-                    <span className="sl-lbl font-mono">PTS</span>
+                  <div className="slf-pts">
+                    <span className="slf-pts-val editorial-num">{topDriver.points}</span>
+                    <span className="slf-pts-lbl editorial-label">PTS</span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* OTHERS TIMING BOARD */}
-            <div className="st-timing-board">
-              <div className="st-tb-header font-mono">
-                <span className="tbh-pos">POS</span>
-                <span className="tbh-driver">DRIVER</span>
-                <span className="tbh-pts">PTS</span>
+            <div className="st-board">
+              <div className="st-board-header editorial-label">
+                <span className="sbh-pos">POS</span>
+                <span className="sbh-driver">DRIVER</span>
+                <span className="sbh-pts">PTS</span>
               </div>
               
               {otherDrivers.map((standing: any) => {
                 const imgUrl = getDriverVisual(standing.Driver.driverId);
                 const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
                 return (
-                  <div key={standing.Driver.driverId} className="st-tb-row">
-                    <div className="st-pos font-mono">{standing.position.padStart(2, '0')}</div>
+                  <div key={standing.Driver.driverId} className="st-row">
+                    <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
                     
-                    <div className="st-driver-col">
-                      <div className="st-team-line" style={{ background: teamColor }} />
-                      <div className="st-avatar">
-                        {imgUrl ? <img src={imgUrl} className="st-avatar-img" alt={standing.Driver.familyName} /> : null}
+                    <div className="st-row-driver">
+                      <div className="st-row-teamline" style={{ background: teamColor }} />
+                      <div className="st-row-avatar">
+                        {imgUrl && <img src={imgUrl} className="st-row-img" alt={standing.Driver.familyName} />}
                       </div>
-                      <div className="st-driver-names">
-                        <span className="st-fn font-heading">{standing.Driver.givenName}</span>
-                        <span className="st-ln font-heading">{standing.Driver.familyName}</span>
-                        <span className="st-team font-mono">{standing.Constructors[0]?.name}</span>
+                      <div className="st-row-names">
+                        <span className="st-row-ln font-heading editorial-headline" style={{ fontSize: '14px' }}>{standing.Driver.familyName}</span>
+                        <span className="st-row-team editorial-label" style={{ fontSize: '8px' }}>{standing.Constructors[0]?.name}</span>
                       </div>
                     </div>
                     
-                    <div className="st-pts font-heading">{standing.points}</div>
+                    <div className="st-row-pts font-mono">{standing.points}</div>
                   </div>
                 );
               })}
@@ -111,51 +109,49 @@ export const Standings: React.FC = () => {
       ) : (
         cLoading ? <div className="skeleton" style={{ height: 400, borderRadius: 16 }} /> : (
           <div className="st-content">
-            {/* CONSTRUCTOR LEADER */}
             {topConstructor && (
-              <div className="st-leader-card">
-                <div className="st-leader-accent" style={{ background: getTeamDetails(topConstructor.Constructor.constructorId).color || '#E10600' }} />
-                <div className="st-leader-content">
-                  <div className="st-leader-pos font-heading">01</div>
+              <div className="st-leader-feature">
+                <div className="slf-accent" style={{ background: getTeamDetails(topConstructor.Constructor.constructorId).color || '#E10600' }} />
+                <div className="slf-inner">
+                  <div className="slf-pos editorial-num">01</div>
                   
-                  <div className="st-leader-info constr-leader-info">
-                    <div className="st-leader-name font-heading">
-                      <strong>{topConstructor.Constructor.name}</strong>
+                  <div className="slf-info" style={{ marginLeft: '16px' }}>
+                    <div className="slf-name font-heading editorial-headline">
+                      {topConstructor.Constructor.name}
                     </div>
-                    <div className="st-leader-team font-mono">{topConstructor.Constructor.nationality}</div>
+                    <div className="slf-team editorial-label">{topConstructor.Constructor.nationality}</div>
                   </div>
                   
-                  <div className="st-leader-pts">
-                    <span className="sl-val font-heading">{topConstructor.points}</span>
-                    <span className="sl-lbl font-mono">PTS</span>
+                  <div className="slf-pts">
+                    <span className="slf-pts-val editorial-num">{topConstructor.points}</span>
+                    <span className="slf-pts-lbl editorial-label">PTS</span>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* OTHERS CONSTRUCTORS BOARD */}
-            <div className="st-timing-board">
-              <div className="st-tb-header font-mono">
-                <span className="tbh-pos">POS</span>
-                <span className="tbh-driver">TEAM</span>
-                <span className="tbh-pts">PTS</span>
+            <div className="st-board">
+              <div className="st-board-header editorial-label">
+                <span className="sbh-pos">POS</span>
+                <span className="sbh-driver">TEAM</span>
+                <span className="sbh-pts">PTS</span>
               </div>
               
               {otherConstructors.map((standing: any) => {
                 const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
                 return (
-                  <div key={standing.Constructor.constructorId} className="st-tb-row">
-                    <div className="st-pos font-mono">{standing.position.padStart(2, '0')}</div>
+                  <div key={standing.Constructor.constructorId} className="st-row">
+                    <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
                     
-                    <div className="st-driver-col">
-                      <div className="st-team-line" style={{ background: teamColor }} />
-                      <div className="st-driver-names constr-names">
-                        <span className="st-ln font-heading">{standing.Constructor.name}</span>
-                        <span className="st-team font-mono">{standing.Constructor.nationality}</span>
+                    <div className="st-row-driver">
+                      <div className="st-row-teamline" style={{ background: teamColor }} />
+                      <div className="st-row-names" style={{ marginLeft: 0 }}>
+                        <span className="st-row-ln font-heading editorial-headline" style={{ fontSize: '14px' }}>{standing.Constructor.name}</span>
+                        <span className="st-row-team editorial-label" style={{ fontSize: '8px' }}>{standing.Constructor.nationality}</span>
                       </div>
                     </div>
                     
-                    <div className="st-pts font-heading">{standing.points}</div>
+                    <div className="st-row-pts font-mono">{standing.points}</div>
                   </div>
                 );
               })}

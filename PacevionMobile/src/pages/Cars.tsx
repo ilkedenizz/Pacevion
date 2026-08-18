@@ -10,85 +10,85 @@ export const Cars: React.FC = () => {
 
   const constructors = constructorsData || [];
   
-  // Ensure we have a selected ID
   if (!selectedId && constructors.length > 0) {
     setSelectedId(constructors[0].Constructor.constructorId);
   }
 
   const selectedConst = constructors.find(c => c.Constructor.constructorId === selectedId) || constructors[0];
 
-  if (isLoading || !selectedConst) {
-    return <div className="cars-page"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>;
-  }
-
-  const tDetails = getTeamDetails(selectedConst.Constructor.constructorId);
-  const carVisual = getTeamVisual(selectedConst.Constructor.constructorId);
-
   return (
     <div className="cars-page fade-in">
       <header className="brand-header">
-        <h1 className="brand-title font-heading">CARS</h1>
+        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>CARS</h1>
       </header>
 
-      <div className="car-hero-area">
-        <div className="car-hero-bg" style={{ background: `linear-gradient(135deg, ${tDetails.color}33 0%, rgba(0,0,0,0) 100%)` }} />
-        
-        <div className="car-hero-text">
-          <h2 className="car-team-name font-heading">{selectedConst.Constructor.name}</h2>
-          <h3 className="car-chassis-name font-mono">2026 CHALLENGER</h3>
-        </div>
+      {isLoading || !selectedConst ? (
+        <div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
+      ) : (
+        <>
+          <div className="car-showroom">
+            <div className="csr-bg" style={{ background: `radial-gradient(circle at center, ${getTeamDetails(selectedConst.Constructor.constructorId).color}33 0%, transparent 70%)` }} />
+            
+            <div className="csr-header">
+              <h2 className="csr-team font-heading editorial-headline">{selectedConst.Constructor.name}</h2>
+              <div className="csr-chassis font-mono">{getTeamDetails(selectedConst.Constructor.constructorId).chassis}</div>
+              <div className="csr-season editorial-label">2026 CHALLENGER</div>
+            </div>
 
-        <div className="car-render-container">
-          {carVisual ? (
-            <img src={carVisual} alt={selectedConst.Constructor.name} className="car-render-img" />
-          ) : (
-            <div className="car-render-placeholder font-mono">CAR RENDER UNAVAILABLE</div>
-          )}
-        </div>
-      </div>
+            <div className="csr-render-box">
+              {getTeamVisual(selectedConst.Constructor.constructorId) ? (
+                <img src={getTeamVisual(selectedConst.Constructor.constructorId)!} alt="Car" className="csr-img" />
+              ) : (
+                <div className="csr-placeholder font-mono">RENDER NOT AVAILABLE</div>
+              )}
+            </div>
+          </div>
 
-      <div className="car-tech-panel">
-        <div className="ct-row">
-          <div className="ct-box">
-            <span className="ct-lbl font-mono">POWER UNIT</span>
-            <span className="ct-val font-heading">{tDetails.powerUnit}</span>
+          <div className="car-tech-specs">
+            <div className="cts-row">
+              <div className="cts-box">
+                <span className="cts-lbl editorial-label">POWER UNIT</span>
+                <span className="cts-val font-heading editorial-headline" style={{ fontSize: '18px' }}>
+                  {getTeamDetails(selectedConst.Constructor.constructorId).powerUnit}
+                </span>
+              </div>
+              <div className="cts-box">
+                <span className="cts-lbl editorial-label">BASE</span>
+                <span className="cts-val font-heading editorial-headline" style={{ fontSize: '18px' }}>
+                  {selectedConst.Constructor.nationality}
+                </span>
+              </div>
+            </div>
+            <div className="cts-row">
+              <div className="cts-box">
+                <span className="cts-lbl editorial-label">CHAMPIONSHIP POINTS</span>
+                <span className="cts-val font-heading editorial-num">{selectedConst.points}</span>
+              </div>
+              <div className="cts-box">
+                <span className="cts-lbl editorial-label">WINS</span>
+                <span className="cts-val font-heading editorial-num">{selectedConst.wins}</span>
+              </div>
+            </div>
           </div>
-          <div className="ct-box">
-            <span className="ct-lbl font-mono">BASE</span>
-            <span className="ct-val font-heading">{selectedConst.Constructor.nationality}</span>
-          </div>
-        </div>
-        <div className="ct-row">
-          <div className="ct-box">
-            <span className="ct-lbl font-mono">POINTS</span>
-            <span className="ct-val font-heading">{selectedConst.points}</span>
-          </div>
-          <div className="ct-box">
-            <span className="ct-lbl font-mono">WINS</span>
-            <span className="ct-val font-heading">{selectedConst.wins}</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="car-selector-section">
-        <h4 className="cs-title font-heading">SELECT TEAM</h4>
-        <div className="cs-scroll">
-          {constructors.map(c => {
-            const tColor = getTeamDetails(c.Constructor.constructorId).color || '#444';
-            const isActive = c.Constructor.constructorId === selectedId;
-            return (
-              <button 
-                key={c.Constructor.constructorId}
-                className={`cs-btn ${isActive ? 'active' : ''}`}
-                onClick={() => setSelectedId(c.Constructor.constructorId)}
-                style={{ borderBottomColor: isActive ? tColor : 'transparent' }}
-              >
-                <span className="cs-btn-text font-heading">{c.Constructor.name}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
+          <div className="car-selector-grid">
+            {constructors.map(c => {
+              const isActive = c.Constructor.constructorId === selectedId;
+              const tColor = getTeamDetails(c.Constructor.constructorId).color || '#444';
+              return (
+                <button 
+                  key={c.Constructor.constructorId}
+                  className={`csg-btn ${isActive ? 'active' : ''}`}
+                  onClick={() => setSelectedId(c.Constructor.constructorId)}
+                >
+                  <div className="csg-accent" style={{ background: isActive ? tColor : 'transparent' }} />
+                  <span className="csg-name font-heading editorial-headline">{c.Constructor.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </>
+      )}
     </div>
   );
 };

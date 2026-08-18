@@ -1,36 +1,29 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Titillium+Web:wght@400;600;700;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
 
 :root {
-  /* Core Colors */
-  --color-bg: #0B0C0E;
-  --color-bg-secondary: #111316;
-  --color-surface: #17191D;
-  --color-surface-elevated: #1D2025;
+  --color-bg: #08090B;
+  --color-surface: #101216;
+  --color-surface-elevated: #17191E;
+  --color-surface-highlight: #1D2127;
+  
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-subtle: rgba(255, 255, 255, 0.04);
   
-  /* Accents */
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #9298A3;
+  --color-text-muted: #5A5F6B;
+  
   --color-accent: #E10600;
   --color-accent-bright: #FF2A23;
   
-  /* Text */
-  --color-text-primary: #F5F5F5;
-  --color-text-secondary: #9298A3;
-  --color-text-muted: rgba(255, 255, 255, 0.4);
-
-  /* Spacing */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
   --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-
-  /* Typography */
-  --font-heading: 'Titillium Web', 'Inter', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
 }
 
 * {
@@ -40,42 +33,65 @@
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
 .font-heading {
-  font-family: var(--font-heading);
+  font-family: 'Inter', sans-serif;
 }
 
 .font-mono {
-  font-family: var(--font-mono);
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.text-accent {
-  color: var(--color-accent);
+/* Typography utilities */
+.editorial-num {
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1;
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease-out;
+.editorial-label {
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--color-text-secondary);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+.editorial-headline {
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: var(--color-text-primary);
 }
 
 .skeleton {
   background: linear-gradient(90deg, var(--color-surface) 25%, var(--color-surface-elevated) 50%, var(--color-surface) 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
+  animation: loading 1.5s infinite;
 }
 
-@keyframes shimmer {
+@keyframes loading {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
 }

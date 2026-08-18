@@ -15,24 +15,33 @@ export const Home = () => {
     return calendar.find(r => new Date(r.date) > new Date('2026-08-15')) || calendar[14];
   }, [calendar]);
 
-  if (isCalendarLoading) {
-    return <div className="home-page"><div className="skeleton" style={{ height: 320 }} /></div>;
+  if (isCalendarLoading || !nextRace) {
+    return <div className="home-page"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>;
   }
 
-  if (!nextRace) return null;
+  const raceDate = new Date(nextRace.date);
+  const formattedDate = `${raceDate.getDate() - 2}–${raceDate.getDate()} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
 
   return (
     <div className="home-page fade-in">
       
-      <header className="brand-header">
-        <h1 className="brand-title font-heading">PACEVION</h1>
-        <span className="brand-season font-mono">2026 SEASON</span>
+      <header className="home-brand-header">
+        <div className="hbh-left">
+          <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
+          <span className="hbh-season font-mono">2026 SEASON</span>
+        </div>
+        <div className="hbh-status">
+          <div className="hbh-dot" />
+          <span className="font-mono">SYSTEM ONLINE</span>
+        </div>
       </header>
 
-      {/* HERO */}
-      <div className="hero-card">
-        <div className="hero-accent-line" />
-        <div className="hero-bg-graphic">
+      {/* EDITORIAL HERO */}
+      <div className="editorial-hero">
+        <div className="eh-bg-grid" />
+        <div className="eh-accent-line" />
+        
+        <div className="eh-circuit-bg">
           <CircuitTrack 
             circuitId={nextRace.Circuit.circuitId}
             circuitName={nextRace.Circuit.circuitName}
@@ -41,119 +50,120 @@ export const Home = () => {
             variant="hero"
           />
         </div>
-        <div className="hero-content">
-          <span className="hero-badge font-mono">ROUND {nextRace.round}</span>
-          <h2 className="hero-title font-heading">{nextRace.raceName}</h2>
-          <h3 className="hero-subtitle font-heading">{nextRace.Circuit.Location.locality}</h3>
+        
+        <div className="eh-content">
+          <div className="eh-top">
+            <span className="eh-badge font-mono">ROUND {nextRace.round}</span>
+            <h2 className="eh-title font-heading editorial-headline">{nextRace.raceName}</h2>
+            <h3 className="eh-subtitle font-heading">{nextRace.Circuit.Location.locality}</h3>
+          </div>
           
-          <div className="countdown-container font-mono">
-            <div className="cd-block">
-              <span className="cd-val">{String(timeLeft.days).padStart(2, '0')}</span>
-              <span className="cd-lbl">DAYS</span>
+          <div className="eh-bottom">
+            <div className="eh-countdown">
+              <div className="eh-cd-block">
+                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
+                <span className="eh-cd-lbl font-mono editorial-label">DAYS</span>
+              </div>
+              <div className="eh-cd-block">
+                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
+                <span className="eh-cd-lbl font-mono editorial-label">HOURS</span>
+              </div>
+              <div className="eh-cd-block">
+                <span className="eh-cd-val font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
+                <span className="eh-cd-lbl font-mono editorial-label">MIN</span>
+              </div>
             </div>
-            <div className="cd-block">
-              <span className="cd-val">{String(timeLeft.hours).padStart(2, '0')}</span>
-              <span className="cd-lbl">HRS</span>
-            </div>
-            <div className="cd-block">
-              <span className="cd-val">{String(timeLeft.mins).padStart(2, '0')}</span>
-              <span className="cd-lbl">MINS</span>
+            
+            <div className="eh-meta">
+              <span className="eh-meta-item font-mono">{formattedDate}</span>
+              <span className="eh-meta-item font-mono">{nextRace.Circuit.Location.locality}</span>
+              <span className="eh-meta-item font-mono">53 LAPS</span>
+              <span className="eh-meta-item font-mono">306.7 KM</span>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* METADATA */}
-      <div className="race-metadata-grid">
-        <div className="rm-card">
-          <span className="rm-lbl font-mono">DATE</span>
-          <span className="rm-val font-heading">05-07 SEP</span>
-        </div>
-        <div className="rm-card">
-          <span className="rm-lbl font-mono">CIRCUIT</span>
-          <span className="rm-val font-heading">MONZA</span>
-        </div>
-        <div className="rm-card">
-          <span className="rm-lbl font-mono">LAPS</span>
-          <span className="rm-val font-heading">53</span>
-        </div>
-        <div className="rm-card">
-          <span className="rm-lbl font-mono">DIST</span>
-          <span className="rm-val font-heading">306KM</span>
         </div>
       </div>
 
       {/* QUICK STATS */}
-      <h3 className="section-title font-heading">AT A GLANCE</h3>
-      <div className="qs-container">
+      <div className="qs-grid">
         <div className="qs-card">
-          <span className="qs-title font-mono">CHAMPIONSHIP LEADER</span>
-          <span className="qs-value font-heading">
+          <span className="qs-lbl editorial-label">CHAMPIONSHIP LEADER</span>
+          <span className="qs-val font-heading editorial-headline">
             {standings?.[0] ? `${standings[0].Driver.givenName[0]}. ${standings[0].Driver.familyName}` : 'L. NORRIS'}
           </span>
         </div>
         <div className="qs-card">
-          <span className="qs-title font-mono">PREVIOUS WINNER</span>
-          <span className="qs-value font-heading">C. LECLERC</span>
+          <span className="qs-lbl editorial-label">CURRENT ROUND</span>
+          <span className="qs-val font-heading editorial-headline editorial-num">{nextRace.round}</span>
+        </div>
+        <div className="qs-card">
+          <span className="qs-lbl editorial-label">NEXT SESSION</span>
+          <span className="qs-val font-heading editorial-headline">QUALIFYING</span>
+        </div>
+        <div className="qs-card qs-card-dark">
+          <div className="qs-status-dot" />
+          <span className="qs-lbl editorial-label">TRACK STATUS</span>
+          <span className="qs-val font-heading editorial-headline" style={{ color: '#00FF66' }}>GREEN</span>
         </div>
       </div>
 
-      {/* RECENT RACE PODIUM */}
-      <h3 className="section-title font-heading">LAST RACE PODIUM</h3>
-      <div className="podium-container">
-        {/* P2 */}
-        <div className="podium-step p2">
-          <span className="podium-name font-heading">PIASTRI</span>
-          <img src={getDriverVisual('piastri') || ''} alt="Piastri" className="podium-driver-img" />
-          <div className="podium-bar font-mono" style={{ backgroundColor: '#FF8000' }}>2</div>
-        </div>
-        {/* P1 */}
-        <div className="podium-step p1">
-          <span className="podium-name font-heading">LECLERC</span>
-          <img src={getDriverVisual('leclerc') || ''} alt="Leclerc" className="podium-driver-img" />
-          <div className="podium-bar font-mono" style={{ backgroundColor: '#E80020' }}>1</div>
-        </div>
-        {/* P3 */}
-        <div className="podium-step p3">
-          <span className="podium-name font-heading">NORRIS</span>
-          <img src={getDriverVisual('norris') || ''} alt="Norris" className="podium-driver-img" />
-          <div className="podium-bar font-mono" style={{ backgroundColor: '#FF8000' }}>3</div>
+      {/* PODIUM */}
+      <div className="home-section">
+        <h3 className="hs-title font-heading editorial-headline">RECENT RACE</h3>
+        <div className="home-podium">
+          <div className="hp-step hp-p2">
+            <img src={getDriverVisual('piastri') || ''} alt="Piastri" className="hp-img" />
+            <span className="hp-pos editorial-num font-mono">2</span>
+            <span className="hp-name font-heading editorial-label">PIASTRI</span>
+          </div>
+          <div className="hp-step hp-p1">
+            <img src={getDriverVisual('leclerc') || ''} alt="Leclerc" className="hp-img" />
+            <span className="hp-pos editorial-num font-mono">1</span>
+            <span className="hp-name font-heading editorial-label">LECLERC</span>
+          </div>
+          <div className="hp-step hp-p3">
+            <img src={getDriverVisual('norris') || ''} alt="Norris" className="hp-img" />
+            <span className="hp-pos editorial-num font-mono">3</span>
+            <span className="hp-name font-heading editorial-label">NORRIS</span>
+          </div>
         </div>
       </div>
 
       {/* TIMELINE */}
-      <h3 className="section-title font-heading">SESSIONS</h3>
-      <div className="timeline-container">
-        <div className="timeline-row">
-          <span className="tl-time font-mono">14:30</span>
-          <div className="tl-dot" />
-          <div className="tl-content">
-            <span className="tl-title font-heading">PRACTICE 1</span>
-            <span className="tl-date font-mono">FRI, 05 SEP</span>
+      <div className="home-section">
+        <h3 className="hs-title font-heading editorial-headline">UPCOMING SESSIONS</h3>
+        <div className="home-timeline">
+          <div className="htl-row">
+            <div className="htl-time font-mono">14:30</div>
+            <div className="htl-marker"><div className="htl-dot" /></div>
+            <div className="htl-info">
+              <span className="htl-name font-heading editorial-headline">PRACTICE 1</span>
+              <span className="htl-date font-mono editorial-label">FRI, 05 SEP • FINISHED</span>
+            </div>
           </div>
-        </div>
-        <div className="timeline-row">
-          <span className="tl-time font-mono">18:00</span>
-          <div className="tl-dot" />
-          <div className="tl-content">
-            <span className="tl-title font-heading">PRACTICE 2</span>
-            <span className="tl-date font-mono">FRI, 05 SEP</span>
+          <div className="htl-row">
+            <div className="htl-time font-mono">18:00</div>
+            <div className="htl-marker"><div className="htl-dot" /></div>
+            <div className="htl-info">
+              <span className="htl-name font-heading editorial-headline">PRACTICE 2</span>
+              <span className="htl-date font-mono editorial-label">FRI, 05 SEP • FINISHED</span>
+            </div>
           </div>
-        </div>
-        <div className="timeline-row tl-row-active">
-          <span className="tl-time font-mono">17:00</span>
-          <div className="tl-dot" />
-          <div className="tl-content">
-            <span className="tl-title font-heading">QUALIFYING</span>
-            <span className="tl-date font-mono">SAT, 06 SEP</span>
+          <div className="htl-row htl-active">
+            <div className="htl-time font-mono" style={{ color: 'var(--color-accent)' }}>17:00</div>
+            <div className="htl-marker"><div className="htl-dot" /></div>
+            <div className="htl-info">
+              <span className="htl-name font-heading editorial-headline">QUALIFYING</span>
+              <span className="htl-date font-mono editorial-label" style={{ color: 'var(--color-text-primary)' }}>SAT, 06 SEP • UPCOMING</span>
+            </div>
           </div>
-        </div>
-        <div className="timeline-row">
-          <span className="tl-time font-mono">16:00</span>
-          <div className="tl-dot" />
-          <div className="tl-content">
-            <span className="tl-title font-heading">RACE</span>
-            <span className="tl-date font-mono">SUN, 07 SEP</span>
+          <div className="htl-row">
+            <div className="htl-time font-mono">16:00</div>
+            <div className="htl-marker"><div className="htl-dot" /></div>
+            <div className="htl-info">
+              <span className="htl-name font-heading editorial-headline">RACE</span>
+              <span className="htl-date font-mono editorial-label">SUN, 07 SEP</span>
+            </div>
           </div>
         </div>
       </div>
