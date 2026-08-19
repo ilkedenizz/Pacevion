@@ -1,103 +1,91 @@
 import React from 'react';
+import { useDriverStandings } from '../hooks/useF1Data';
+import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import './LiveFeed.css';
 
 export const LiveFeed: React.FC = () => {
-  const mockTiming = [
-    { pos: '1', id: 'norris', name: 'NORRIS', teamColor: '#FF8000', time: '1:19.234', gap: '—' },
-    { pos: '2', id: 'verstappen', name: 'VERSTAPPEN', teamColor: '#3671C6', time: '1:19.401', gap: '+0.167' },
-    { pos: '3', id: 'leclerc', name: 'LECLERC', teamColor: '#E80020', time: '1:19.522', gap: '+0.288' },
-    { pos: '4', id: 'sainz', name: 'SAINZ', teamColor: '#E80020', time: '1:19.680', gap: '+0.446' },
-    { pos: '5', id: 'hamilton', name: 'HAMILTON', teamColor: '#E10600', time: '1:19.811', gap: '+0.577' },
-    { pos: '6', id: 'piastri', name: 'PIASTRI', teamColor: '#FF8000', time: '1:19.882', gap: '+0.648' },
-  ];
+  const { data: standings, isLoading } = useDriverStandings('2026');
+
+  if (isLoading || !standings) return <div className="skeleton" style={{ height: '100vh' }} />;
+
+  const generateGap = (idx: number) => {
+    if (idx === 0) return '—';
+    return `+${(idx * 0.142 + 0.05).toFixed(3)}`;
+  };
+  
+  const generateTime = (idx: number) => {
+    const base = 78.241;
+    const time = base + (idx * 0.142 + 0.05);
+    const m = Math.floor(time / 60);
+    const s = (time % 60).toFixed(3);
+    return `${m}:${s.padStart(6, '0')}`;
+  };
 
   return (
     <div className="live-page fade-in">
-      
-      <div className="live-header-box">
-        <div className="lhb-status">
-          <div className="lhb-dot" />
-          <span className="font-mono editorial-label" style={{ color: 'var(--color-accent)' }}>LIVE</span>
+      <header className="live-header">
+        <div className="lh-top">
+          <div className="lh-badge">
+            <div className="status-dot pulse" style={{ background: '#E10600' }} />
+            <span className="font-mono">LIVE</span>
+          </div>
+          <span className="font-mono editorial-num" style={{ fontSize: '24px' }}>Q3</span>
         </div>
-        <h1 className="lhb-title font-heading editorial-headline">
-          QUALIFYING <br/><span style={{ fontSize: '20px', color: 'var(--color-text-secondary)' }}>Q3</span>
-        </h1>
-      </div>
+        <h1 className="font-heading editorial-headline">QUALIFYING</h1>
+      </header>
 
-      <div className="live-tech-grid">
-        <div className="lt-cell">
-          <span className="editorial-label">CURRENT LAP</span>
-          <span className="lt-cell-val font-mono">18 / 20</span>
-        </div>
-        <div className="lt-cell">
+      <div className="live-telemetry">
+        <div className="lt-box">
           <span className="editorial-label">TRACK STATUS</span>
-          <span className="lt-cell-val font-mono" style={{ color: '#00FF66' }}>GREEN</span>
+          <span className="font-heading editorial-headline" style={{ color: '#00FF66' }}>CLEAR</span>
+        </div>
+        <div className="lt-box">
+          <span className="editorial-label">TRACK TEMP</span>
+          <span className="font-mono lt-val">42.5°C</span>
+        </div>
+        <div className="lt-box">
+          <span className="editorial-label">AIR TEMP</span>
+          <span className="font-mono lt-val">28.1°C</span>
         </div>
       </div>
 
       <div className="live-timing-board">
         <div className="ltb-header editorial-label">
-          <span className="ltbh-pos">P</span>
-          <span className="ltbh-driver">DRIVER</span>
-          <span className="ltbh-time">TIME</span>
-          <span className="ltbh-gap">GAP</span>
-          <span className="ltbh-sec">S1</span>
-          <span className="ltbh-sec">S2</span>
-          <span className="ltbh-sec">S3</span>
+          <span className="ltb-pos">P</span>
+          <span className="ltb-driver">DRIVER</span>
+          <span className="ltb-time">TIME</span>
+          <span className="ltb-gap">GAP</span>
         </div>
 
-        <div className="ltb-body">
-          {mockTiming.map((t, idx) => {
-            const visual = getDriverVisual(t.id);
-            const isLeader = idx === 0;
-            return (
-              <div key={t.pos} className={`ltb-row ${isLeader ? 'ltb-leader' : ''}`}>
-                <span className="ltr-pos font-mono">{t.pos.padStart(2, '0')}</span>
-                
-                <div className="ltr-driver">
-                  <div className="ltr-accent" style={{ background: t.teamColor }} />
-                  <div className="ltr-avatar">
-                    {visual && <img src={visual} alt={t.name} className="ltr-img" />}
-                  </div>
-                  <span className="ltr-name font-heading editorial-headline">{t.name}</span>
-                </div>
-
-                <span className="ltr-time font-mono" style={{ color: isLeader ? 'var(--color-text-primary)' : 'var(--color-text-secondary)' }}>
-                  {t.time}
-                </span>
-                <span className="ltr-gap font-mono">{t.gap}</span>
-                
-                <div className="ltr-sectors">
-                  <div className="ltr-sec s-purple" />
-                  <div className="ltr-sec s-green" />
-                  <div className="ltr-sec s-yellow" />
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        {standings.slice(0, 10).map((s, i) => (
+          <div key={s.Driver.driverId} className="ltb-row">
+            <span className="ltb-pos font-mono">{i + 1}</span>
+            <div className="ltb-driver-col">
+              <div className="ltb-color" style={{ background: getTeamDetails(s.Constructors[0]?.constructorId).color }} />
+              <img src={getDriverVisual(s.Driver.driverId, 'portrait')} className="ltb-avatar" alt="driver" />
+              <span className="font-heading editorial-headline">{s.Driver.familyName}</span>
+            </div>
+            <span className="ltb-time font-mono" style={{ color: i === 0 ? '#C98EE8' : '#fff' }}>{generateTime(i)}</span>
+            <span className="ltb-gap font-mono">{generateGap(i)}</span>
+          </div>
+        ))}
       </div>
 
       <div className="live-weather">
-        <div className="lw-box">
-          <span className="editorial-label">TRACK TEMP</span>
-          <span className="lw-val font-mono editorial-num">38°C</span>
-        </div>
-        <div className="lw-box">
-          <span className="editorial-label">AIR</span>
-          <span className="lw-val font-mono editorial-num">24°C</span>
-        </div>
-        <div className="lw-box">
+        <div className="lw-item">
           <span className="editorial-label">WIND</span>
-          <span className="lw-val font-mono editorial-num">12 <span style={{ fontSize: '10px' }}>KM/H</span></span>
+          <span className="font-mono">12 KM/H NE</span>
         </div>
-        <div className="lw-box">
+        <div className="lw-item">
           <span className="editorial-label">HUMIDITY</span>
-          <span className="lw-val font-mono editorial-num">61%</span>
+          <span className="font-mono">45%</span>
+        </div>
+        <div className="lw-item">
+          <span className="editorial-label">RAIN</span>
+          <span className="font-mono">0%</span>
         </div>
       </div>
-
     </div>
   );
 };

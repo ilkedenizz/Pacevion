@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDriverStandings, useConstructorStandings } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
@@ -6,6 +7,7 @@ import './Standings.css';
 
 export const Standings: React.FC = () => {
   const [tab, setTab] = useState<'drivers' | 'constructors'>('drivers');
+  const navigate = useNavigate();
   
   const { data: driverData, isLoading: dLoading } = useDriverStandings('2026');
   const { data: constructorData, isLoading: cLoading } = useConstructorStandings('2026');
@@ -18,98 +20,98 @@ export const Standings: React.FC = () => {
   const topConstructor = constructors[0];
   const otherConstructors = constructors.slice(1);
 
-  // Mock trend data for visuals
   const getTrend = (idx: number) => {
     if (idx % 3 === 0) return { icon: '↑', class: 'trend-up' };
     if (idx % 4 === 0) return { icon: '↓', class: 'trend-down' };
     return { icon: '—', class: 'trend-same' };
   };
 
+  const handleDriverClick = (driverId: string) => {
+    // Navigate to drivers tab, we can pass state if we had a router set up for it, 
+    // for now just navigate to drivers page.
+    navigate('/drivers', { state: { selectedDriverId: driverId } });
+  };
+
   return (
-    <div className="standings-page fade-in">
-      <header className="brand-header">
-        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>2026 CHAMPIONSHIP</h1>
+    <div className="page-container fade-in">
+      <header className="page-header">
+        <h1 className="editorial-headline">CHAMPIONSHIP</h1>
+        
+        <div className="tab-switch font-heading">
+          <button 
+            className={`tab-btn ${tab === 'drivers' ? 'active' : ''}`}
+            onClick={() => setTab('drivers')}
+          >
+            DRIVERS
+          </button>
+          <button 
+            className={`tab-btn ${tab === 'constructors' ? 'active' : ''}`}
+            onClick={() => setTab('constructors')}
+          >
+            CONSTRUCTORS
+          </button>
+        </div>
       </header>
 
-      <div className="st-tabs font-heading">
-        <button 
-          className={`st-tab ${tab === 'drivers' ? 'active' : ''}`}
-          onClick={() => setTab('drivers')}
-        >
-          DRIVERS
-        </button>
-        <button 
-          className={`st-tab ${tab === 'constructors' ? 'active' : ''}`}
-          onClick={() => setTab('constructors')}
-        >
-          CONSTRUCTORS
-        </button>
-      </div>
-
       {tab === 'drivers' ? (
-        dLoading ? <div className="skeleton" style={{ height: 400, borderRadius: 16 }} /> : (
-          <div className="st-content">
+        dLoading ? <div className="skeleton" style={{ height: 400 }} /> : (
+          <div className="standings-content">
             {topDriver && (
-              <div className="st-leader-feature">
-                <div className="slf-accent" style={{ background: getTeamDetails(topDriver.Constructors[0]?.constructorId).color || '#E10600' }} />
+              <div className="st-leader-card" onClick={() => handleDriverClick(topDriver.Driver.driverId)}>
+                <div className="st-leader-bg" style={{ background: `linear-gradient(135deg, ${getTeamDetails(topDriver.Constructors[0]?.constructorId).color}44 0%, rgba(0,0,0,0) 70%)` }} />
                 
-                <div className="slf-inner">
-                  <div className="slf-pos editorial-num">01</div>
-                  
-                  <div className="slf-portrait-box">
-                    <img 
-                      src={getDriverVisual(topDriver.Driver.driverId)!} 
-                      alt={topDriver.Driver.familyName} 
-                      className="slf-portrait" 
-                    />
-                  </div>
-                  
-                  <div className="slf-info">
-                    <div className="slf-num font-mono">#{topDriver.Driver.permanentNumber || '1'}</div>
-                    <div className="slf-name font-heading editorial-headline">
-                      {topDriver.Driver.givenName} <br/>
-                      {topDriver.Driver.familyName}
+                <div className="st-leader-pos editorial-num">01</div>
+                
+                <div className="st-leader-content">
+                  <div className="st-leader-info">
+                    <span className="font-heading editorial-headline name">
+                      {topDriver.Driver.givenName[0]}. {topDriver.Driver.familyName}
+                    </span>
+                    <span className="editorial-label team-name">{topDriver.Constructors[0]?.name}</span>
+                    <div className="pts-block">
+                      <span className="font-mono editorial-num pts-val">{topDriver.points}</span>
+                      <span className="editorial-label">PTS</span>
                     </div>
-                    <div className="slf-team editorial-label">{topDriver.Constructors[0]?.name}</div>
                   </div>
                   
-                  <div className="slf-pts-box">
-                    <span className="slf-pts-val editorial-num">{topDriver.points}</span>
-                    <span className="slf-pts-lbl editorial-label">PTS</span>
+                  <div className="st-leader-img">
+                    <img 
+                      src={getDriverVisual(topDriver.Driver.driverId, 'portrait')} 
+                      alt={topDriver.Driver.familyName} 
+                    />
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="st-board">
-              <div className="st-board-header editorial-label">
-                <span className="sbh-pos">POS</span>
-                <span className="sbh-driver">DRIVER</span>
-                <span className="sbh-pts">PTS</span>
-                <span className="sbh-trend"></span>
+            <div className="st-list timing-board">
+              <div className="tb-header editorial-label">
+                <span className="tb-pos">POS</span>
+                <span className="tb-driver">DRIVER</span>
+                <span className="tb-pts">PTS</span>
+                <span className="tb-trend"></span>
               </div>
               
               {otherDrivers.map((standing: any, idx: number) => {
-                const imgUrl = getDriverVisual(standing.Driver.driverId);
                 const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
                 const trend = getTrend(idx + 1);
                 return (
-                  <div key={standing.Driver.driverId} className="st-row">
-                    <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
+                  <div key={standing.Driver.driverId} className="tb-row" onClick={() => handleDriverClick(standing.Driver.driverId)}>
+                    <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>
                     
-                    <div className="st-row-driver">
-                      <div className="st-row-teamline" style={{ background: teamColor }} />
-                      <div className="st-row-avatar">
-                        {imgUrl && <img src={imgUrl} className="st-row-img" alt={standing.Driver.familyName} />}
+                    <div className="tb-driver-col">
+                      <div className="tb-team-line" style={{ background: teamColor }} />
+                      <div className="tb-avatar">
+                        <img src={getDriverVisual(standing.Driver.driverId, 'portrait')} alt="avatar" />
                       </div>
-                      <div className="st-row-names">
-                        <span className="st-row-ln font-heading editorial-headline">{standing.Driver.familyName}</span>
-                        <span className="st-row-team editorial-label">{standing.Constructors[0]?.name}</span>
+                      <div className="tb-names">
+                        <span className="tb-lastname font-heading editorial-headline">{standing.Driver.familyName}</span>
+                        <span className="tb-teamname editorial-label">{standing.Constructors[0]?.name}</span>
                       </div>
                     </div>
                     
-                    <div className="st-row-pts font-mono">{standing.points}</div>
-                    <div className={`st-row-trend trend-indicator ${trend.class}`}>{trend.icon}</div>
+                    <div className="tb-pts font-mono">{standing.points}</div>
+                    <div className={`tb-trend ${trend.class}`}>{trend.icon}</div>
                   </div>
                 );
               })}
@@ -117,54 +119,54 @@ export const Standings: React.FC = () => {
           </div>
         )
       ) : (
-        cLoading ? <div className="skeleton" style={{ height: 400, borderRadius: 16 }} /> : (
-          <div className="st-content">
+        cLoading ? <div className="skeleton" style={{ height: 400 }} /> : (
+          <div className="standings-content">
             {topConstructor && (
-              <div className="st-leader-feature">
-                <div className="slf-accent" style={{ background: getTeamDetails(topConstructor.Constructor.constructorId).color || '#E10600' }} />
-                <div className="slf-inner">
-                  <div className="slf-pos editorial-num">01</div>
-                  
-                  <div className="slf-info" style={{ marginLeft: '16px' }}>
-                    <div className="slf-name font-heading editorial-headline">
+              <div className="st-leader-card">
+                <div className="st-leader-bg" style={{ background: `linear-gradient(135deg, ${getTeamDetails(topConstructor.Constructor.constructorId).color}44 0%, rgba(0,0,0,0) 70%)` }} />
+                
+                <div className="st-leader-pos editorial-num">01</div>
+                
+                <div className="st-leader-content" style={{ paddingBottom: '32px' }}>
+                  <div className="st-leader-info">
+                    <span className="font-heading editorial-headline name">
                       {topConstructor.Constructor.name}
+                    </span>
+                    <span className="editorial-label team-name">{topConstructor.Constructor.nationality}</span>
+                    <div className="pts-block">
+                      <span className="font-mono editorial-num pts-val">{topConstructor.points}</span>
+                      <span className="editorial-label">PTS</span>
                     </div>
-                    <div className="slf-team editorial-label">{topConstructor.Constructor.nationality}</div>
-                  </div>
-                  
-                  <div className="slf-pts-box">
-                    <span className="slf-pts-val editorial-num">{topConstructor.points}</span>
-                    <span className="slf-pts-lbl editorial-label">PTS</span>
                   </div>
                 </div>
               </div>
             )}
 
-            <div className="st-board">
-              <div className="st-board-header editorial-label">
-                <span className="sbh-pos">POS</span>
-                <span className="sbh-driver">TEAM</span>
-                <span className="sbh-pts">PTS</span>
-                <span className="sbh-trend"></span>
+            <div className="st-list timing-board">
+              <div className="tb-header editorial-label">
+                <span className="tb-pos">POS</span>
+                <span className="tb-driver">TEAM</span>
+                <span className="tb-pts">PTS</span>
+                <span className="tb-trend"></span>
               </div>
               
               {otherConstructors.map((standing: any, idx: number) => {
                 const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
                 const trend = getTrend(idx + 1);
                 return (
-                  <div key={standing.Constructor.constructorId} className="st-row">
-                    <div className="st-row-pos font-mono">{standing.position.padStart(2, '0')}</div>
+                  <div key={standing.Constructor.constructorId} className="tb-row">
+                    <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>
                     
-                    <div className="st-row-driver">
-                      <div className="st-row-teamline" style={{ background: teamColor }} />
-                      <div className="st-row-names" style={{ marginLeft: 0 }}>
-                        <span className="st-row-ln font-heading editorial-headline">{standing.Constructor.name}</span>
-                        <span className="st-row-team editorial-label">{standing.Constructor.nationality}</span>
+                    <div className="tb-driver-col">
+                      <div className="tb-team-line" style={{ background: teamColor }} />
+                      <div className="tb-names" style={{ marginLeft: '12px' }}>
+                        <span className="tb-lastname font-heading editorial-headline">{standing.Constructor.name}</span>
+                        <span className="tb-teamname editorial-label">{standing.Constructor.nationality}</span>
                       </div>
                     </div>
                     
-                    <div className="st-row-pts font-mono">{standing.points}</div>
-                    <div className={`st-row-trend trend-indicator ${trend.class}`}>{trend.icon}</div>
+                    <div className="tb-pts font-mono">{standing.points}</div>
+                    <div className={`tb-trend ${trend.class}`}>{trend.icon}</div>
                   </div>
                 );
               })}

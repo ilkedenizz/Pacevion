@@ -36,17 +36,19 @@ const TEAM_CARS: Record<string, string> = {
  * Returns the exact team car visual or null if genuinely missing.
  * NO GENERIC FALLBACKS ALLOWED.
  */
-export const getTeamVisual = (constructorId?: string): string | null => {
-  if (!constructorId) return null;
+export const getTeamVisual = (constructorId?: string): string | undefined => {
+  if (!constructorId) return undefined;
   const id = constructorId.toLowerCase();
   if (TEAM_CARS[id]) {
     return TEAM_CARS[id];
   }
-  return null;
+  return undefined;
 };
 
-export const getDriverVisual = (driverId?: string): string | null => {
-  if (!driverId) return null;
+export const getCarVisual = getTeamVisual;
+
+export const getDriverVisual = (driverId?: string, _type?: string): string | undefined => {
+  if (!driverId) return undefined;
   const id = driverId.toLowerCase();
   // Most drivers have their last name as ID or full name. We map common ones.
   // We have webp files in public/assets/img/drivers/
@@ -60,5 +62,5 @@ export const getDriverVisual = (driverId?: string): string | null => {
   if (DRIVERS.includes(id)) {
     return `${base}assets/img/drivers/portraits/${id}-portrait.webp`;
   }
-  return null;
+  return undefined;
 }; 

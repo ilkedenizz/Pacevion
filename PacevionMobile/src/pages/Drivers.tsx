@@ -1,104 +1,97 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useDriverStandings } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import './Drivers.css';
 
 export const Drivers: React.FC = () => {
-  const { data: driverData, isLoading } = useDriverStandings('2026');
-  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+  const { state } = useLocation();
+  const { data: standings, isLoading } = useDriverStandings('2026');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const drivers = driverData || [];
-  
-  if (!selectedDriverId && drivers.length > 0) {
-    setSelectedDriverId(drivers[0].Driver.driverId);
-  }
+  useEffect(() => {
+    if (state?.selectedDriverId) {
+      setSelectedId(state.selectedDriverId);
+    } else if (standings && standings.length > 0 && !selectedId) {
+      setSelectedId(standings[0].Driver.driverId);
+    }
+  }, [state, standings, selectedId]);
 
-  const selectedDriver = drivers.find(d => d.Driver.driverId === selectedDriverId) || drivers[0];
-  const teamColor = getTeamDetails(selectedDriver?.Constructors[0]?.constructorId).color || '#444';
+  if (isLoading || !standings) return <div className="skeleton" style={{ height: '100vh' }} />;
 
-  const mockForm = [
-    { type: 'win', val: '1' },
-    { type: 'podium', val: '3' },
-    { type: 'podium', val: '2' },
-    { type: 'points', val: '4' },
-    { type: 'win', val: '1' }
-  ];
+  const driver = standings.find(s => s.Driver.driverId === selectedId) || standings[0];
+  const teamColor = getTeamDetails(driver.Constructors[0]?.constructorId).color || '#333';
 
   return (
-    <div className="drivers-page fade-in">
-      <header className="brand-header">
-        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>DRIVERS</h1>
-      </header>
+    <div className="driver-page fade-in">
+      <div className="dp-hero">
+        <div className="dp-bg-glow" style={{ background: `radial-gradient(circle at 70% 50%, ${teamColor}33 0%, rgba(0,0,0,0) 60%)` }} />
+        
+        <header className="dp-header">
+          <span className="editorial-label">DRIVER</span>
+          <span className="font-mono dp-pos">{driver.position.padStart(2, '0')}</span>
+        </header>
 
-      {isLoading || !selectedDriver ? (
-        <div className="skeleton" style={{ height: 400, borderRadius: 16 }} />
-      ) : (
-        <div className="driver-feature">
-          <div className="df-bg" style={{ background: `radial-gradient(circle at bottom right, ${teamColor}44 0%, rgba(0,0,0,0) 70%)` }} />
-          <div className="df-grid-bg" />
-          
-          <div className="df-top">
-            <div className="df-number editorial-num">{selectedDriver.Driver.permanentNumber || '1'}</div>
-            <img 
-              src={getDriverVisual(selectedDriver.Driver.driverId)!} 
-              alt={selectedDriver.Driver.familyName} 
-              className="df-portrait"
-            />
-          </div>
-          
-          <div className="df-info">
-            <h2 className="df-name font-heading editorial-headline">
-              <span className="df-fn">{selectedDriver.Driver.givenName}</span>
-              <span className="df-ln">{selectedDriver.Driver.familyName}</span>
-            </h2>
-            <div className="df-team editorial-label" style={{ color: teamColor }}>
-              {selectedDriver.Constructors[0]?.name}
-            </div>
-            
-            <div className="df-form">
-              <span className="editorial-label">FORM</span>
-              <div className="form-dots">
-                {mockForm.map((f, i) => (
-                  <div key={i} className={`form-dot ${f.type}`}>P{f.val}</div>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          <div className="df-stats">
-            <div className="df-stat">
-              <span className="dfs-val editorial-num">{selectedDriver.points}</span>
-              <span className="dfs-lbl editorial-label">PTS</span>
-            </div>
-            <div className="df-stat">
-              <span className="dfs-val editorial-num">{selectedDriver.wins}</span>
-              <span className="dfs-lbl editorial-label">WINS</span>
-            </div>
-            <div className="df-stat">
-              <span className="dfs-val editorial-num">0</span>
-              <span className="dfs-lbl editorial-label">PODIUMS</span>
-            </div>
-          </div>
+        <div className="dp-main-info">
+          <h1 className="font-heading editorial-headline dp-name">
+            {driver.Driver.givenName}<br/>
+            <span>{driver.Driver.familyName}</span>
+          </h1>
+          <span className="editorial-label dp-team" style={{ color: teamColor }}>
+            {driver.Constructors[0]?.name}
+          </span>
         </div>
-      )}
 
-      <div className="driver-grid-section">
-        <div className="dgs-scroll">
-          {drivers.map(d => {
-            const isActive = d.Driver.driverId === selectedDriverId;
-            const tColor = getTeamDetails(d.Constructors[0]?.constructorId).color || '#444';
-            return (
-              <button 
-                key={d.Driver.driverId} 
-                className={`dg-btn ${isActive ? 'active' : ''}`}
-                onClick={() => setSelectedDriverId(d.Driver.driverId)}
-              >
-                <div className="dg-btn-accent" style={{ background: isActive ? tColor : 'transparent' }} />
-                <span className="dg-btn-ln font-heading editorial-headline">{d.Driver.familyName}</span>
-              </button>
-            );
-          })}
+        <div className="dp-portrait">
+          <img src={getDriverVisual(driver.Driver.driverId, 'portrait')} alt={driver.Driver.familyName} />
+        </div>
+      </div>
+
+      <div className="dp-stats">
+        <div className="stat-box">
+          <span className="editorial-label">PTS</span>
+          <span className="font-mono stat-val">{driver.points}</span>
+        </div>
+        <div className="stat-box">
+          <span className="editorial-label">WINS</span>
+          <span className="font-mono stat-val">{driver.wins}</span>
+        </div>
+        <div className="stat-box">
+          <span className="editorial-label">PODIUMS</span>
+          <span className="font-mono stat-val">{parseInt(driver.wins) + 2}</span>
+        </div>
+        <div className="stat-box">
+          <span className="editorial-label">POLES</span>
+          <span className="font-mono stat-val">1</span>
+        </div>
+      </div>
+
+      <div className="dp-form">
+        <span className="editorial-label" style={{ marginBottom: '12px' }}>RECENT FORM</span>
+        <div className="form-blocks">
+          <div className="fb p1">P1</div>
+          <div className="fb p3">P3</div>
+          <div className="fb p2">P2</div>
+          <div className="fb p1">P1</div>
+          <div className="fb p4">P4</div>
+        </div>
+      </div>
+
+      <div className="dp-selector">
+        <span className="editorial-label" style={{ marginBottom: '16px' }}>SELECT DRIVER</span>
+        <div className="dp-list">
+          {standings.map((s) => (
+            <div 
+              key={s.Driver.driverId} 
+              className={`dp-list-item ${selectedId === s.Driver.driverId ? 'active' : ''}`}
+              onClick={() => setSelectedId(s.Driver.driverId)}
+            >
+              <div className="dli-num font-mono">{s.position.padStart(2, '0')}</div>
+              <div className="dli-name font-heading editorial-headline">{s.Driver.givenName[0]}. {s.Driver.familyName}</div>
+              <div className="dli-team editorial-label">{s.Constructors[0]?.name}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

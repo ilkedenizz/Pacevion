@@ -10,17 +10,15 @@ export const Home = () => {
 
   const [now, setNow] = useState(new Date());
 
-  // Proper timer lifecycle
   useEffect(() => {
     const timer = setInterval(() => {
       setNow(new Date());
-    }, 60000); // Update every minute
+    }, 60000);
     return () => clearInterval(timer);
   }, []);
 
   const nextRace = useMemo(() => {
     if (!calendar || !Array.isArray(calendar) || calendar.length === 0) return null;
-    // Find the next race in the future, or default to the last race if season is over
     const upcoming = calendar.find(r => new Date(r.date + 'T' + (r.time || '15:00:00Z')) > now);
     return upcoming || calendar[calendar.length - 1];
   }, [calendar, now]);
@@ -39,80 +37,81 @@ export const Home = () => {
     return { days, hours, mins };
   }, [nextRace, now]);
 
-  // Error Boundary Fallback
   if (isCalendarError || isStandingsError) {
     return (
-      <div className="home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-accent)' }}>RACE DATA UNAVAILABLE</h2>
-          <p className="editorial-label">UNABLE TO CONNECT TO TELEMETRY</p>
+      <div className="home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh', display: 'flex' }}>
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+          <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-accent)' }}>TELEMETRY LOST</h2>
+          <p className="editorial-label">UNABLE TO CONNECT TO RACE CONTROL</p>
           <button 
             onClick={() => { refetchCalendar(); refetchStandings(); }}
-            style={{ 
-              background: 'var(--color-surface-elevated)', 
-              color: '#fff', 
-              border: '1px solid var(--color-border)', 
-              padding: '12px 24px', 
-              borderRadius: '8px',
-              fontFamily: 'JetBrains Mono, monospace',
-              fontWeight: 'bold',
-              marginTop: '16px'
-            }}
+            className="retry-btn font-mono"
           >
-            RETRY CONNECTION
+            RECONNECT
           </button>
         </div>
       </div>
     );
   }
 
-  // Loading State
   if (isCalendarLoading || isStandingsLoading || !nextRace) {
     return (
       <div className="home-page fade-in">
-        <header className="home-brand-header">
-          <div className="hbh-left">
-            <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
-            <span className="hbh-season font-mono">LOADING...</span>
-          </div>
+        <header className="home-header">
+          <h1 className="h-title font-heading editorial-headline">PACEVION</h1>
+          <span className="h-season font-mono">2026 SEASON</span>
         </header>
-        <div className="skeleton" style={{ height: '420px', borderRadius: '12px' }} />
-        <div className="home-modules-grid">
-          <div className="skeleton" style={{ height: '100px', gridColumn: 'span 2', borderRadius: '8px' }} />
-          <div className="skeleton" style={{ height: '100px', borderRadius: '8px' }} />
-          <div className="skeleton" style={{ height: '100px', borderRadius: '8px' }} />
-        </div>
+        <div className="skeleton" style={{ height: '500px', borderRadius: '0' }} />
       </div>
     );
   }
 
   const raceDateObj = new Date(nextRace.date);
-  const formattedDate = `${String(raceDateObj.getDate()).padStart(2, '0')} ${raceDateObj.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
+  const formattedDate = `${String(raceDateObj.getDate()).padStart(2, '0')} ${raceDateObj.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()} ${raceDateObj.getFullYear()}`;
 
   const leader = standings && standings.length > 0 ? standings[0] : null;
-  const leaderImg = leader ? getDriverVisual(leader.Driver.driverId) : getDriverVisual('norris');
+  const leaderImg = leader ? getDriverVisual(leader.Driver.driverId, 'portrait') : getDriverVisual('norris', 'portrait');
 
   return (
     <div className="home-page fade-in">
-      
-      <header className="home-brand-header">
-        <div className="hbh-left">
-          <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
-          <span className="hbh-season font-mono">F1 {nextRace.season || '2026'}</span>
+      <header className="home-header">
+        <div className="hh-left">
+          <h1 className="h-title font-heading editorial-headline">PACEVION</h1>
+          <span className="h-season font-mono">2026 SEASON</span>
         </div>
-        <div className="hbh-status">
-          <div className="hbh-pulse-dot" />
-          <span className="font-mono">SYSTEM ONLINE</span>
+        <div className="hh-right">
+          <div className="status-dot pulse" />
+          <span className="font-mono" style={{ fontSize: '10px', color: 'var(--color-text-secondary)' }}>ONLINE</span>
         </div>
       </header>
 
-      {/* EDITORIAL BROADCAST HERO */}
-      <div className="home-broadcast-hero">
-        <div className="hbh-grid-bg" />
-        <div className="hbh-accent-top" />
-        
-        {nextRace.Circuit && (
-          <div className="hbh-circuit-wrapper">
+      <section className="hero-section">
+        <div className="hero-top-info">
+          <div className="editorial-label" style={{ color: 'var(--color-accent)' }}>NEXT RACE</div>
+          <h2 className="hero-race-name font-heading editorial-headline">{nextRace.raceName}</h2>
+          <div className="hero-race-loc font-mono">{nextRace.Circuit?.Location?.locality?.toUpperCase()}</div>
+        </div>
+
+        <div className="hero-countdown">
+          <div className="cd-box">
+            <span className="cd-num font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
+            <span className="cd-lbl editorial-label">DAYS</span>
+          </div>
+          <div className="cd-sep">:</div>
+          <div className="cd-box">
+            <span className="cd-num font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
+            <span className="cd-lbl editorial-label">HOURS</span>
+          </div>
+          <div className="cd-sep">:</div>
+          <div className="cd-box">
+            <span className="cd-num font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
+            <span className="cd-lbl editorial-label">MIN</span>
+          </div>
+        </div>
+
+        <div className="hero-circuit-container">
+          <div className="circuit-bg-glow" />
+          {nextRace.Circuit && (
             <CircuitTrack 
               circuitId={nextRace.Circuit.circuitId}
               circuitName={nextRace.Circuit.circuitName}
@@ -120,116 +119,134 @@ export const Home = () => {
               raceName={nextRace.raceName}
               variant="hero"
             />
-          </div>
-        )}
+          )}
+        </div>
 
-        <div className="hbh-content">
-          <div className="hbh-top">
-            <div className="hbh-badge font-mono">NEXT RACE</div>
-            <h2 className="hbh-race-name font-heading editorial-headline">{nextRace.raceName || 'TBC'}</h2>
-            <div className="hbh-race-loc font-mono">{nextRace.Circuit?.Location?.locality || 'Unknown'} // ROUND {String(nextRace.round || '1').padStart(2, '0')}</div>
+        <div className="hero-stats-grid">
+          <div className="hs-item">
+            <span className="editorial-label">ROUND</span>
+            <span className="font-mono hs-val">{String(nextRace.round || '1').padStart(2, '0')}</span>
           </div>
-
-          <div className="hbh-middle">
-            <div className="hbh-cd-group">
-              <div className="hbh-cd-item">
-                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
-                <span className="hbh-cd-lbl editorial-label">DAYS</span>
-              </div>
-              <div className="hbh-cd-item">
-                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
-                <span className="hbh-cd-lbl editorial-label">HOURS</span>
-              </div>
-              <div className="hbh-cd-item">
-                <span className="hbh-cd-num font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
-                <span className="hbh-cd-lbl editorial-label">MIN</span>
-              </div>
-            </div>
+          <div className="hs-item">
+            <span className="editorial-label">DATE</span>
+            <span className="font-mono hs-val">{formattedDate}</span>
           </div>
-
-          <div className="hbh-bottom">
-            <div className="hbh-meta-box">
-              <span className="editorial-label">DATE</span>
-              <span className="font-mono hbh-meta-val">{formattedDate}</span>
-            </div>
-            <div className="hbh-meta-box">
-              <span className="editorial-label">LAPS</span>
-              <span className="font-mono hbh-meta-val">53</span>
-            </div>
-            <div className="hbh-meta-box">
-              <span className="editorial-label">LENGTH</span>
-              <span className="font-mono hbh-meta-val">306.7 KM</span>
-            </div>
+          <div className="hs-item">
+            <span className="editorial-label">CIRCUIT</span>
+            <span className="font-mono hs-val" style={{ fontSize: '10px' }}>{nextRace.Circuit?.circuitName?.toUpperCase()}</span>
+          </div>
+          <div className="hs-item">
+            <span className="editorial-label">LAPS</span>
+            <span className="font-mono hs-val">53</span>
+          </div>
+          <div className="hs-item">
+            <span className="editorial-label">DISTANCE</span>
+            <span className="font-mono hs-val">306.7 KM</span>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* DYNAMIC VISUAL MODULES */}
-      <div className="home-modules-grid">
-        <div className="hm-card hm-championship">
-          <div className="hm-header">
-            <span className="editorial-label">CHAMPIONSHIP</span>
-            <span className="editorial-label hm-trend">↑ P1</span>
+      <section className="modules-grid">
+        <div className="module m-leader">
+          <div className="m-head">
+            <span className="editorial-label">CHAMPIONSHIP LEADER</span>
           </div>
-          <div className="hm-body">
-            <img src={leaderImg || ''} className="hm-avatar" alt="Leader" />
-            <div className="hm-info">
-              <span className="font-heading editorial-headline hm-name">
-                {leader ? `${leader.Driver.givenName[0]}. ${leader.Driver.familyName}` : 'L. NORRIS'}
+          <div className="m-body leader-body">
+            <div className="leader-info">
+              <span className="font-heading editorial-headline leader-name">
+                {leader ? `${leader.Driver.givenName} ${leader.Driver.familyName}` : 'LANDO NORRIS'}
               </span>
-              <span className="font-mono editorial-num hm-pts">{leader?.points || 285} PTS</span>
+              <div className="leader-pts-row">
+                <span className="font-mono editorial-num leader-pts">{leader?.points || 285}</span>
+                <span className="editorial-label">PTS</span>
+                <span className="trend-up" style={{ marginLeft: 'auto', fontWeight: 'bold' }}>↑</span>
+              </div>
+            </div>
+            <div className="leader-img-box">
+              <img src={leaderImg || ''} className="leader-portrait" alt="Leader" />
             </div>
           </div>
         </div>
 
-        <div className="hm-card hm-session">
-          <div className="hm-header">
-            <span className="editorial-label">NEXT SESSION</span>
+        <div className="module-row">
+          <div className="module m-session">
+            <div className="m-head">
+              <span className="editorial-label">NEXT SESSION</span>
+            </div>
+            <div className="m-body">
+              <span className="font-heading editorial-headline m-title">QUALIFYING</span>
+              <span className="font-mono m-val">FRI 14:00</span>
+            </div>
           </div>
-          <div className="hm-body hm-col">
-            <span className="font-heading editorial-headline hm-title">RACE</span>
-            <span className="font-mono hm-time">SUN 15:00</span>
-          </div>
-        </div>
-
-        <div className="hm-card hm-track">
-          <div className="hm-header">
-            <span className="editorial-label">TRACK STATUS</span>
-            <div className="hm-status-dot green" />
-          </div>
-          <div className="hm-body hm-col">
-            <span className="font-heading editorial-headline hm-title" style={{ color: '#00FF66' }}>CLEAR</span>
-            <div className="hm-sectors">
-              <div className="hm-sector s-green" />
-              <div className="hm-sector s-green" />
-              <div className="hm-sector s-green" />
+          <div className="module m-track">
+            <div className="m-head">
+              <span className="editorial-label">TRACK STATUS</span>
+            </div>
+            <div className="m-body">
+              <span className="font-heading editorial-headline m-title" style={{ color: '#00FF66' }}>GREEN</span>
+              <div className="sector-bars">
+                <div className="s-bar green" />
+                <div className="s-bar green" />
+                <div className="s-bar green" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* RECENT RACE PODIUM */}
-      <div className="home-section">
-        <h3 className="hs-title font-heading editorial-headline">LAST RACE PODIUM</h3>
-        <div className="home-podium-v2">
-          <div className="hp2-step hp2-p2">
-            <div className="hp2-img-wrap"><img src={getDriverVisual('piastri') || ''} alt="P2" /></div>
-            <div className="hp2-num font-mono editorial-num">2</div>
-            <div className="hp2-team-line" style={{ background: '#FF8000' }} />
+        <div className="module m-timeline">
+          <div className="m-head">
+            <span className="editorial-label">WEEKEND TIMELINE</span>
           </div>
-          <div className="hp2-step hp2-p1">
-            <div className="hp2-img-wrap"><img src={getDriverVisual('leclerc') || ''} alt="P1" /></div>
-            <div className="hp2-num font-mono editorial-num">1</div>
-            <div className="hp2-team-line" style={{ background: '#E80020' }} />
-          </div>
-          <div className="hp2-step hp2-p3">
-            <div className="hp2-img-wrap"><img src={getDriverVisual('norris') || ''} alt="P3" /></div>
-            <div className="hp2-num font-mono editorial-num">3</div>
-            <div className="hp2-team-line" style={{ background: '#FF8000' }} />
+          <div className="timeline-list">
+            <div className="tl-item done">
+              <span className="tl-dot" />
+              <span className="font-mono tl-name">PRACTICE 1</span>
+              <span className="font-mono tl-time">FRI 12:30</span>
+            </div>
+            <div className="tl-item active">
+              <span className="tl-dot pulse" />
+              <span className="font-mono tl-name" style={{ color: '#fff' }}>QUALIFYING</span>
+              <span className="font-mono tl-time" style={{ color: '#fff' }}>FRI 16:00</span>
+            </div>
+            <div className="tl-item">
+              <span className="tl-dot" />
+              <span className="font-mono tl-name">PRACTICE 2</span>
+              <span className="font-mono tl-time">SAT 12:30</span>
+            </div>
+            <div className="tl-item">
+              <span className="tl-dot" />
+              <span className="font-mono tl-name">RACE</span>
+              <span className="font-mono tl-time">SUN 15:00</span>
+            </div>
           </div>
         </div>
-      </div>
 
+        <div className="module m-podium">
+          <div className="m-head">
+            <span className="editorial-label">LAST RACE PODIUM</span>
+          </div>
+          <div className="podium-grid">
+            <div className="pod-step p2">
+              <img src={getDriverVisual('piastri', 'portrait')} alt="P2" />
+              <div className="pod-bar" style={{ background: '#FF8000' }}>
+                <span className="font-mono">2</span>
+              </div>
+            </div>
+            <div className="pod-step p1">
+              <img src={getDriverVisual('leclerc', 'portrait')} alt="P1" />
+              <div className="pod-bar" style={{ background: '#E80020' }}>
+                <span className="font-mono">1</span>
+              </div>
+            </div>
+            <div className="pod-step p3">
+              <img src={getDriverVisual('norris', 'portrait')} alt="P3" />
+              <div className="pod-bar" style={{ background: '#FF8000' }}>
+                <span className="font-mono">3</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };

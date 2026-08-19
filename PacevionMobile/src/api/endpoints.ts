@@ -59,7 +59,7 @@ export async function getRaceResults(season: string | number, round: string | nu
     const data = await fetchClient<MRDataRaceResultsResponse>(`/${season}/${round}/results.json`);
     const races = data?.MRData?.RaceTable?.Races;
     return races && races.length > 0 ? races[0] : null;
-  } catch (error) {
+  } catch (_error) {
     // We don't have mock results yet, just return null on error
     return null;
   }

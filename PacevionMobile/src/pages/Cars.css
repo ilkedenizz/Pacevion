@@ -1,151 +1,109 @@
 .cars-page {
-  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(100px + env(safe-area-inset-bottom));
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
   min-height: 100vh;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
 }
 
-.car-showroom {
+.cp-showroom {
   position: relative;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  height: 450px;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 380px;
 }
 
-.csr-bg {
+.cp-bg {
   position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 1;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 0;
 }
 
-.csr-gradient-floor {
-  position: absolute;
-  bottom: 0; left: 0; width: 100%; height: 40%;
-  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--color-surface) 100%);
-  z-index: 4;
-  pointer-events: none;
-}
-
-.csr-header {
+.cp-header {
   position: relative;
-  z-index: 5;
-  padding: var(--space-4) var(--space-4) 0;
+  z-index: 2;
+  padding: 48px 24px 0 24px;
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
-.csr-team {
-  font-size: 28px;
-  line-height: 1.1;
-  margin: 4px 0;
-}
-
-.csr-chassis {
+.cp-header h1 {
   font-size: 40px;
-  color: #fff;
-  letter-spacing: -1px;
 }
 
-.csr-render-box {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -40%);
-  z-index: 3;
-  width: 100%;
+.cp-render-box {
+  position: relative;
+  z-index: 1;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 24px;
 }
 
-.csr-img {
-  width: 150%;
-  max-width: 600px;
+.cp-render-box img {
+  width: 100%;
+  height: auto;
   object-fit: contain;
-  margin-left: -25%;
-  filter: drop-shadow(0 40px 30px rgba(0,0,0,0.9));
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
 }
 
-.csr-placeholder {
-  color: var(--color-text-muted);
-  font-size: 10px;
-  letter-spacing: 2px;
+.cp-specs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
 }
 
-.car-tech-specs {
+.spec-item {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 24px;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+.spec-item:nth-child(2n) { border-right: none; }
+
+.spec-val {
+  font-size: 16px;
+  margin-top: 4px;
+  color: #fff;
+}
+
+.cp-selector {
+  padding: 24px;
+}
+
+.cp-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-list-item {
+  display: flex;
+  align-items: center;
+  padding: 16px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  display: flex;
-  flex-direction: column;
+  cursor: pointer;
 }
 
-.cts-row {
-  display: flex;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-.cts-row:last-child {
-  border-bottom: none;
-}
-
-.cts-box {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: var(--space-4);
-  border-right: 1px solid var(--color-border-subtle);
-}
-.cts-box:last-child {
-  border-right: none;
-}
-
-.cts-lbl {
-  margin-bottom: 6px;
-}
-
-.cts-val {
-  color: #fff;
-  font-size: 18px;
-}
-
-.cts-val.editorial-num {
-  font-size: 26px;
-}
-
-.car-selector-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-}
-
-.csg-btn {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  position: relative;
-  overflow: hidden;
-  text-align: left;
-}
-
-.csg-btn.active {
+.cp-list-item.active {
   background: var(--color-surface-elevated);
-  border-color: rgba(255,255,255,0.15);
+  border-color: var(--color-text-secondary);
 }
 
-.csg-accent {
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
+.cli-color {
+  width: 4px;
+  height: 24px;
+  border-radius: 2px;
+  margin-right: 16px;
 }
 
-.csg-name {
-  font-size: 14px;
+.cli-name {
+  font-size: 18px;
 }
