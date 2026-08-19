@@ -47,7 +47,7 @@ export const getTeamVisual = (constructorId?: string): string | undefined => {
 
 export const getCarVisual = getTeamVisual;
 
-export const getDriverVisual = (driverId?: string, _type?: string): string | undefined => {
+export const getDriverVisual = (driverId?: string): string | undefined => {
   if (!driverId) return undefined;
   const id = driverId.toLowerCase();
   // Most drivers have their last name as ID or full name. We map common ones.
@@ -59,8 +59,9 @@ export const getDriverVisual = (driverId?: string, _type?: string): string | und
     'piastri', 'russell', 'sainz', 'stroll'
   ];
   if (id === 'verstappen') return `${base}assets/img/drivers/portraits/max_verstappen-portrait.webp`;
+  if (id === 'arvid_lindblad') return `${base}assets/img/drivers/portraits/lindblad-portrait.webp`;
   if (DRIVERS.includes(id)) {
     return `${base}assets/img/drivers/portraits/${id}-portrait.webp`;
   }
   return undefined;
-}; 
+};

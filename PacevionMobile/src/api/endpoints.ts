@@ -49,7 +49,7 @@ export async function getDriverStandingsWithRound(year: string | number = 'curre
     
     if ((year === '2026' || year === 2026) && !round) return { round: '0', standings: MOCK_2026_DRIVERS };
     return { round: '0', standings: [] };
-  } catch (_error) {
+  } catch {
     if ((year === '2026' || year === 2026) && !round) return { round: '0', standings: MOCK_2026_DRIVERS };
     return { round: '0', standings: [] };
   }
@@ -64,7 +64,7 @@ export async function getConstructorStandingsWithRound(year: string | number = '
     
     if ((year === '2026' || year === 2026) && !round) return { round: '0', standings: MOCK_2026_CONSTRUCTORS };
     return { round: '0', standings: [] };
-  } catch (_error) {
+  } catch {
     if ((year === '2026' || year === 2026) && !round) return { round: '0', standings: MOCK_2026_CONSTRUCTORS };
     return { round: '0', standings: [] };
   }
@@ -75,7 +75,7 @@ export async function getRaceResults(season: string | number, round: string | nu
     const data = await fetchClient<MRDataRaceResultsResponse>(`/${season}/${round}/results.json`);
     const races = data?.MRData?.RaceTable?.Races;
     return races && races.length > 0 ? races[0] : null;
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
@@ -85,7 +85,7 @@ export async function getLatestRaceResults(): Promise<ResultRace | null> {
     const data = await fetchClient<MRDataRaceResultsResponse>(`/current/last/results.json`);
     const races = data?.MRData?.RaceTable?.Races;
     return races && races.length > 0 ? races[0] : null;
-  } catch (_error) {
+  } catch {
     return null;
   }
 }
@@ -94,7 +94,7 @@ export async function getAllSeasonResults(season: string | number): Promise<Resu
   try {
     const data = await fetchClient<MRDataRaceResultsResponse>(`/${season}/results.json?limit=1000`);
     return data?.MRData?.RaceTable?.Races || [];
-  } catch (_error) {
+  } catch {
     return [];
   }
 }
@@ -103,7 +103,7 @@ export async function getAllSeasonQualifying(season: string | number): Promise<i
   try {
     const data = await fetchClient<import('./types').MRDataQualifyingResultsResponse>(`/${season}/qualifying.json?limit=1000`);
     return data?.MRData?.RaceTable?.Races || [];
-  } catch (_error) {
+  } catch {
     return [];
   }
 }

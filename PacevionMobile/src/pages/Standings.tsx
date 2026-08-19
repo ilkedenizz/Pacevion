@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDriverStandingsWithPrevious, useConstructorStandingsWithPrevious } from '../hooks/useF1Data';
+import { DriverStanding, ConstructorStanding } from '../api/types';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import './Standings.css';
@@ -110,7 +111,7 @@ export const Standings: React.FC = () => {
                 <span className="tb-trend"></span>
               </div>
               
-              {otherDrivers.map((standing: any) => {
+              {otherDrivers.map((standing: DriverStanding) => {
                 const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
                 const trend = getDriverTrend(standing.Driver.driverId, standing.position);
                 return (
@@ -168,7 +169,7 @@ export const Standings: React.FC = () => {
                 <span className="tb-trend"></span>
               </div>
               
-              {otherConstructors.map((standing: any) => {
+              {otherConstructors.map((standing: ConstructorStanding) => {
                 const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
                 const trend = getConstructorTrend(standing.Constructor.constructorId, standing.position);
                 return (

@@ -15,8 +15,10 @@ export const Drivers: React.FC = () => {
 
   useEffect(() => {
     if (state?.selectedDriverId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedId(state.selectedDriverId);
     } else if (standings && standings.length > 0 && !selectedId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedId(standings[0].Driver.driverId);
     }
   }, [state, standings, selectedId]);

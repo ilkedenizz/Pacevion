@@ -20,7 +20,7 @@ const DRIVER_HEADSHOTS: Record<string, string> = {
   hadjar: `${base}assets/img/drivers/hadjar.webp`,
   // Racing Bulls
   lawson: `${base}assets/img/drivers/lawson.webp`,
-  lindblad: `${base}assets/img/drivers/lindblad.webp`,
+  arvid_lindblad: `${base}assets/img/drivers/lindblad.webp`,
   // Alpine
   gasly: `${base}assets/img/drivers/gasly.webp`,
   colapinto: `${base}assets/img/drivers/colapinto.webp`,
