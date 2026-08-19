@@ -4,7 +4,7 @@ import { Flag, Trophy, Activity, Users, Car, Menu } from 'lucide-react';
 import './BottomNav.css';
 
 const navItems = [
-  { path: '/home', icon: <Flag size={20} strokeWidth={2.5} />, label: 'HOME' },
+  { path: '/', icon: <Flag size={20} strokeWidth={2.5} />, label: 'HOME' },
   { path: '/standings', icon: <Trophy size={20} strokeWidth={2.5} />, label: 'STANDINGS' },
   { path: '/live', icon: <Activity size={20} strokeWidth={2.5} />, label: 'LIVE' },
   { path: '/drivers', icon: <Users size={20} strokeWidth={2.5} />, label: 'DRIVERS' },
@@ -21,6 +21,7 @@ export const BottomNav: React.FC = () => {
             key={item.path} 
             to={item.path} 
             className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+            end={item.path === '/'} // Important for root path to not match everything
           >
             <div className="nav-icon-wrap">
               {item.icon}

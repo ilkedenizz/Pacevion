@@ -1,26 +1,96 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCalendar, useDriverStandings } from '../hooks/useF1Data';
 import { getDriverVisual } from '../data/assets';
 import CircuitTrack from '../components/common/CircuitTrack';
 import './Home.css';
 
 export const Home = () => {
-  const { data: calendar, isLoading: isCalendarLoading } = useCalendar('2026');
-  const { data: standings } = useDriverStandings('2026');
+  const { data: calendar, isLoading: isCalendarLoading, isError: isCalendarError, refetch: refetchCalendar } = useCalendar('2026');
+  const { data: standings, isLoading: isStandingsLoading, isError: isStandingsError, refetch: refetchStandings } = useDriverStandings('2026');
 
-  const [timeLeft] = useState({ days: 3, hours: 14, mins: 32 });
+  const [now, setNow] = useState(new Date());
+
+  // Proper timer lifecycle
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(new Date());
+    }, 60000); // Update every minute
+    return () => clearInterval(timer);
+  }, []);
 
   const nextRace = useMemo(() => {
-    if (!calendar || calendar.length === 0) return null;
-    return calendar.find(r => new Date(r.date) > new Date('2026-08-15')) || calendar[14];
-  }, [calendar]);
+    if (!calendar || !Array.isArray(calendar) || calendar.length === 0) return null;
+    // Find the next race in the future, or default to the last race if season is over
+    const upcoming = calendar.find(r => new Date(r.date + 'T' + (r.time || '15:00:00Z')) > now);
+    return upcoming || calendar[calendar.length - 1];
+  }, [calendar, now]);
 
-  if (isCalendarLoading || !nextRace) {
-    return <div className="home-page"><div className="skeleton" style={{ height: 400, borderRadius: 16 }} /></div>;
+  const timeLeft = useMemo(() => {
+    if (!nextRace) return { days: 0, hours: 0, mins: 0 };
+    const raceTime = new Date(nextRace.date + 'T' + (nextRace.time || '15:00:00Z')).getTime();
+    const diff = raceTime - now.getTime();
+    
+    if (diff <= 0) return { days: 0, hours: 0, mins: 0 };
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    
+    return { days, hours, mins };
+  }, [nextRace, now]);
+
+  // Error Boundary Fallback
+  if (isCalendarError || isStandingsError) {
+    return (
+      <div className="home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-accent)' }}>RACE DATA UNAVAILABLE</h2>
+          <p className="editorial-label">UNABLE TO CONNECT TO TELEMETRY</p>
+          <button 
+            onClick={() => { refetchCalendar(); refetchStandings(); }}
+            style={{ 
+              background: 'var(--color-surface-elevated)', 
+              color: '#fff', 
+              border: '1px solid var(--color-border)', 
+              padding: '12px 24px', 
+              borderRadius: '8px',
+              fontFamily: 'JetBrains Mono, monospace',
+              fontWeight: 'bold',
+              marginTop: '16px'
+            }}
+          >
+            RETRY CONNECTION
+          </button>
+        </div>
+      </div>
+    );
   }
 
-  const raceDate = new Date(nextRace.date);
-  const formattedDate = `${raceDate.getDate() - 2}—${String(raceDate.getDate()).padStart(2, '0')} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
+  // Loading State
+  if (isCalendarLoading || isStandingsLoading || !nextRace) {
+    return (
+      <div className="home-page fade-in">
+        <header className="home-brand-header">
+          <div className="hbh-left">
+            <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
+            <span className="hbh-season font-mono">LOADING...</span>
+          </div>
+        </header>
+        <div className="skeleton" style={{ height: '420px', borderRadius: '12px' }} />
+        <div className="home-modules-grid">
+          <div className="skeleton" style={{ height: '100px', gridColumn: 'span 2', borderRadius: '8px' }} />
+          <div className="skeleton" style={{ height: '100px', borderRadius: '8px' }} />
+          <div className="skeleton" style={{ height: '100px', borderRadius: '8px' }} />
+        </div>
+      </div>
+    );
+  }
+
+  const raceDateObj = new Date(nextRace.date);
+  const formattedDate = `${String(raceDateObj.getDate()).padStart(2, '0')} ${raceDateObj.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
+
+  const leader = standings && standings.length > 0 ? standings[0] : null;
+  const leaderImg = leader ? getDriverVisual(leader.Driver.driverId) : getDriverVisual('norris');
 
   return (
     <div className="home-page fade-in">
@@ -28,7 +98,7 @@ export const Home = () => {
       <header className="home-brand-header">
         <div className="hbh-left">
           <h1 className="hbh-title font-heading editorial-headline">PACEVION</h1>
-          <span className="hbh-season font-mono">F1 2026</span>
+          <span className="hbh-season font-mono">F1 {nextRace.season || '2026'}</span>
         </div>
         <div className="hbh-status">
           <div className="hbh-pulse-dot" />
@@ -41,21 +111,23 @@ export const Home = () => {
         <div className="hbh-grid-bg" />
         <div className="hbh-accent-top" />
         
-        <div className="hbh-circuit-wrapper">
-          <CircuitTrack 
-            circuitId={nextRace.Circuit.circuitId}
-            circuitName={nextRace.Circuit.circuitName}
-            country={nextRace.Circuit.Location.country}
-            raceName={nextRace.raceName}
-            variant="hero"
-          />
-        </div>
+        {nextRace.Circuit && (
+          <div className="hbh-circuit-wrapper">
+            <CircuitTrack 
+              circuitId={nextRace.Circuit.circuitId}
+              circuitName={nextRace.Circuit.circuitName}
+              country={nextRace.Circuit.Location?.country || 'Unknown'}
+              raceName={nextRace.raceName}
+              variant="hero"
+            />
+          </div>
+        )}
 
         <div className="hbh-content">
           <div className="hbh-top">
             <div className="hbh-badge font-mono">NEXT RACE</div>
-            <h2 className="hbh-race-name font-heading editorial-headline">{nextRace.raceName}</h2>
-            <div className="hbh-race-loc font-mono">{nextRace.Circuit.Location.locality} // ROUND {nextRace.round.padStart(2, '0')}</div>
+            <h2 className="hbh-race-name font-heading editorial-headline">{nextRace.raceName || 'TBC'}</h2>
+            <div className="hbh-race-loc font-mono">{nextRace.Circuit?.Location?.locality || 'Unknown'} // ROUND {String(nextRace.round || '1').padStart(2, '0')}</div>
           </div>
 
           <div className="hbh-middle">
@@ -100,12 +172,12 @@ export const Home = () => {
             <span className="editorial-label hm-trend">↑ P1</span>
           </div>
           <div className="hm-body">
-            <img src={getDriverVisual(standings?.[0]?.Driver?.driverId || 'norris') || ''} className="hm-avatar" alt="Leader" />
+            <img src={leaderImg || ''} className="hm-avatar" alt="Leader" />
             <div className="hm-info">
               <span className="font-heading editorial-headline hm-name">
-                {standings?.[0] ? `${standings[0].Driver.givenName[0]}. ${standings[0].Driver.familyName}` : 'L. NORRIS'}
+                {leader ? `${leader.Driver.givenName[0]}. ${leader.Driver.familyName}` : 'L. NORRIS'}
               </span>
-              <span className="font-mono editorial-num hm-pts">{standings?.[0]?.points || 285} PTS</span>
+              <span className="font-mono editorial-num hm-pts">{leader?.points || 285} PTS</span>
             </div>
           </div>
         </div>
@@ -115,8 +187,8 @@ export const Home = () => {
             <span className="editorial-label">NEXT SESSION</span>
           </div>
           <div className="hm-body hm-col">
-            <span className="font-heading editorial-headline hm-title">QUALIFYING</span>
-            <span className="font-mono hm-time">FRI 14:00</span>
+            <span className="font-heading editorial-headline hm-title">RACE</span>
+            <span className="font-mono hm-time">SUN 15:00</span>
           </div>
         </div>
 
