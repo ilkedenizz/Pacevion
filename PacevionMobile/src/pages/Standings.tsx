@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDriverStandings, useConstructorStandings } from '../hooks/useF1Data';
+import { useDriverStandingsWithPrevious, useConstructorStandingsWithPrevious } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import './Standings.css';
@@ -9,20 +9,38 @@ export const Standings: React.FC = () => {
   const [tab, setTab] = useState<'drivers' | 'constructors'>('drivers');
   const navigate = useNavigate();
   
-  const { data: driverData, isLoading: dLoading } = useDriverStandings('2026');
-  const { data: constructorData, isLoading: cLoading } = useConstructorStandings('2026');
+  const { data: driverData, isLoading: dLoading } = useDriverStandingsWithPrevious('2026');
+  const { data: constructorData, isLoading: cLoading } = useConstructorStandingsWithPrevious('2026');
 
-  const drivers = driverData || [];
+  const drivers = driverData?.current || [];
+  const prevDrivers = driverData?.previous || [];
   const topDriver = drivers[0];
   const otherDrivers = drivers.slice(1);
 
-  const constructors = constructorData || [];
+  const constructors = constructorData?.current || [];
+  const prevConstructors = constructorData?.previous || [];
   const topConstructor = constructors[0];
   const otherConstructors = constructors.slice(1);
 
-  const getTrend = (idx: number) => {
-    if (idx % 3 === 0) return { icon: '↑', class: 'trend-up' };
-    if (idx % 4 === 0) return { icon: '↓', class: 'trend-down' };
+  const getDriverTrend = (driverId: string, currentPosition: string) => {
+    if (!prevDrivers || prevDrivers.length === 0) return { icon: '—', class: 'trend-same' };
+    const prevPos = prevDrivers.find(d => d.Driver.driverId === driverId)?.position;
+    if (!prevPos) return { icon: '—', class: 'trend-same' };
+    
+    const diff = parseInt(prevPos) - parseInt(currentPosition);
+    if (diff > 0) return { icon: `↑${diff}`, class: 'trend-up' };
+    if (diff < 0) return { icon: `↓${Math.abs(diff)}`, class: 'trend-down' };
+    return { icon: '—', class: 'trend-same' };
+  };
+
+  const getConstructorTrend = (constructorId: string, currentPosition: string) => {
+    if (!prevConstructors || prevConstructors.length === 0) return { icon: '—', class: 'trend-same' };
+    const prevPos = prevConstructors.find(c => c.Constructor.constructorId === constructorId)?.position;
+    if (!prevPos) return { icon: '—', class: 'trend-same' };
+    
+    const diff = parseInt(prevPos) - parseInt(currentPosition);
+    if (diff > 0) return { icon: `↑${diff}`, class: 'trend-up' };
+    if (diff < 0) return { icon: `↓${Math.abs(diff)}`, class: 'trend-down' };
     return { icon: '—', class: 'trend-same' };
   };
 
@@ -92,9 +110,9 @@ export const Standings: React.FC = () => {
                 <span className="tb-trend"></span>
               </div>
               
-              {otherDrivers.map((standing: any, idx: number) => {
+              {otherDrivers.map((standing: any) => {
                 const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
-                const trend = getTrend(idx + 1);
+                const trend = getDriverTrend(standing.Driver.driverId, standing.position);
                 return (
                   <div key={standing.Driver.driverId} className="tb-row" onClick={() => handleDriverClick(standing.Driver.driverId)}>
                     <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>
@@ -150,9 +168,9 @@ export const Standings: React.FC = () => {
                 <span className="tb-trend"></span>
               </div>
               
-              {otherConstructors.map((standing: any, idx: number) => {
+              {otherConstructors.map((standing: any) => {
                 const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
-                const trend = getTrend(idx + 1);
+                const trend = getConstructorTrend(standing.Constructor.constructorId, standing.position);
                 return (
                   <div key={standing.Constructor.constructorId} className="tb-row">
                     <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>

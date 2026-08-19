@@ -73,6 +73,13 @@ export interface ConstructorStanding {
   Constructor: Constructor;
 }
 
+export interface FastestLap {
+  rank: string;
+  lap: string;
+  Time: { time: string };
+  AverageSpeed?: { units: string; speed: string };
+}
+
 export interface RaceResult {
   number: string;
   position: string;
@@ -84,6 +91,7 @@ export interface RaceResult {
   laps: string;
   status: string;
   Time?: Time;
+  FastestLap?: FastestLap;
 }
 
 export interface ResultRace extends Race {
@@ -96,11 +104,11 @@ export interface MRDataCalendarResponse {
 }
 
 export interface MRDataDriverStandingsResponse {
-  MRData: { StandingsTable: { StandingsLists: { DriverStandings: DriverStanding[] }[] } };
+  MRData: { StandingsTable: { StandingsLists: { season: string; round: string; DriverStandings: DriverStanding[] }[] } };
 }
 
 export interface MRDataConstructorStandingsResponse {
-  MRData: { StandingsTable: { StandingsLists: { ConstructorStandings: ConstructorStanding[] }[] } };
+  MRData: { StandingsTable: { StandingsLists: { season: string; round: string; ConstructorStandings: ConstructorStanding[] }[] } };
 }
 
 export interface MRDataRaceResultsResponse {
