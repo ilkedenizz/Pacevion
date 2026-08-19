@@ -1,12 +1,12 @@
 .live-page {
   min-height: 100vh;
-  padding-bottom: 100px;
+  padding-bottom: max(100px, calc(76px + env(safe-area-inset-bottom, 24px)));
   display: flex;
   flex-direction: column;
 }
 
 .live-header {
-  padding: 48px 24px 24px;
+  padding: max(48px, calc(48px + env(safe-area-inset-top, 24px))) 24px 24px;
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }

@@ -1,7 +1,6 @@
 .home-page {
   min-height: 100vh;
-  padding: 16px;
-  padding-bottom: 100px; /* space for bottom nav */
+  padding: max(16px, env(safe-area-inset-top, 24px)) 16px max(100px, calc(76px + env(safe-area-inset-bottom, 24px))) 16px;
   display: flex;
   flex-direction: column;
   gap: 24px;
