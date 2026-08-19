@@ -4,6 +4,8 @@ import {
   getDriverStandings,
   getConstructorStandings,
   getRaceResults,
+  getAllSeasonResults,
+  getAllSeasonQualifying,
 } from '../api/endpoints';
 
 export const useCalendar = (year: string | number = 'current') => {
@@ -32,5 +34,21 @@ export const useRaceResults = (season: string | number, round: string | number) 
     queryKey: ['raceResults', season, round],
     queryFn: () => getRaceResults(season, round),
     enabled: !!season && !!round,
+  });
+};
+
+export const useAllSeasonResults = (season: string | number) => {
+  return useQuery({
+    queryKey: ['allSeasonResults', season],
+    queryFn: () => getAllSeasonResults(season),
+    enabled: !!season,
+  });
+};
+
+export const useAllSeasonQualifying = (season: string | number) => {
+  return useQuery({
+    queryKey: ['allSeasonQualifying', season],
+    queryFn: () => getAllSeasonQualifying(season),
+    enabled: !!season,
   });
 };

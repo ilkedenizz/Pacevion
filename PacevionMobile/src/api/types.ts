@@ -106,3 +106,21 @@ export interface MRDataConstructorStandingsResponse {
 export interface MRDataRaceResultsResponse {
   MRData: { RaceTable: { Races: ResultRace[] } };
 }
+
+export interface QualifyingResult {
+  number: string;
+  position: string;
+  Driver: Driver;
+  Constructor: Constructor;
+  Q1: string;
+  Q2?: string;
+  Q3?: string;
+}
+
+export interface QualifyingRace extends Race {
+  QualifyingResults: QualifyingResult[];
+}
+
+export interface MRDataQualifyingResultsResponse {
+  MRData: { RaceTable: { Races: QualifyingRace[] } };
+}

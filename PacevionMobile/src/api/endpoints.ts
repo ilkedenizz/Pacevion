@@ -60,7 +60,24 @@ export async function getRaceResults(season: string | number, round: string | nu
     const races = data?.MRData?.RaceTable?.Races;
     return races && races.length > 0 ? races[0] : null;
   } catch (_error) {
-    // We don't have mock results yet, just return null on error
     return null;
+  }
+}
+
+export async function getAllSeasonResults(season: string | number): Promise<ResultRace[]> {
+  try {
+    const data = await fetchClient<MRDataRaceResultsResponse>(`/${season}/results.json?limit=1000`);
+    return data?.MRData?.RaceTable?.Races || [];
+  } catch (_error) {
+    return [];
+  }
+}
+
+export async function getAllSeasonQualifying(season: string | number): Promise<import('./types').QualifyingRace[]> {
+  try {
+    const data = await fetchClient<import('./types').MRDataQualifyingResultsResponse>(`/${season}/qualifying.json?limit=1000`);
+    return data?.MRData?.RaceTable?.Races || [];
+  } catch (_error) {
+    return [];
   }
 }

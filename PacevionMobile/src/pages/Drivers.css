@@ -114,6 +114,7 @@
 .fb.p1 { background: #FFB800; color: #000; }
 .fb.p2 { background: #C0C0C0; color: #000; }
 .fb.p3 { background: #CD7F32; color: #000; }
+.fb.dnf { background: var(--color-accent); color: #fff; }
 
 .dp-selector {
   padding: 24px;
