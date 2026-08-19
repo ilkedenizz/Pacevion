@@ -47,7 +47,7 @@ export const getTeamVisual = (constructorId?: string): string | undefined => {
 
 export const getCarVisual = getTeamVisual;
 
-export const getDriverVisual = (driverId?: string): string | undefined => {
+export const getDriverVisual = (driverId?: string, _type?: string): string | undefined => {
   if (!driverId) return undefined;
   const id = driverId.toLowerCase();
   // Most drivers have their last name as ID or full name. We map common ones.
