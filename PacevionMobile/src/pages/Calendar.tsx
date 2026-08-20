@@ -1,9 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
 import CircuitTrack from '../components/common/CircuitTrack';
 import './Calendar.css';
 
 export const Calendar: React.FC = () => {
+  const navigate = useNavigate();
   const { data: calendar, isLoading } = useCalendar('2026');
 
   if (isLoading) {
@@ -29,7 +31,12 @@ export const Calendar: React.FC = () => {
           const formattedDate = `${raceDate.getDate() - 2}—${String(raceDate.getDate()).padStart(2, '0')} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
           
           return (
-            <div key={race.round} className={`cal-card ${isNext ? 'cal-next' : ''} ${isPast ? 'cal-past' : ''}`}>
+            <div 
+              key={race.round} 
+              className={`cal-card ${isNext ? 'cal-next' : ''} ${isPast ? 'cal-past' : ''}`}
+              onClick={() => navigate(`/races/2026/${race.round}`)}
+              style={{ cursor: 'pointer' }}
+            >
               {isNext && <div className="cal-badge font-mono editorial-label" style={{ color: '#fff', background: 'var(--color-accent)' }}>NEXT RACE</div>}
               
               <div className="cal-inner">

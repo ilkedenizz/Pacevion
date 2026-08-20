@@ -16,6 +16,7 @@ const queryClient = new QueryClient({
 // Lazy load pages
 const Home = lazy(() => import('./pages/Home'));
 const Calendar = lazy(() => import('./pages/Calendar'));
+const RaceDetails = lazy(() => import('./pages/RaceDetails'));
 const Standings = lazy(() => import('./pages/Standings'));
 const Drivers = lazy(() => import('./pages/Drivers'));
 const More = lazy(() => import('./pages/More'));
@@ -67,6 +68,7 @@ export function App() {
             <Route path="/home" element={<Navigate to="/" replace />} />
             
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="/races/:season/:round" element={<RaceDetails />} />
             <Route path="/standings" element={<Standings />} />
             <Route path="/drivers" element={<Drivers />} />
             <Route path="/cars" element={<Cars />} />

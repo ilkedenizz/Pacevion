@@ -82,9 +82,19 @@ export const LiveFeed: React.FC = () => {
           const isFastestLap = result.FastestLap?.rank === '1';
           const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#333';
           
-          let displayTime = result.status; // Default to status (e.g. 'Retired', '+1 Lap')
-          if (result.Time?.time) {
-            displayTime = result.Time.time;
+          let displayTime = '—';
+          const status = result.status || '';
+          const timeStr = result.Time?.time;
+          const isLapStatus = /lap/i.test(status);
+
+          if (result.position === '1' && timeStr) {
+            displayTime = timeStr;
+          } else if (isLapStatus) {
+            displayTime = status;
+          } else if (status === 'Finished') {
+            displayTime = timeStr ? timeStr : 'Finished';
+          } else {
+            displayTime = status || '—';
           }
 
           return (
