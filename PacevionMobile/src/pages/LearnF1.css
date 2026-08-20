@@ -1,5 +1,5 @@
 .learn-page {
-  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) calc(80px + env(safe-area-inset-bottom));
+  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) var(--page-bottom-spacing);
   display: flex;
   flex-direction: column;
   gap: 24px;

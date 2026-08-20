@@ -1,8 +1,19 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCalendar, useDriverStandings } from '../hooks/useF1Data';
 import { getDriverVisual } from '../data/assets';
+import { getNextSession, formatRaceDateRange } from '../utils/raceWeekend';
 import CircuitTrack from '../components/common/CircuitTrack';
 import './Home.css';
+
+const CIRCUIT_INFO: Record<string, { laps: number; distance: string }> = {
+  zandvoort: { laps: 72, distance: '306.1 KM' },
+  monza: { laps: 53, distance: '306.7 KM' },
+  monaco: { laps: 78, distance: '260.2 KM' },
+  spa: { laps: 44, distance: '308.0 KM' },
+  baku: { laps: 51, distance: '306.0 KM' },
+  silverstone: { laps: 52, distance: '306.1 KM' },
+  default: { laps: 53, distance: '305.0 KM' }
+};
 
 export const Home = () => {
   const { data: calendar, isLoading: isCalendarLoading, isError: isCalendarError, refetch: refetchCalendar } = useCalendar('2026');
@@ -19,14 +30,17 @@ export const Home = () => {
 
   const nextRace = useMemo(() => {
     if (!calendar || !Array.isArray(calendar) || calendar.length === 0) return null;
-    const upcoming = calendar.find(r => new Date(r.date + 'T' + (r.time || '15:00:00Z')) > now);
+    const upcoming = calendar.find(r => new Date(r.date + 'T' + (r.time ? r.time.replace('Z','') : '15:00:00') + 'Z') > now);
     return upcoming || calendar[calendar.length - 1];
   }, [calendar, now]);
 
+  const nextSessionInfo = useMemo(() => {
+    return calendar ? getNextSession(calendar) : null;
+  }, [calendar, now]);
+
   const timeLeft = useMemo(() => {
-    if (!nextRace) return { days: 0, hours: 0, mins: 0 };
-    const raceTime = new Date(nextRace.date + 'T' + (nextRace.time || '15:00:00Z')).getTime();
-    const diff = raceTime - now.getTime();
+    if (!nextSessionInfo) return { days: 0, hours: 0, mins: 0 };
+    const diff = nextSessionInfo.sessionDate.getTime() - now.getTime();
     
     if (diff <= 0) return { days: 0, hours: 0, mins: 0 };
     
@@ -35,11 +49,11 @@ export const Home = () => {
     const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
     
     return { days, hours, mins };
-  }, [nextRace, now]);
+  }, [nextSessionInfo, now]);
 
   if (isCalendarError || isStandingsError) {
     return (
-      <div className="home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh', display: 'flex' }}>
+      <div className="page home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh', display: 'flex' }}>
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
           <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-accent)' }}>TELEMETRY LOST</h2>
           <p className="editorial-label">UNABLE TO CONNECT TO RACE CONTROL</p>
@@ -54,26 +68,29 @@ export const Home = () => {
     );
   }
 
-  if (isCalendarLoading || isStandingsLoading || !nextRace) {
+  if (isCalendarLoading || isStandingsLoading) {
     return (
-      <div className="home-page fade-in">
-        <header className="home-header">
-          <h1 className="h-title font-heading editorial-headline">PACEVION</h1>
-          <span className="h-season font-mono">2026 SEASON</span>
-        </header>
-        <div className="skeleton" style={{ height: '500px', borderRadius: '0' }} />
+      <div className="page home-page fade-in" style={{ justifyContent: 'center', alignItems: 'center', minHeight: '100vh', display: 'flex' }}>
+        <div className="skeleton" style={{ width: '200px', height: '24px', borderRadius: '4px' }} />
       </div>
     );
   }
 
-  const raceDateObj = new Date(nextRace.date);
-  const formattedDate = `${String(raceDateObj.getDate()).padStart(2, '0')} ${raceDateObj.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()} ${raceDateObj.getFullYear()}`;
+  if (!nextRace) return null;
+
+  const formattedDate = formatRaceDateRange(nextRace);
+  const circuitId = nextRace.Circuit?.circuitId || 'default';
+  const cInfo = CIRCUIT_INFO[circuitId] || CIRCUIT_INFO.default;
 
   const leader = standings && standings.length > 0 ? standings[0] : null;
   const leaderImg = leader ? getDriverVisual(leader.Driver.driverId, 'portrait') : getDriverVisual('norris', 'portrait');
 
+  // Track status mock logic
+  // Typically this would come from a live websocket, for now we can just show GREEN
+  const trackStatus = "GREEN";
+
   return (
-    <div className="home-page fade-in">
+    <div className="page home-page fade-in">
       <header className="home-header">
         <div className="hh-left">
           <h1 className="h-title font-heading editorial-headline">PACEVION</h1>
@@ -87,7 +104,7 @@ export const Home = () => {
 
       <section className="hero-section">
         <div className="hero-top-info">
-          <div className="editorial-label" style={{ color: 'var(--color-accent)' }}>NEXT RACE</div>
+          <div className="editorial-label" style={{ color: 'var(--color-accent)' }}>{nextSessionInfo?.sessionName.toUpperCase()}</div>
           <h2 className="hero-race-name font-heading editorial-headline">{nextRace.raceName}</h2>
           <div className="hero-race-loc font-mono">{nextRace.Circuit?.Location?.locality?.toUpperCase()}</div>
         </div>
@@ -127,9 +144,9 @@ export const Home = () => {
             <span className="editorial-label">ROUND</span>
             <span className="font-mono hs-val">{String(nextRace.round || '1').padStart(2, '0')}</span>
           </div>
-          <div className="hs-item">
+          <div className="hs-item" style={{ gridColumn: 'span 2' }}>
             <span className="editorial-label">DATE</span>
-            <span className="font-mono hs-val">{formattedDate}</span>
+            <span className="font-mono hs-val" style={{ fontSize: '11px' }}>{formattedDate}</span>
           </div>
           <div className="hs-item">
             <span className="editorial-label">CIRCUIT</span>
@@ -137,11 +154,11 @@ export const Home = () => {
           </div>
           <div className="hs-item">
             <span className="editorial-label">LAPS</span>
-            <span className="font-mono hs-val">53</span>
+            <span className="font-mono hs-val">{cInfo.laps}</span>
           </div>
           <div className="hs-item">
             <span className="editorial-label">DISTANCE</span>
-            <span className="font-mono hs-val">306.7 KM</span>
+            <span className="font-mono hs-val">{cInfo.distance}</span>
           </div>
         </div>
       </section>
@@ -174,49 +191,25 @@ export const Home = () => {
               <span className="editorial-label">NEXT SESSION</span>
             </div>
             <div className="m-body">
-              <span className="font-heading editorial-headline m-title">QUALIFYING</span>
-              <span className="font-mono m-val">FRI 14:00</span>
+              <span className="font-heading editorial-headline m-title" style={{ fontSize: '14px' }}>
+                {nextSessionInfo?.sessionName.toUpperCase()}
+              </span>
+              <span className="font-mono m-val" style={{ fontSize: '12px' }}>
+                {nextSessionInfo?.sessionDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', weekday: 'short' }).toUpperCase()}
+              </span>
             </div>
           </div>
           <div className="module m-track">
             <div className="m-head">
               <span className="editorial-label">TRACK STATUS</span>
             </div>
-            <div className="m-body">
-              <span className="font-heading editorial-headline m-title" style={{ color: '#00FF66' }}>GREEN</span>
-              <div className="sector-bars">
-                <div className="s-bar green" />
-                <div className="s-bar green" />
-                <div className="s-bar green" />
+            <div className="m-body track-status" data-status={trackStatus}>
+              <span className="font-heading editorial-headline m-title status-text">{trackStatus}</span>
+              <div className="sector-bars status-bars">
+                <div className="s-bar" />
+                <div className="s-bar" />
+                <div className="s-bar" />
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="module m-timeline">
-          <div className="m-head">
-            <span className="editorial-label">WEEKEND TIMELINE</span>
-          </div>
-          <div className="timeline-list">
-            <div className="tl-item done">
-              <span className="tl-dot" />
-              <span className="font-mono tl-name">PRACTICE 1</span>
-              <span className="font-mono tl-time">FRI 12:30</span>
-            </div>
-            <div className="tl-item active">
-              <span className="tl-dot pulse" />
-              <span className="font-mono tl-name" style={{ color: '#fff' }}>QUALIFYING</span>
-              <span className="font-mono tl-time" style={{ color: '#fff' }}>FRI 16:00</span>
-            </div>
-            <div className="tl-item">
-              <span className="tl-dot" />
-              <span className="font-mono tl-name">PRACTICE 2</span>
-              <span className="font-mono tl-time">SAT 12:30</span>
-            </div>
-            <div className="tl-item">
-              <span className="tl-dot" />
-              <span className="font-mono tl-name">RACE</span>
-              <span className="font-mono tl-time">SUN 15:00</span>
             </div>
           </div>
         </div>

@@ -1,14 +1,13 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Flag, Trophy, Activity, Users, Car, Menu } from 'lucide-react';
+import { Flag, Trophy, Activity, Calendar, Menu } from 'lucide-react';
 import './BottomNav.css';
 
 const navItems = [
   { path: '/', icon: <Flag size={20} strokeWidth={2.5} />, label: 'HOME' },
-  { path: '/standings', icon: <Trophy size={20} strokeWidth={2.5} />, label: 'STANDINGS' },
+  { path: '/calendar', icon: <Calendar size={20} strokeWidth={2.5} />, label: 'CALENDAR' },
   { path: '/live', icon: <Activity size={20} strokeWidth={2.5} />, label: 'LIVE' },
-  { path: '/drivers', icon: <Users size={20} strokeWidth={2.5} />, label: 'DRIVERS' },
-  { path: '/cars', icon: <Car size={20} strokeWidth={2.5} />, label: 'CARS' },
+  { path: '/standings', icon: <Trophy size={20} strokeWidth={2.5} />, label: 'STANDINGS' },
   { path: '/more', icon: <Menu size={20} strokeWidth={2.5} />, label: 'MORE' },
 ];
 

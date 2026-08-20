@@ -107,3 +107,100 @@
 .cli-name {
   font-size: 18px;
 }
+/* Cars Chart & Lineup */
+.c-chart-container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  overflow-x: auto;
+  gap: 12px;
+}
+
+.c-chart {
+  display: flex;
+  align-items: flex-end;
+  height: 120px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  min-width: max-content;
+  gap: 8px;
+}
+
+.c-chart-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 24px;
+  height: 100%;
+}
+
+.c-chart-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4px;
+}
+
+.c-chart-pos {
+  font-size: 8px;
+  color: #000;
+  font-weight: 800;
+  transform: rotate(-90deg);
+  margin-top: 8px;
+}
+
+.c-chart-lbl {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+
+.c-lineup-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 12px;
+}
+
+.cl-driver {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-left: 12px;
+}
+.cl-driver.right {
+  padding-left: 0;
+  padding-right: 12px;
+  justify-content: flex-end;
+}
+
+.cl-driver img {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 24px;
+  background: var(--color-surface-elevated);
+}
+
+.cl-info {
+  display: flex;
+  flex-direction: column;
+}
+.cl-info.right {
+  text-align: right;
+}
+
+.cl-vs {
+  font-size: 14px;
+  opacity: 0.5;
+  padding: 0 8px;
+}

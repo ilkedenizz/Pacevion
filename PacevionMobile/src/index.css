@@ -27,6 +27,10 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+
+  --bottom-nav-height: 64px;
+  --bottom-safe-area: env(safe-area-inset-bottom, 0px);
+  --page-bottom-spacing: calc(var(--bottom-nav-height) + var(--bottom-safe-area) + 24px);
 }
 
 * {
@@ -154,3 +158,5 @@ button {
   display: flex;
   flex-direction: column;
 }
+.page-wrapper { padding-bottom: var(--page-bottom-spacing); }
+.page { padding-bottom: var(--page-bottom-spacing); }

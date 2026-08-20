@@ -1,6 +1,6 @@
 .live-page {
   min-height: 100vh;
-  padding-bottom: max(100px, calc(76px + env(safe-area-inset-bottom, 24px)));
+  padding-bottom: var(--page-bottom-spacing);
   display: flex;
   flex-direction: column;
 }

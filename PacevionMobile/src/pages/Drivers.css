@@ -157,3 +157,105 @@
 .dli-team {
   font-size: 9px;
 }
+/* Performance Chart */
+.d-chart-container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.d-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 120px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.d-chart-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1;
+  height: 100%;
+}
+
+.d-chart-bar {
+  width: 20px;
+  border-radius: 4px 4px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 4px;
+  transition: height 0.3s ease;
+}
+
+.d-chart-pos {
+  font-size: 8px;
+  color: #000;
+  font-weight: 800;
+  transform: rotate(-90deg);
+  margin-top: 8px;
+}
+
+.d-chart-lbl {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 8px;
+}
+
+.d-chart-summary {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 4px;
+}
+
+/* H2H Card */
+.h2h-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top-width: 4px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.h2h-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.h2h-row:last-child {
+  border-bottom: none;
+}
+
+.h2h-head {
+  background: var(--color-surface-elevated);
+  font-size: 14px;
+}
+
+.h2h-left, .h2h-right {
+  flex: 1;
+  font-size: 14px;
+}
+.h2h-left { text-align: left; }
+.h2h-right { text-align: right; }
+
+.h2h-center {
+  flex: 0 0 80px;
+  text-align: center;
+}
+
+.h2h-win {
+  color: #fff;
+  font-weight: 800;
+}

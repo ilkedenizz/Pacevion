@@ -385,3 +385,39 @@
   font-size: 14px;
   font-weight: bold;
 }
+/* Track Status Animations */
+.track-status[data-status="GREEN"] .status-text { color: #00FF66; }
+.track-status[data-status="GREEN"] .s-bar { background: #00FF66; }
+
+.track-status[data-status="YELLOW"] .status-text { color: #FFB800; }
+.track-status[data-status="YELLOW"] .s-bar { background: #FFB800; }
+
+.track-status[data-status="RED"] .status-text { color: #E10600; }
+.track-status[data-status="RED"] .s-bar { background: #E10600; }
+
+.track-status[data-status="VSC"] .status-text { color: #FFB800; }
+.track-status[data-status="VSC"] .s-bar { background: #FFB800; }
+
+@keyframes statusPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+@keyframes statusBlink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .track-status[data-status="YELLOW"] .status-bars {
+    animation: statusPulse 1s ease-in-out infinite;
+  }
+  .track-status[data-status="RED"] .status-bars {
+    animation: statusBlink 0.65s steps(2) infinite;
+  }
+  .track-status[data-status="VSC"] .status-bars {
+    animation: statusPulse 1.3s ease-in-out infinite;
+  }
+}

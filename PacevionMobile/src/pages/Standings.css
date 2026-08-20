@@ -1,6 +1,6 @@
 .page-container {
   min-height: 100vh;
-  padding: max(16px, env(safe-area-inset-top, 24px)) 16px max(100px, calc(76px + env(safe-area-inset-bottom, 24px))) 16px;
+  padding: max(16px, env(safe-area-inset-top, 24px)) 16px var(--page-bottom-spacing) 16px;
   display: flex;
   flex-direction: column;
   gap: 24px;
