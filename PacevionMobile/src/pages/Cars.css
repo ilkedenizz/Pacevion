@@ -1,20 +1,21 @@
 .cars-page {
   min-height: 100vh;
-  padding-bottom: max(100px, calc(76px + env(safe-area-inset-bottom, 24px)));
+  padding: 0;
   display: flex;
   flex-direction: column;
 }
 
-.cp-showroom {
+.cp-hero {
   position: relative;
-  height: max(450px, calc(450px + env(safe-area-inset-top, 24px)));
+  height: 380px;
   border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  padding: var(--page-top-spacing) 24px 24px 24px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
-.cp-bg {
+.cp-bg-glow {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
@@ -23,109 +24,184 @@
 .cp-header {
   position: relative;
   z-index: 2;
-  padding: max(48px, calc(48px + env(safe-area-inset-top, 24px))) 24px 0 24px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.cp-header h1 {
-  font-size: 40px;
+.cp-back {
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
 }
 
-.cp-render-box {
+.cp-rank {
+  font-size: 56px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.15);
+  line-height: 1;
+  font-style: italic;
+  letter-spacing: -0.05em;
+}
+
+.cp-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 24px;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-top: 16px;
 }
 
-.cp-render-box img {
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+.cp-team {
+  font-size: 32px;
+  line-height: 1.1;
+  color: #fff;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  max-width: 70%;
 }
 
-.cp-specs {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
-}
-
-.spec-item {
+.cp-pts-box {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid var(--color-border);
+  padding: 12px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  padding: 16px 24px;
-  border-right: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  align-items: center;
+  backdrop-filter: blur(8px);
 }
-.spec-item:nth-child(2n) { border-right: none; }
 
-.spec-val {
-  font-size: 16px;
-  margin-top: 4px;
+.cp-pts-val {
+  font-size: 28px;
   color: #fff;
 }
 
-.cp-selector {
-  padding: 24px;
+.cp-img-container {
+  position: absolute;
+  bottom: 24px;
+  right: -40px;
+  width: 320px;
+  height: 140px;
+  z-index: 1;
 }
 
-.cp-list {
+.cp-img-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center right;
+  transform: scaleX(-1);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+}
+
+/* Scroll Area */
+.cp-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 16px var(--page-bottom-spacing) 16px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 24px;
 }
 
-.cp-list-item {
-  display: flex;
-  align-items: center;
-  padding: 16px;
+/* Lineup Card */
+.c-lineup-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 16px;
 }
 
-.cp-list-item.active {
-  background: var(--color-surface-elevated);
-  border-color: var(--color-text-secondary);
+.cl-driver {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+.cl-driver.right {
+  justify-content: flex-end;
+  text-align: right;
+  flex-direction: row-reverse;
 }
 
-.cli-color {
-  width: 4px;
-  height: 24px;
-  border-radius: 2px;
-  margin-right: 16px;
+.cl-driver img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: var(--color-surface-highlight);
+  border: 2px solid var(--color-border);
 }
 
-.cli-name {
-  font-size: 18px;
+.cl-info {
+  display: flex;
+  flex-direction: column;
 }
-/* Cars Chart & Lineup */
+
+.cl-name {
+  font-size: 16px;
+  color: #fff;
+}
+
+.cl-pts {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.cl-vs {
+  font-size: 16px;
+  opacity: 0.3;
+  padding: 0 16px;
+}
+
+/* Points Progression Chart */
 .c-chart-container {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 16px;
+  border-top: 2px solid var(--color-border);
+  border-radius: 8px;
+  padding: 20px;
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   overflow-x: auto;
-  gap: 12px;
+}
+
+.c-chart-title {
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: -0.02em;
+  position: sticky;
+  left: 0;
 }
 
 .c-chart {
   display: flex;
   align-items: flex-end;
-  height: 120px;
+  height: 160px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--color-border-subtle);
   min-width: max-content;
-  gap: 8px;
+  gap: 12px;
+  position: relative;
 }
 
 .c-chart-bar-wrap {
@@ -133,7 +209,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  width: 24px;
+  width: 32px;
   height: 100%;
 }
 
@@ -143,64 +219,21 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 4px;
+  padding-top: 6px;
+  min-height: 20px;
 }
 
 .c-chart-pos {
-  font-size: 8px;
+  font-size: 10px;
   color: #000;
-  font-weight: 800;
+  font-weight: 900;
   transform: rotate(-90deg);
   margin-top: 8px;
 }
 
 .c-chart-lbl {
-  font-size: 9px;
+  font-size: 10px;
   color: var(--color-text-secondary);
   margin-top: 8px;
-}
-
-.c-lineup-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  overflow: hidden;
-  padding: 12px;
-}
-
-.cl-driver {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-left: 12px;
-}
-.cl-driver.right {
-  padding-left: 0;
-  padding-right: 12px;
-  justify-content: flex-end;
-}
-
-.cl-driver img {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 24px;
-  background: var(--color-surface-elevated);
-}
-
-.cl-info {
-  display: flex;
-  flex-direction: column;
-}
-.cl-info.right {
-  text-align: right;
-}
-
-.cl-vs {
-  font-size: 14px;
-  opacity: 0.5;
-  padding: 0 8px;
+  font-weight: 800;
 }

@@ -1,4 +1,6 @@
-.driver-page {
+import fs from 'fs';
+
+const driversCSS = `.driver-page {
   min-height: 100vh;
   padding: 0;
   display: flex;
@@ -257,3 +259,7 @@
 .h2h-lose {
   color: var(--color-text-muted);
 }
+`;
+fs.writeFileSync('src/pages/Drivers.css', driversCSS, 'utf8');
+
+console.log("Rewrote Drivers.css successfully");

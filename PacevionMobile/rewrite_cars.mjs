@@ -1,13 +1,15 @@
-.driver-page {
+import fs from 'fs';
+
+const carsCSS = `.cars-page {
   min-height: 100vh;
   padding: 0;
   display: flex;
   flex-direction: column;
 }
 
-.dp-hero {
+.cp-hero {
   position: relative;
-  height: 440px;
+  height: 380px;
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
   padding: var(--page-top-spacing) 24px 24px 24px;
@@ -15,13 +17,13 @@
   flex-direction: column;
 }
 
-.dp-bg-glow {
+.cp-bg-glow {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 0;
 }
 
-.dp-header {
+.cp-header {
   position: relative;
   z-index: 2;
   display: flex;
@@ -29,7 +31,7 @@
   align-items: center;
 }
 
-.dp-back {
+.cp-back {
   background: rgba(0,0,0,0.5);
   border: 1px solid var(--color-border);
   border-radius: 50%;
@@ -43,7 +45,7 @@
   backdrop-filter: blur(8px);
 }
 
-.dp-number {
+.cp-rank {
   font-size: 56px;
   font-weight: 900;
   color: rgba(255,255,255,0.15);
@@ -52,41 +54,29 @@
   letter-spacing: -0.05em;
 }
 
-.dp-content {
+.cp-content {
   position: relative;
   z-index: 2;
   flex: 1;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-top: 24px;
-}
-
-.dp-info {
-  display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: flex-end;
+  margin-top: 16px;
 }
 
-.dp-name {
-  font-size: 36px;
+.cp-team {
+  font-size: 32px;
   line-height: 1.1;
   color: #fff;
   letter-spacing: -0.03em;
   text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+  max-width: 70%;
 }
 
-.dp-team {
-  font-size: 14px;
-  color: rgba(255,255,255,0.8);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-top: 4px;
-  text-transform: uppercase;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-}
-
-.dp-pts-box {
+.cp-pts-box {
+  position: absolute;
+  bottom: 0;
+  right: 0;
   background: rgba(0,0,0,0.5);
   border: 1px solid var(--color-border);
   padding: 12px;
@@ -97,29 +87,31 @@
   backdrop-filter: blur(8px);
 }
 
-.dp-pts-val {
+.cp-pts-val {
   font-size: 28px;
   color: #fff;
 }
 
-.dp-img-container {
+.cp-img-container {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 220px;
-  height: 300px;
+  bottom: 24px;
+  right: -40px;
+  width: 320px;
+  height: 140px;
   z-index: 1;
 }
 
-.dp-img-container img {
+.cp-img-container img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  object-position: bottom right;
+  object-position: center right;
+  transform: scaleX(-1);
+  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
 }
 
 /* Scroll Area */
-.dp-scroll {
+.cp-scroll {
   flex: 1;
   overflow-y: auto;
   padding: 24px 16px var(--page-bottom-spacing) 16px;
@@ -128,8 +120,62 @@
   gap: 24px;
 }
 
-/* Performance Chart */
-.d-chart-container {
+/* Lineup Card */
+.c-lineup-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 16px;
+}
+
+.cl-driver {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+.cl-driver.right {
+  justify-content: flex-end;
+  text-align: right;
+  flex-direction: row-reverse;
+}
+
+.cl-driver img {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: var(--color-surface-highlight);
+  border: 2px solid var(--color-border);
+}
+
+.cl-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cl-name {
+  font-size: 16px;
+  color: #fff;
+}
+
+.cl-pts {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.cl-vs {
+  font-size: 16px;
+  opacity: 0.3;
+  padding: 0 16px;
+}
+
+/* Points Progression Chart */
+.c-chart-container {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-top: 2px solid var(--color-border);
@@ -138,51 +184,48 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  overflow-x: auto;
 }
 
-.d-chart-title {
+.c-chart-title {
   font-size: 14px;
   color: #fff;
   letter-spacing: -0.02em;
+  position: sticky;
+  left: 0;
 }
 
-.d-chart {
+.c-chart {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
-  height: 140px;
+  height: 160px;
   padding-bottom: 8px;
   border-bottom: 1px solid var(--color-border-subtle);
+  min-width: max-content;
+  gap: 12px;
   position: relative;
 }
 
-.d-chart-gridline {
-  position: absolute;
-  left: 0; right: 0;
-  border-top: 1px dashed var(--color-border-subtle);
-  z-index: 0;
-}
-
-.d-chart-bar-wrap {
+.c-chart-bar-wrap {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  flex: 1;
+  width: 32px;
   height: 100%;
-  z-index: 1;
 }
 
-.d-chart-bar {
-  width: 24px;
+.c-chart-bar {
+  width: 100%;
   border-radius: 4px 4px 0 0;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 6px;
+  min-height: 20px;
 }
 
-.d-chart-pos {
+.c-chart-pos {
   font-size: 10px;
   color: #000;
   font-weight: 900;
@@ -190,70 +233,13 @@
   margin-top: 8px;
 }
 
-.d-chart-lbl {
+.c-chart-lbl {
   font-size: 10px;
   color: var(--color-text-secondary);
   margin-top: 8px;
   font-weight: 800;
 }
+`;
+fs.writeFileSync('src/pages/Cars.css', carsCSS, 'utf8');
 
-.d-chart-summary {
-  display: flex;
-  justify-content: space-around;
-  padding-top: 8px;
-}
-
-/* H2H Card */
-.h2h-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-top: 3px solid var(--color-accent);
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.h2h-head {
-  background: var(--color-surface-elevated);
-  font-size: 14px;
-  text-align: center;
-  padding: 12px;
-  color: #fff;
-}
-
-.h2h-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--color-border-subtle);
-}
-.h2h-row:last-child {
-  border-bottom: none;
-}
-
-.h2h-left, .h2h-right {
-  flex: 1;
-  font-size: 18px;
-  font-weight: 900;
-}
-.h2h-left { text-align: left; }
-.h2h-right { text-align: right; }
-
-.h2h-center {
-  flex: 0 0 100px;
-  text-align: center;
-  font-size: 11px;
-  color: var(--color-text-secondary);
-  font-weight: 800;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.h2h-win {
-  color: #fff;
-}
-.h2h-lose {
-  color: var(--color-text-muted);
-}
+console.log("Rewrote Cars.css successfully");

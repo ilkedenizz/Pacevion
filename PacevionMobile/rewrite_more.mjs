@@ -1,4 +1,6 @@
-.more-page {
+import fs from 'fs';
+
+const moreCSS = `.more-page {
   min-height: 100vh;
   padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
   display: flex;
@@ -70,3 +72,6 @@
   height: 20px;
   color: var(--color-text-secondary);
 }
+`;
+fs.writeFileSync('src/pages/More.css', moreCSS, 'utf8');
+console.log("Rewrote More.css successfully");

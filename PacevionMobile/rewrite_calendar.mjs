@@ -1,4 +1,6 @@
-.calendar-page {
+import fs from 'fs';
+
+const calendarCSS = `.calendar-page {
   min-height: 100vh;
   padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
   display: flex;
@@ -131,3 +133,6 @@
 .cal-session-row.main .cal-session-time {
   color: var(--color-accent);
 }
+`;
+fs.writeFileSync('src/pages/Calendar.css', calendarCSS, 'utf8');
+console.log("Rewrote Calendar.css successfully");

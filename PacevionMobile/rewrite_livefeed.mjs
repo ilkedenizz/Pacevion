@@ -1,4 +1,6 @@
-.live-page {
+import fs from 'fs';
+
+const liveFeedCSS = `.live-page {
   min-height: 100vh;
   padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
   display: flex;
@@ -108,3 +110,6 @@
   height: 48px;
   margin-bottom: 4px;
 }
+`;
+fs.writeFileSync('src/pages/LiveFeed.css', liveFeedCSS, 'utf8');
+console.log("Rewrote LiveFeed.css successfully");

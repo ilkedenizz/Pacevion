@@ -1,24 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap');
 
 :root {
-  --color-bg: #08090B;
+  --color-bg: #050608;
   --color-surface: #101216;
-  --color-surface-elevated: #17191E;
-  --color-surface-highlight: #1D2127;
+  --color-surface-elevated: #1a1d24;
+  --color-surface-highlight: #252a33;
   
-  --color-border: rgba(255, 255, 255, 0.08);
-  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-subtle: rgba(255, 255, 255, 0.05);
   
-  --color-text-primary: #F5F5F5;
-  --color-text-secondary: #9298A3;
-  --color-text-muted: #5A5F6B;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #A0A5B5;
+  --color-text-muted: #626775;
   
   --color-accent: #E10600;
   --color-accent-bright: #FF2A23;
+  --color-accent-dim: rgba(225, 6, 0, 0.15);
 
   --color-trend-up: #00FF66;
   --color-trend-down: #FF3B30;
-  --color-trend-same: #9298A3;
+  --color-trend-same: #A0A5B5;
   
   --space-1: 4px;
   --space-2: 8px;
@@ -31,6 +32,7 @@
   --bottom-nav-height: 64px;
   --bottom-safe-area: env(safe-area-inset-bottom, 0px);
   --page-bottom-spacing: calc(var(--bottom-nav-height) + var(--bottom-safe-area) + 24px);
+  --page-top-spacing: calc(env(safe-area-inset-top, 24px) + 16px);
 }
 
 * {
@@ -158,5 +160,11 @@ button {
   display: flex;
   flex-direction: column;
 }
-.page-wrapper { padding-bottom: var(--page-bottom-spacing); }
-.page { padding-bottom: var(--page-bottom-spacing); }
+
+/* Safe Area Paddings */
+.page-wrapper {
+  padding-bottom: var(--page-bottom-spacing);
+}
+.page {
+  padding-bottom: var(--page-bottom-spacing);
+}

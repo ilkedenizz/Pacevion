@@ -1,4 +1,6 @@
-.standings-page {
+import fs from 'fs';
+
+const standingsCSS = `.standings-page {
   min-height: 100vh;
   padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
   display: flex;
@@ -140,3 +142,6 @@
 .st-item:nth-child(1) .st-pts {
   font-size: 26px;
 }
+`;
+fs.writeFileSync('src/pages/Standings.css', standingsCSS, 'utf8');
+console.log("Rewrote Standings.css successfully");

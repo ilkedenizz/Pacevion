@@ -1,4 +1,6 @@
-.rd-page {
+import fs from 'fs';
+
+const rdCSS = `.rd-page {
   min-height: 100vh;
   padding: 0;
   display: flex;
@@ -207,3 +209,6 @@
 .rd-res-time.dnf {
   color: var(--color-text-muted);
 }
+`;
+fs.writeFileSync('src/pages/RaceDetails.css', rdCSS, 'utf8');
+console.log("Rewrote RaceDetails.css successfully");
