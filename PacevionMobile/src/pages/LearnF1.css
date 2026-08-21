@@ -1,9 +1,9 @@
-.learn-page {
+﻿.learn-page {
   padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) var(--page-bottom-spacing);
   display: flex;
   flex-direction: column;
   gap: 24px;
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .featured-learn-card {

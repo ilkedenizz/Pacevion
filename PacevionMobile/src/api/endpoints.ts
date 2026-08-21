@@ -1,4 +1,4 @@
-import { fetchClient } from './fetchClient';
+﻿import { fetchClient } from './fetchClient';
 import type {
   MRDataCalendarResponse,
   MRDataDriverStandingsResponse,

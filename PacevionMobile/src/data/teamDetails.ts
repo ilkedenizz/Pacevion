@@ -1,4 +1,4 @@
-export interface TeamDetail {
+﻿export interface TeamDetail {
   chassis: string;
   powerUnit: string;
   color: string;

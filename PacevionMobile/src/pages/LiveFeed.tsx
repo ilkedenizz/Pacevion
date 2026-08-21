@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useLatestRaceResults } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
@@ -51,21 +51,21 @@ export const LiveFeed: React.FC = () => {
         <div className="lt-box">
           <span className="editorial-label">RACE WINNER</span>
           <span className="font-heading editorial-headline" style={{ color: winner ? getTeamDetails(winner.Constructor.constructorId).color : '#fff' }}>
-            {winner ? winner.Driver.familyName : '—'}
+            {winner ? winner.Driver.familyName : 'â€”'}
           </span>
         </div>
         <div className="lt-box">
           <span className="editorial-label">FASTEST LAP</span>
           <div className="lt-val-group">
             <span className="font-heading editorial-headline" style={{ color: fastestLapEntry ? getTeamDetails(fastestLapEntry.Constructor.constructorId).color : '#fff' }}>
-              {fastestLapEntry ? fastestLapEntry.Driver.familyName : '—'}
+              {fastestLapEntry ? fastestLapEntry.Driver.familyName : 'â€”'}
             </span>
-            <span className="font-mono lt-val">{fastestLapEntry?.FastestLap?.Time.time || '—'}</span>
+            <span className="font-mono lt-val">{fastestLapEntry?.FastestLap?.Time.time || 'â€”'}</span>
           </div>
         </div>
         <div className="lt-box">
           <span className="editorial-label">TOTAL LAPS</span>
-          <span className="font-mono lt-val">{winner?.laps || '—'}</span>
+          <span className="font-mono lt-val">{winner?.laps || 'â€”'}</span>
         </div>
       </div>
 
@@ -82,7 +82,7 @@ export const LiveFeed: React.FC = () => {
           const isFastestLap = result.FastestLap?.rank === '1';
           const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#333';
           
-          let displayTime = '—';
+          let displayTime = 'â€”';
           const status = result.status || '';
           const timeStr = result.Time?.time;
           const isLapStatus = /lap/i.test(status);
@@ -94,7 +94,7 @@ export const LiveFeed: React.FC = () => {
           } else if (status === 'Finished') {
             displayTime = timeStr ? timeStr : 'Finished';
           } else {
-            displayTime = status || '—';
+            displayTime = status || 'â€”';
           }
 
           return (
@@ -102,7 +102,7 @@ export const LiveFeed: React.FC = () => {
               <span className="ltb-pos font-mono">{result.positionText}</span>
               <div className="ltb-driver-col">
                 <div className="ltb-color" style={{ background: teamColor }} />
-                <img src={getDriverVisual(result.Driver.driverId, 'portrait')} className="ltb-avatar" alt={result.Driver.familyName} />
+                <img loading="lazy" src={getDriverVisual(result.Driver.driverId, 'portrait')} className="ltb-avatar" alt={result.Driver.familyName} />
                 <div className="ltb-names">
                   <span className="font-heading editorial-headline" style={{ color: isFastestLap ? '#C98EE8' : '#fff' }}>
                     {result.Driver.familyName}

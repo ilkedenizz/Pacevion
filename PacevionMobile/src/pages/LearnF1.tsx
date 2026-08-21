@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Menu, Settings, ChevronRight, Zap, CircleDashed, Wind, Timer, FileText } from 'lucide-react';
 import './LearnF1.css';
 
@@ -29,7 +29,7 @@ export const LearnF1: React.FC = () => {
         
         {/* We keep the car image since it is explicitly in the reference design for this card */}
         <div className="flc-visual">
-          <img src="/assets/img/cars/ferrari-2026.png" alt="Aerodynamics Diagram" className="flc-img" onError={(e) => e.currentTarget.style.display = 'none'} />
+          <img loading="lazy" src="/assets/img/cars/ferrari-2026.png" alt="Aerodynamics Diagram" className="flc-img" onError={(e) => e.currentTarget.style.display = 'none'} />
         </div>
       </div>
 

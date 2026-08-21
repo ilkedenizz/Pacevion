@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft, Lock, EyeOff, ShieldCheck, HardDrive } from 'lucide-react';
 import './PrivacyPolicy.css';

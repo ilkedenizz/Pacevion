@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { circuitLayouts } from '../../data/circuits';
 import './CircuitTrack.css';
 
@@ -104,7 +104,7 @@ export const CircuitTrack: React.FC<CircuitTrackProps> = ({
         </div>
       ) : (
         <div className="circuit-unavailable">
-          <span className="cu-icon">🏁</span>
+          <span className="cu-icon">ğŸ</span>
           <span className="cu-text">CIRCUIT DATA</span>
         </div>
       )}

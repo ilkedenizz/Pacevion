@@ -1,5 +1,5 @@
-.more-page {
-  min-height: 100vh;
+﻿.more-page {
+  min-height: 100dvh;
   padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
   display: flex;
   flex-direction: column;

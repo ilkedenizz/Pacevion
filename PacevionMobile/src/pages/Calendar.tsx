@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
 import CircuitTrack from '../components/common/CircuitTrack';
@@ -28,7 +28,7 @@ export const Calendar: React.FC = () => {
           const isPast = nextRaceObj && nextRaceIndex !== -1 && parseInt(race.round) < parseInt(nextRaceObj.round);
           
           const raceDate = new Date(race.date);
-          const formattedDate = `${raceDate.getDate() - 2}—${String(raceDate.getDate()).padStart(2, '0')} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
+          const formattedDate = `${raceDate.getDate() - 2}â€”${String(raceDate.getDate()).padStart(2, '0')} ${raceDate.toLocaleDateString('en-GB', { month: 'short' }).toUpperCase()}`;
           
           return (
             <div 

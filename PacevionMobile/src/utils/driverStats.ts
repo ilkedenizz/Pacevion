@@ -1,4 +1,4 @@
-import type { ResultRace, QualifyingRace, DriverStanding } from '../api/types';
+﻿import type { ResultRace, QualifyingRace, DriverStanding } from '../api/types';
 
 export interface DriverForm {
   raceName: string;

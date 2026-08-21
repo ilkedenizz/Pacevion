@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Flag, Trophy, Activity, Calendar, Menu } from 'lucide-react';
 import './BottomNav.css';

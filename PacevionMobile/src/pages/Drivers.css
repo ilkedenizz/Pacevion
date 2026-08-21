@@ -1,5 +1,5 @@
-.driver-page {
-  min-height: 100vh;
+﻿.driver-page {
+  min-height: 100dvh;
   padding: 0;
   display: flex;
   flex-direction: column;

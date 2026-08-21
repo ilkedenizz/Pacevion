@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useDriverStandings, useAllSeasonResults, useAllSeasonQualifying } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
@@ -23,8 +23,8 @@ export const Drivers: React.FC = () => {
   }, [state, standings, selectedId]);
 
   const driverStats = useMemo(() => {
-    if (!selectedId) return { wins: '—', podiums: '—', poles: '—', form: [] as string[] };
-    if (isResultsError || isQualifyingError) return { wins: '—', podiums: '—', poles: '—', form: [] as string[] };
+    if (!selectedId) return { wins: 'â€”', podiums: 'â€”', poles: 'â€”', form: [] as string[] };
+    if (isResultsError || isQualifyingError) return { wins: 'â€”', podiums: 'â€”', poles: 'â€”', form: [] as string[] };
     if (!allResults || !allQualifying) return null;
 
     const driverResults = allResults
@@ -81,7 +81,7 @@ export const Drivers: React.FC = () => {
       <div className="d-hero">
         <div className="d-hero-bg" style={{ background: `linear-gradient(to top, var(--color-bg), ${teamColor}33)` }} />
         <div className="d-num-large font-mono">{driver.Driver.permanentNumber || '??'}</div>
-        <img src={getDriverVisual(driver.Driver.driverId, 'full')} alt={driver.Driver.familyName} className="d-image fade-in" />
+        <img loading="lazy" src={getDriverVisual(driver.Driver.driverId, 'full')} alt={driver.Driver.familyName} className="d-image fade-in" />
         <div className="d-hero-names">
           <span className="editorial-label" style={{ color: teamColor }}>{driver.Constructors[0]?.name}</span>
           <h1 className="font-heading editorial-headline">{driver.Driver.givenName} <br/>{driver.Driver.familyName}</h1>
@@ -100,15 +100,15 @@ export const Drivers: React.FC = () => {
           </div>
           <div className="d-stat-box">
             <span className="editorial-label">WINS</span>
-            <span className="font-mono d-stat-val">{driverStats?.wins || '—'}</span>
+            <span className="font-mono d-stat-val">{driverStats?.wins || 'â€”'}</span>
           </div>
           <div className="d-stat-box">
             <span className="editorial-label">PODIUMS</span>
-            <span className="font-mono d-stat-val">{driverStats?.podiums || '—'}</span>
+            <span className="font-mono d-stat-val">{driverStats?.podiums || 'â€”'}</span>
           </div>
           <div className="d-stat-box" style={{ gridColumn: 'span 2' }}>
             <span className="editorial-label">POLES</span>
-            <span className="font-mono d-stat-val">{driverStats?.poles || '—'}</span>
+            <span className="font-mono d-stat-val">{driverStats?.poles || 'â€”'}</span>
           </div>
         </div>
 

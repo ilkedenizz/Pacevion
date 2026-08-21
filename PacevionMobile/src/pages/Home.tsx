@@ -1,32 +1,19 @@
-import { useState, useMemo, useEffect } from 'react';
+﻿import { useMemo } from 'react';
 import { useCalendar, useDriverStandings } from '../hooks/useF1Data';
 import { getDriverVisual } from '../data/assets';
+import { getCircuitDetails } from '../data/circuitData';
+import { HomeCountdown } from '../components/common/HomeCountdown';
 import { getNextSession, formatRaceDateRange } from '../utils/raceWeekend';
 import CircuitTrack from '../components/common/CircuitTrack';
 import './Home.css';
 
-const CIRCUIT_INFO: Record<string, { laps: number; distance: string }> = {
-  zandvoort: { laps: 72, distance: '306.1 KM' },
-  monza: { laps: 53, distance: '306.7 KM' },
-  monaco: { laps: 78, distance: '260.2 KM' },
-  spa: { laps: 44, distance: '308.0 KM' },
-  baku: { laps: 51, distance: '306.0 KM' },
-  silverstone: { laps: 52, distance: '306.1 KM' },
-  default: { laps: 53, distance: '305.0 KM' }
-};
+
 
 export const Home = () => {
   const { data: calendar, isLoading: isCalendarLoading, isError: isCalendarError, refetch: refetchCalendar } = useCalendar('2026');
   const { data: standings, isLoading: isStandingsLoading, isError: isStandingsError, refetch: refetchStandings } = useDriverStandings('2026');
 
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setNow(new Date());
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
+  const now = useMemo(() => new Date(), []);
 
   const nextRace = useMemo(() => {
     if (!calendar || !Array.isArray(calendar) || calendar.length === 0) return null;
@@ -38,18 +25,7 @@ export const Home = () => {
     return calendar ? getNextSession(calendar) : null;
   }, [calendar, now]);
 
-  const timeLeft = useMemo(() => {
-    if (!nextSessionInfo) return { days: 0, hours: 0, mins: 0 };
-    const diff = nextSessionInfo.sessionDate.getTime() - now.getTime();
-    
-    if (diff <= 0) return { days: 0, hours: 0, mins: 0 };
-    
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    return { days, hours, mins };
-  }, [nextSessionInfo, now]);
+  
 
   if (isCalendarError || isStandingsError) {
     return (
@@ -80,7 +56,7 @@ export const Home = () => {
 
   const formattedDate = formatRaceDateRange(nextRace);
   const circuitId = nextRace.Circuit?.circuitId || 'default';
-  const cInfo = CIRCUIT_INFO[circuitId] || CIRCUIT_INFO.default;
+  const cInfo = getCircuitDetails(circuitId);
 
   const leader = standings && standings.length > 0 ? standings[0] : null;
   const leaderImg = leader ? getDriverVisual(leader.Driver.driverId, 'portrait') : getDriverVisual('norris', 'portrait');
@@ -109,24 +85,8 @@ export const Home = () => {
           <div className="hero-race-loc font-mono">{nextRace.Circuit?.Location?.locality?.toUpperCase()}</div>
         </div>
 
-        <div className="hero-countdown">
-          <div className="cd-box">
-            <span className="cd-num font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
-            <span className="cd-lbl editorial-label">DAYS</span>
-          </div>
-          <div className="cd-sep">:</div>
-          <div className="cd-box">
-            <span className="cd-num font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
-            <span className="cd-lbl editorial-label">HOURS</span>
-          </div>
-          <div className="cd-sep">:</div>
-          <div className="cd-box">
-            <span className="cd-num font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
-            <span className="cd-lbl editorial-label">MIN</span>
-          </div>
-        </div>
-
-        <div className="hero-circuit-container">
+        {nextSessionInfo && <HomeCountdown targetDate={nextSessionInfo.sessionDate.toISOString()} />}
+          <div className="hero-circuit-container">
           <div className="circuit-bg-glow" />
           {nextRace.Circuit && (
             <CircuitTrack 
@@ -176,7 +136,7 @@ export const Home = () => {
               <div className="leader-pts-row">
                 <span className="font-mono editorial-num leader-pts">{leader?.points || 285}</span>
                 <span className="editorial-label">PTS</span>
-                <span className="trend-up" style={{ marginLeft: 'auto', fontWeight: 'bold' }}>↑</span>
+                <span className="trend-up" style={{ marginLeft: 'auto', fontWeight: 'bold' }}>â†‘</span>
               </div>
             </div>
             <div className="leader-img-box">

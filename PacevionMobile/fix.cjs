@@ -1,4 +1,5 @@
-﻿const fs = require("fs"); 
-let c = fs.readFileSync("src/pages/Home.css", "utf8"); 
-c = c.replace(/\\(RED|YELLOW|GREEN|VSC)\\/g, "\"$1\""); 
-fs.writeFileSync("src/pages/Home.css", c);
+﻿const fs = require('fs');
+let c = fs.readFileSync('src/pages/Home.tsx', 'utf8');
+c = c.replace(/const circuitId = nextRace\.Circuit\?\.circuitId \|\| 'default';/,
+  "const circuitId = (nextRace.Circuit?.circuitId || 'default').toLowerCase();");
+fs.writeFileSync('src/pages/Home.tsx', c);

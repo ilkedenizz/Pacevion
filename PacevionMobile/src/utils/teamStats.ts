@@ -1,4 +1,4 @@
-import type { ResultRace, DriverStanding } from '../api/types';
+﻿import type { ResultRace, DriverStanding } from '../api/types';
 
 export interface TeamSeasonPerformance {
   raceName: string;

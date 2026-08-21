@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDriverStandingsWithPrevious, useConstructorStandingsWithPrevious } from '../hooks/useF1Data';
 import type { DriverStanding, ConstructorStanding } from '../api/types';
@@ -24,25 +24,25 @@ export const Standings: React.FC = () => {
   const otherConstructors = constructors.slice(1);
 
   const getDriverTrend = (driverId: string, currentPosition: string) => {
-    if (!prevDrivers || prevDrivers.length === 0) return { icon: '—', class: 'trend-same' };
+    if (!prevDrivers || prevDrivers.length === 0) return { icon: 'â€”', class: 'trend-same' };
     const prevPos = prevDrivers.find(d => d.Driver.driverId === driverId)?.position;
-    if (!prevPos) return { icon: '—', class: 'trend-same' };
+    if (!prevPos) return { icon: 'â€”', class: 'trend-same' };
     
     const diff = parseInt(prevPos) - parseInt(currentPosition);
-    if (diff > 0) return { icon: `↑${diff}`, class: 'trend-up' };
-    if (diff < 0) return { icon: `↓${Math.abs(diff)}`, class: 'trend-down' };
-    return { icon: '—', class: 'trend-same' };
+    if (diff > 0) return { icon: `â†‘${diff}`, class: 'trend-up' };
+    if (diff < 0) return { icon: `â†“${Math.abs(diff)}`, class: 'trend-down' };
+    return { icon: 'â€”', class: 'trend-same' };
   };
 
   const getConstructorTrend = (constructorId: string, currentPosition: string) => {
-    if (!prevConstructors || prevConstructors.length === 0) return { icon: '—', class: 'trend-same' };
+    if (!prevConstructors || prevConstructors.length === 0) return { icon: 'â€”', class: 'trend-same' };
     const prevPos = prevConstructors.find(c => c.Constructor.constructorId === constructorId)?.position;
-    if (!prevPos) return { icon: '—', class: 'trend-same' };
+    if (!prevPos) return { icon: 'â€”', class: 'trend-same' };
     
     const diff = parseInt(prevPos) - parseInt(currentPosition);
-    if (diff > 0) return { icon: `↑${diff}`, class: 'trend-up' };
-    if (diff < 0) return { icon: `↓${Math.abs(diff)}`, class: 'trend-down' };
-    return { icon: '—', class: 'trend-same' };
+    if (diff > 0) return { icon: `â†‘${diff}`, class: 'trend-up' };
+    if (diff < 0) return { icon: `â†“${Math.abs(diff)}`, class: 'trend-down' };
+    return { icon: 'â€”', class: 'trend-same' };
   };
 
   const handleDriverClick = (driverId: string) => {
@@ -121,7 +121,7 @@ export const Standings: React.FC = () => {
                     <div className="tb-driver-col">
                       <div className="tb-team-line" style={{ background: teamColor }} />
                       <div className="tb-avatar">
-                        <img src={getDriverVisual(standing.Driver.driverId, 'portrait')} alt="avatar" />
+                        <img loading="lazy" src={getDriverVisual(standing.Driver.driverId, 'portrait')} alt="avatar" />
                       </div>
                       <div className="tb-names">
                         <span className="tb-lastname font-heading editorial-headline">{standing.Driver.familyName}</span>

@@ -1,4 +1,4 @@
-import type { Race } from '../api/types';
+﻿import type { Race } from '../api/types';
 
 export interface NextSessionInfo {
   race: Race;

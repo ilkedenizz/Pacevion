@@ -1,4 +1,4 @@
-// src/data/assets.ts
+﻿// src/data/assets.ts
 
 const base = import.meta.env.BASE_URL || '/';
 

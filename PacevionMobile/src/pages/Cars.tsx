@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { useConstructorStandings, useDriverStandings, useAllSeasonResults } from '../hooks/useF1Data';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual, getCarVisual } from '../data/assets';
@@ -57,7 +57,7 @@ export const Cars: React.FC = () => {
       </div>
 
       <div className="c-hero" style={{ background: `linear-gradient(to bottom, ${details.color}33, var(--color-bg))` }}>
-        <img src={getCarVisual(team.Constructor.constructorId)} alt={team.Constructor.name} className="c-image fade-in" />
+        <img loading="lazy" src={getCarVisual(team.Constructor.constructorId)} alt={team.Constructor.name} className="c-image fade-in" />
         <div className="c-hero-info">
           <span className="editorial-label" style={{ color: details.color }}>{details.fullName}</span>
           <h1 className="font-heading editorial-headline">{team.Constructor.name}</h1>
@@ -108,7 +108,7 @@ export const Cars: React.FC = () => {
             <h3 className="editorial-label">DRIVER LINE-UP</h3>
             <div className="c-lineup-card">
               <div className="cl-driver" style={{ borderLeft: `4px solid ${details.color}` }}>
-                <img src={getDriverVisual(teamDrivers[0].Driver.driverId, 'portrait')} alt={teamDrivers[0].Driver.familyName} />
+                <img loading="lazy" src={getDriverVisual(teamDrivers[0].Driver.driverId, 'portrait')} alt={teamDrivers[0].Driver.familyName} />
                 <div className="cl-info">
                   <span className="font-heading editorial-headline">{teamDrivers[0].Driver.familyName}</span>
                   <span className="font-mono editorial-label">{teamDrivers[0].points} PTS</span>
@@ -120,7 +120,7 @@ export const Cars: React.FC = () => {
                   <span className="font-heading editorial-headline">{teamDrivers[1].Driver.familyName}</span>
                   <span className="font-mono editorial-label">{teamDrivers[1].points} PTS</span>
                 </div>
-                <img src={getDriverVisual(teamDrivers[1].Driver.driverId, 'portrait')} alt={teamDrivers[1].Driver.familyName} />
+                <img loading="lazy" src={getDriverVisual(teamDrivers[1].Driver.driverId, 'portrait')} alt={teamDrivers[1].Driver.familyName} />
               </div>
             </div>
           </div>

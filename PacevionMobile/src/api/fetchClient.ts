@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.jolpi.ca/ergast/f1';
+﻿const BASE_URL = 'https://api.jolpi.ca/ergast/f1';
 
 export async function fetchClient<T>(endpoint: string): Promise<T> {
   const url = `${BASE_URL}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`;

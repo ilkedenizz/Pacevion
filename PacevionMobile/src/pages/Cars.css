@@ -1,5 +1,5 @@
-.cars-page {
-  min-height: 100vh;
+﻿.cars-page {
+  min-height: 100dvh;
   padding: 0;
   display: flex;
   flex-direction: column;
