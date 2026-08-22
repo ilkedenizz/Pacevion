@@ -244,15 +244,6 @@ export const Home: React.FC = () => {
                   key={idx} 
                   className={`session-row ${isCurrent ? 'session-current' : ''} ${isCompleted ? 'session-completed' : ''}`}
                 >
-                  <div className="session-status-indicator">
-                    {isCompleted ? (
-                      <CheckCircle2 size={13} color="var(--color-text-muted)" />
-                    ) : isCurrent ? (
-                      <div className="status-dot pulse" style={{ background: 'var(--color-primary)' }} />
-                    ) : (
-                      <div className="session-dot-upcoming" />
-                    )}
-                  </div>
                   <div className="session-name font-heading">{session.name}</div>
                   <div className="session-time font-mono">
                     {isCompleted ? (
@@ -260,6 +251,15 @@ export const Home: React.FC = () => {
                     ) : (
                       session.date.toLocaleDateString([], { weekday: 'short' }).toUpperCase() + ' ' +
                       session.date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    )}
+                  </div>
+                  <div className="session-status-indicator">
+                    {isCompleted ? (
+                      <CheckCircle2 size={13} color="var(--color-text-muted)" />
+                    ) : isCurrent ? (
+                      <div className="status-dot pulse" style={{ background: 'var(--color-success)' }} />
+                    ) : (
+                      <div className="session-dot-upcoming" />
                     )}
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export const Home: React.FC = () => {
           >
             <div className="sc-header">
               <span className="editorial-label">DRIVERS LEADER</span>
-              <span className="trend-up font-mono">P1</span>
+              <span className="trend-up font-mono">P01</span>
             </div>
             <div className="sc-body">
               <div className="sc-driver-avatar-box">
@@ -392,7 +392,7 @@ export const Home: React.FC = () => {
           >
             <div className="sc-header">
               <span className="editorial-label">CONSTRUCTORS LEADER</span>
-              <span className="trend-up font-mono">P1</span>
+              <span className="trend-up font-mono">P01</span>
             </div>
             <div className="sc-body">
               <div 

@@ -42,17 +42,14 @@ export const HomeCountdown = React.memo(({ targetDate }: { targetDate: string })
         <span className="cd-num font-mono editorial-num">{String(timeLeft.days).padStart(2, '0')}</span>
         <span className="cd-lbl editorial-label">DAYS</span>
       </div>
-      <div className="cd-sep">:</div>
       <div className="cd-box">
         <span className="cd-num font-mono editorial-num">{String(timeLeft.hours).padStart(2, '0')}</span>
         <span className="cd-lbl editorial-label">HRS</span>
       </div>
-      <div className="cd-sep">:</div>
       <div className="cd-box">
         <span className="cd-num font-mono editorial-num">{String(timeLeft.mins).padStart(2, '0')}</span>
         <span className="cd-lbl editorial-label">MIN</span>
       </div>
-      <div className="cd-sep">:</div>
       <div className="cd-box">
         <span className="cd-num font-mono editorial-num">{String(timeLeft.secs).padStart(2, '0')}</span>
         <span className="cd-lbl editorial-label">SEC</span>
