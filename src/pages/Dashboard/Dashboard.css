@@ -15,8 +15,8 @@
 /* 2. Horizontal Data Strip */
 .data-strip-wrapper {
   width: 100%;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  background-color: var(--ds-color-surface-light);
+  border-bottom: 1px solid var(--ds-color-border);
 }
 
 .data-strip {
@@ -29,42 +29,33 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: var(--space-4) var(--space-5);
-  border-right: 1px solid var(--color-border);
-  transition: background-color var(--transition-fast) ease;
+  padding: var(--ds-space-md) var(--ds-space-sm);
+  border-right: 1px solid var(--ds-color-border);
+  gap: var(--ds-space-xs);
 }
 
 .strip-item:last-child {
   border-right: none;
 }
 
-.strip-item:hover {
-  background-color: rgba(255, 255, 255, 0.02);
-}
-
 .strip-label {
-  font-family: var(--font-mono);
+  font-family: var(--ds-font-heading);
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--color-text-muted);
-  margin-bottom: var(--space-2);
+  letter-spacing: 1.5px;
+  color: var(--ds-color-text-secondary);
 }
 
 .strip-value {
-  font-family: var(--font-heading);
-  font-size: 32px;
-  font-weight: 900;
-  color: var(--color-text-primary);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -1px;
+  font-family: var(--ds-font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ds-color-text-primary);
 }
 
 .strip-item-accent .strip-value {
-  color: var(--color-accent);
-  text-transform: uppercase;
   font-size: 24px;
 }
 

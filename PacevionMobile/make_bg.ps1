@@ -1,0 +1,1 @@
+Add-Type -AssemblyName System.Drawing; $bmp = New-Object System.Drawing.Bitmap(1024, 1024); $g = [System.Drawing.Graphics]::FromImage($bmp); $g.Clear([System.Drawing.Color]::Black); $g.Dispose(); $bmp.Save('c:\dev\Pacevion\PacevionMobile\assets\icon-background.png', [System.Drawing.Imaging.ImageFormat]::Png); $bmp.Dispose()

@@ -5,10 +5,10 @@
 
   /* --- COLORS --- */
   /* Base Backgrounds */
-  --ds-color-bg-graphite: #09090b;
-  --ds-color-surface: #111114;
-  --ds-color-surface-light: #16161a;
-  --ds-color-surface-elevated: #1a1b20;
+  --ds-color-bg-graphite: #080A0F;
+  --ds-color-surface: #12151D;
+  --ds-color-surface-light: #222735;
+  --ds-color-surface-elevated: #191D27;
 
   /* Legacy Core Component Colors - mapped here to ensure they exist globally */
   --color-surface: var(--ds-color-surface);
@@ -22,28 +22,28 @@
   --color-border: var(--ds-color-border);
 
   /* Text Colors */
-  --ds-color-text-primary: #f3f4f6;
-  --ds-color-text-secondary: #9ca3af;
-  --ds-color-text-muted: #6b7280;
-  --ds-color-text-dark: #08060d; /* For light mode fallbacks if needed */
+  --ds-color-text-primary: #F5F5F5;
+  --ds-color-text-secondary: #9CA3AF;
+  --ds-color-text-muted: #6B7280;
+  --ds-color-text-dark: #08060d;
 
   /* Accents & States */
   --ds-color-accent-red: #E10600;
-  --ds-color-accent-red-hover: #ff1a12;
+  --ds-color-accent-red-hover: #FF2A23;
   --ds-color-accent-red-glow: rgba(225, 6, 0, 0.15);
   
-  --ds-color-success: #10b981;
-  --ds-color-warning: #f59e0b;
+  --ds-color-success: #00C864;
+  --ds-color-warning: #FFB800;
 
   /* Borders & Dividers */
-  --ds-color-border: #2e303a;
-  --ds-color-border-light: rgba(255, 255, 255, 0.1);
+  --ds-color-border: #2A2F3A;
+  --ds-color-border-light: rgba(255, 255, 255, 0.06);
 
   /* --- TYPOGRAPHY --- */
-  --ds-font-display: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --ds-font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --ds-font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --ds-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --ds-font-display: 'Bebas Neue', 'Titillium Web', 'Inter', sans-serif;
+  --ds-font-heading: 'Bebas Neue', 'Titillium Web', 'Inter', sans-serif;
+  --ds-font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* --- SPACING --- */
   --ds-space-xs: 4px;

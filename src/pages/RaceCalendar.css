@@ -130,7 +130,7 @@
 
 .calendar-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
   gap: var(--space-5);
 }
 
@@ -158,11 +158,11 @@
 
 .rc-grid-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
 }
 
 .rc-grid-card:hover::after {
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: var(--ds-color-accent-red);
 }
 
 /* Content Wrapper - Flex Row */

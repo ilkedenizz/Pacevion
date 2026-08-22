@@ -128,14 +128,15 @@
     top: 48px; /* Below the 48px header */
     left: 0;
     bottom: 0;
-    width: 240px;
-    background-color: var(--color-surface, #111114);
-    border-right: 1px solid var(--color-border);
-    padding: var(--space-4) var(--space-3);
-    box-shadow: 4px 0 16px rgba(0, 0, 0, 0.5);
+    width: 280px;
+    background-color: var(--ds-color-surface);
+    border-right: 1px solid var(--ds-color-border);
+    padding: var(--ds-space-lg) var(--ds-space-md);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
     transform: translateX(-100%);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 95;
+    gap: var(--ds-space-lg);
   }
   
   .navigation.open {
@@ -143,24 +144,26 @@
   }
 
   .nav-group-title {
-    display: block; /* Keep it structured even on mobile drawer */
+    display: block; 
+    font-size: 11px;
+    margin-bottom: var(--ds-space-sm);
   }
 
   .nav-list {
     flex-direction: column;
-    gap: 2px;
+    gap: var(--ds-space-xs);
   }
 
   .nav-link {
-    padding: var(--space-2) var(--space-3);
-    font-size: 12px;
-    gap: var(--space-3);
+    padding: var(--ds-space-md);
+    font-size: 14px;
+    gap: var(--ds-space-md);
   }
 
   .nav-link.active::before {
     left: 0;
     top: 25%;
     height: 50%;
-    width: 2px;
+    width: 3px;
   }
 }

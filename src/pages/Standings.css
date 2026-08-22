@@ -95,9 +95,11 @@
 .timing-board-wrapper {
   display: flex;
   flex-direction: column;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: var(--ds-color-surface);
+  border: 1px solid var(--ds-color-border);
   min-width: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tb-header-row {
@@ -123,11 +125,12 @@
 .tb-row {
   display: flex;
   align-items: center;
-  padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  padding: var(--ds-space-sm) var(--ds-space-md);
+  border-bottom: 1px solid var(--ds-color-border-light);
   cursor: pointer;
-  transition: background-color var(--motion-fast) var(--motion-ease);
+  transition: background-color var(--ds-transition-fast) var(--ds-ease-standard);
   position: relative;
+  background-color: var(--ds-color-surface-elevated);
 }
 
 .tb-row:last-child {
@@ -140,34 +143,34 @@
   left: 0;
   top: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
   background-color: transparent;
-  transition: background-color var(--motion-fast) var(--motion-ease);
+  transition: background-color var(--ds-transition-fast) var(--ds-ease-standard);
 }
 
 .tb-row:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--ds-color-surface-light);
 }
 
 .tb-row:hover::before {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--ds-color-border);
 }
 
 .tb-row.leader-row {
-  background-color: rgba(225, 6, 0, 0.03);
+  background-color: var(--ds-color-accent-red-glow);
 }
 
 .tb-row.leader-row::before {
-  background-color: var(--color-accent);
+  background-color: var(--ds-color-accent-red);
 }
 
 .tb-row.top-3-row .tb-pos-badge {
-  background-color: var(--color-text-primary);
-  color: var(--color-background);
+  background-color: var(--ds-color-text-primary);
+  color: var(--ds-color-bg-graphite);
 }
 
 .tb-row.leader-row .tb-pos-badge {
-  background-color: var(--color-accent);
+  background-color: var(--ds-color-accent-red);
   color: #fff;
 }
 
