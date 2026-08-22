@@ -152,11 +152,11 @@
 /* Toast */
 .ns-feedback-toast {
   position: fixed;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  bottom: calc(76px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
   margin: 0;
-  bottom: auto;
+  top: auto;
   right: auto;
   background: var(--color-surface-elevated);
   border: 1px solid var(--color-border-subtle);
@@ -175,16 +175,16 @@
   word-break: break-word;
   overflow-wrap: break-word;
   
-  animation: toastFadeInCenter 0.2s ease-out forwards;
+  animation: toastFadeInBottom 0.2s ease-out forwards;
 }
 
-@keyframes toastFadeInCenter {
+@keyframes toastFadeInBottom {
   0% {
     opacity: 0;
-    transform: translate(-50%, -40%);
+    transform: translate(-50%, 10px);
   }
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, 0);
   }
 }
