@@ -109,30 +109,35 @@ export function getNextSession(races: Race[], now: Date = new Date()): NextSessi
 }
 
 export function getCountryFlag(country?: string, locality?: string): string {
-  const text = `${country || ''} ${locality || ''}`.toLowerCase();
-  if (text.includes('italy') || text.includes('monza') || text.includes('imola')) return '🇮🇹';
-  if (text.includes('monaco')) return '🇲🇨';
-  if (text.includes('spain') || text.includes('barcelona') || text.includes('catalunya') || text.includes('madrid')) return '🇪🇸';
-  if (text.includes('united kingdom') || text.includes('great britain') || text.includes('silverstone') || text.includes('uk')) return '🇬🇧';
-  if (text.includes('belgium') || text.includes('spa')) return '🇧🇪';
-  if (text.includes('netherlands') || text.includes('zandvoort')) return '🇳🇱';
-  if (text.includes('austria') || text.includes('spielberg') || text.includes('red bull ring')) return '🇦🇹';
-  if (text.includes('hungary') || text.includes('budapest') || text.includes('hungaroring')) return '🇭🇺';
-  if (text.includes('australia') || text.includes('melbourne')) return '🇦🇺';
-  if (text.includes('japan') || text.includes('suzuka')) return '🇯🇵';
-  if (text.includes('china') || text.includes('shanghai')) return '🇨🇳';
-  if (text.includes('bahrain') || text.includes('sakhir')) return '🇧🇭';
-  if (text.includes('saudi') || text.includes('jeddah')) return '🇸🇦';
-  if (text.includes('miami') || text.includes('vegas') || text.includes('austin') || text.includes('united states') || text.includes('usa')) return '🇺🇸';
-  if (text.includes('canada') || text.includes('montreal')) return '🇨🇦';
-  if (text.includes('azerbaijan') || text.includes('baku')) return '🇦🇿';
-  if (text.includes('singapore')) return '🇸🇬';
-  if (text.includes('mexico')) return '🇲🇽';
-  if (text.includes('brazil') || text.includes('são paulo') || text.includes('interlagos')) return '🇧🇷';
-  if (text.includes('qatar') || text.includes('losail')) return '🇶🇦';
-  if (text.includes('uae') || text.includes('abu dhabi') || text.includes('yas marina')) return '🇦🇪';
+  const c = (country || '').toLowerCase().trim();
+  const l = (locality || '').toLowerCase().trim();
+  const text = `${c} ${l}`;
+
+  // Match specific countries/localities accurately without substring collisions
+  if (c === 'uk' || c === 'united kingdom' || c === 'great britain' || l === 'silverstone' || text.includes('great britain') || text.includes('silverstone')) return '🇬🇧';
+  if (c === 'japan' || l === 'suzuka' || text.includes('japan') || text.includes('suzuka')) return '🇯🇵';
+  if (c === 'italy' || l === 'monza' || l === 'imola' || text.includes('monza') || text.includes('imola') || text.includes('italy')) return '🇮🇹';
+  if (c === 'monaco' || l === 'monte-carlo' || text.includes('monaco')) return '🇲🇨';
+  if (c === 'spain' || l === 'barcelona' || l === 'madrid' || l === 'montmeló' || text.includes('catalunya') || text.includes('spain')) return '🇪🇸';
+  if (c === 'belgium' || l === 'spa' || text.includes('spa-francorchamps') || text.includes('belgium')) return '🇧🇪';
+  if (c === 'netherlands' || l === 'zandvoort' || text.includes('netherlands') || text.includes('zandvoort')) return '🇳🇱';
+  if (c === 'austria' || l === 'spielberg' || text.includes('red bull ring') || text.includes('austria')) return '🇦🇹';
+  if (c === 'hungary' || l === 'budapest' || text.includes('hungaroring') || text.includes('hungary')) return '🇭🇺';
+  if (c === 'australia' || l === 'melbourne' || text.includes('albert park') || text.includes('australia')) return '🇦🇺';
+  if (c === 'china' || l === 'shanghai' || text.includes('china') || text.includes('shanghai')) return '🇨🇳';
+  if (c === 'bahrain' || l === 'sakhir' || text.includes('bahrain') || text.includes('sakhir')) return '🇧🇭';
+  if (c === 'saudi arabia' || l === 'jeddah' || text.includes('saudi') || text.includes('jeddah')) return '🇸🇦';
+  if (c === 'usa' || c === 'united states' || l === 'miami' || l === 'austin' || l === 'las vegas' || text.includes('vegas') || text.includes('miami') || text.includes('americas') || text.includes('united states')) return '🇺🇸';
+  if (c === 'canada' || l === 'montreal' || text.includes('montreal') || text.includes('canada')) return '🇨🇦';
+  if (c === 'azerbaijan' || l === 'baku' || text.includes('baku') || text.includes('azerbaijan')) return '🇦🇿';
+  if (c === 'singapore' || l === 'marina bay' || text.includes('singapore') || text.includes('marina bay')) return '🇸🇬';
+  if (c === 'mexico' || l === 'mexico city' || text.includes('mexico')) return '🇲🇽';
+  if (c === 'brazil' || l === 'são paulo' || text.includes('interlagos') || text.includes('brazil') || text.includes('são paulo')) return '🇧🇷';
+  if (c === 'qatar' || l === 'losail' || text.includes('qatar') || text.includes('losail')) return '🇶🇦';
+  if (c === 'uae' || c === 'united arab emirates' || l === 'abu dhabi' || text.includes('yas marina') || text.includes('abu dhabi')) return '🇦🇪';
   return '🏁';
 }
+
 
 export interface WeekendSessionItem {
   name: string;

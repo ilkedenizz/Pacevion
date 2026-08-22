@@ -156,61 +156,78 @@ export const Calendar: React.FC = () => {
         <div className="cal-section-label font-mono">
           {filter === 'all' ? '2026 CHAMPIONSHIP ROUNDS' : `${filter.toUpperCase()} RACES`} ({filteredRaces.length})
         </div>
-        <div className="cal-list">
-          {filteredRaces.map((race: Race) => {
-            const isNext = nextRace && nextRace.round === race.round;
-            const isPast = parseRaceDate(race.date, race.time) <= now;
-            const isSprint = !!race.Sprint;
-            const flag = getCountryFlag(race.Circuit?.Location?.country, race.Circuit?.Location?.locality);
-            const dateRange = formatRaceDateRange(race);
 
-            return (
-              <div 
-                key={race.round} 
-                className={`cal-card ${isNext ? 'is-next' : ''} ${isPast ? 'is-past' : ''}`}
-                onClick={() => navigate(`/races/2026/${race.round}`)}
-                role="button"
-                tabIndex={0}
-              >
-                {/* Left: Round & Date */}
-                <div className="cal-left-block font-mono">
-                  <span className="cal-round-num">R{String(race.round).padStart(2, '0')}</span>
-                  <span className="cal-flag-emoji">{flag}</span>
-                </div>
+        {filteredRaces.length === 0 ? (
+          <div className="cal-empty-filter-box font-mono">
+            <span className="cal-empty-msg">
+              {filter === 'completed' 
+                ? 'NO COMPLETED RACES YET THIS SEASON' 
+                : filter === 'sprint' 
+                ? 'NO SPRINT SESSIONS FOUND' 
+                : 'NO RACES MATCH THIS FILTER'}
+            </span>
+            <button className="cal-reset-filter-btn" onClick={() => setFilter('all')}>
+              VIEW ALL ROUNDS
+            </button>
+          </div>
+        ) : (
+          <div className="cal-list">
+            {filteredRaces.map((race: Race) => {
+              const isNext = nextRace && nextRace.round === race.round;
+              const isPast = parseRaceDate(race.date, race.time) <= now;
+              const isSprint = !!race.Sprint;
+              const flag = getCountryFlag(race.Circuit?.Location?.country, race.Circuit?.Location?.locality);
+              const dateRange = formatRaceDateRange(race);
 
-                {/* Center: Info */}
-                <div className="cal-center-block">
-                  <div className="cal-gp-title font-heading">
-                    {race.raceName}
+              return (
+                <div 
+                  key={race.round} 
+                  className={`cal-card ${isNext ? 'is-next' : ''} ${isPast ? 'is-past' : ''}`}
+                  onClick={() => navigate(`/races/2026/${race.round}`)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  {/* Left: Round & Date */}
+                  <div className="cal-left-block font-mono">
+                    <span className="cal-round-num">R{String(race.round).padStart(2, '0')}</span>
+                    <span className="cal-flag-emoji">{flag}</span>
                   </div>
-                  <div className="cal-circuit-line font-mono">
-                    {race.Circuit?.Location?.locality?.toUpperCase()}, {race.Circuit?.Location?.country?.toUpperCase()}
-                  </div>
-                  <div className="cal-date-row font-mono">
-                    <span className="cal-date-text">{dateRange}</span>
-                    {isSprint && <span className="cal-sprint-pill font-mono">SPRINT</span>}
-                  </div>
-                </div>
 
-                {/* Right: Status / Arrow */}
-                <div className="cal-right-block">
-                  {isNext ? (
-                    <span className="cal-badge-next font-mono">NEXT</span>
-                  ) : isPast ? (
-                    <span className="cal-badge-past font-mono">DONE</span>
-                  ) : (
-                    <span className="cal-badge-upcoming font-mono">UPCOMING</span>
-                  )}
-                  <ChevronRight size={16} color="var(--color-text-muted)" className="cal-chevron" />
+                  {/* Center: Info */}
+                  <div className="cal-center-block">
+                    <div className="cal-gp-title font-heading">
+                      {race.raceName}
+                    </div>
+                    <div className="cal-circuit-line font-mono">
+                      {race.Circuit?.Location?.locality?.toUpperCase()}, {race.Circuit?.Location?.country?.toUpperCase()}
+                    </div>
+                    <div className="cal-date-row font-mono">
+                      <span className="cal-date-text">{dateRange}</span>
+                      {isSprint && <span className="cal-sprint-pill font-mono">SPRINT</span>}
+                    </div>
+                  </div>
+
+                  {/* Right: Status / Arrow */}
+                  <div className="cal-right-block">
+                    {isNext ? (
+                      <span className="cal-badge-next font-mono">NEXT</span>
+                    ) : isPast ? (
+                      <span className="cal-badge-past font-mono">DONE</span>
+                    ) : (
+                      <span className="cal-badge-upcoming font-mono">UPCOMING</span>
+                    )}
+                    <ChevronRight size={16} color="var(--color-text-muted)" className="cal-chevron" />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </section>
     </div>
   );
 };
+
 
 export default Calendar;
 

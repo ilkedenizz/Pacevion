@@ -141,7 +141,7 @@ export const LiveFeed: React.FC = () => {
 
         <div className="ltb-body">
           {latestRace.Results.map((result: RaceResult) => {
-            const posNum = parseInt(result.position);
+            const posNum = parseInt(result.position, 10);
             const isP1 = posNum === 1;
             const isP2 = posNum === 2;
             const isP3 = posNum === 3;
@@ -157,7 +157,7 @@ export const LiveFeed: React.FC = () => {
             if (isP1) {
               displayGap = 'LEADER';
             } else if (timeStr) {
-              displayGap = timeStr;
+              displayGap = timeStr.startsWith('+') ? timeStr : (timeStr.includes(':') ? timeStr : `+${timeStr}`);
             } else if (/lap/i.test(status) || /^\+/.test(status)) {
               displayGap = status;
             } else if (status === 'Finished') {
@@ -166,8 +166,26 @@ export const LiveFeed: React.FC = () => {
               displayGap = status || 'DNF';
             }
 
-            const gridPos = parseInt(result.grid);
-            const posGain = gridPos > 0 ? gridPos - posNum : 0;
+            const gridPos = parseInt(result.grid, 10);
+            let posGainText = '—';
+            let posGainClass = 'gain-same';
+
+            if (!isNaN(gridPos) && gridPos > 0 && !isNaN(posNum) && posNum > 0) {
+              const diff = gridPos - posNum;
+              if (diff > 0) {
+                posGainText = `▲${diff}`;
+                posGainClass = 'gain-up';
+              } else if (diff < 0) {
+                posGainText = `▼${Math.abs(diff)}`;
+                posGainClass = 'gain-down';
+              } else {
+                posGainText = '—';
+                posGainClass = 'gain-same';
+              }
+            } else if (result.grid === '0') {
+              posGainText = 'PIT';
+              posGainClass = 'gain-same';
+            }
 
             return (
               <div 
@@ -202,16 +220,14 @@ export const LiveFeed: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Time / Gap */}
+                {/* Time / Gap & Trend */}
                 <div className="col-time font-mono">
                   <span className={`time-text ${isP1 ? 'leader-time' : ''}`}>
                     {displayGap}
                   </span>
-                  {posGain !== 0 && gridPos > 0 && (
-                    <span className={`grid-gain ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
-                      {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
-                    </span>
-                  )}
+                  <span className={`grid-gain ${posGainClass}`}>
+                    {posGainText !== '—' ? `GR: ${posGainText}` : ''}
+                  </span>
                 </div>
 
                 {/* Points */}
@@ -226,6 +242,7 @@ export const LiveFeed: React.FC = () => {
             );
           })}
         </div>
+
       </section>
 
       {/* 5. Race Control / Session Event Log */}

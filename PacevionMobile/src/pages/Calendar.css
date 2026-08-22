@@ -56,22 +56,22 @@
   padding: 4px;
   border-radius: 6px;
   border: 1px solid var(--color-border);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  /* Removed position: sticky to prevent rendering bugs on Android WebViews */
 }
 
 .cal-segment-btn {
   flex: 1;
-  min-width: fit-content;
-  padding: 6px 8px;
+  min-width: 0;
+  padding: 6px 4px;
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  letter-spacing: 0.06em;
   color: var(--color-text-secondary);
   border-radius: 4px;
   background: transparent;
   transition: all 0.15s ease;
   white-space: nowrap;
+  text-align: center;
 }
 
 .cal-segment-btn.active {
@@ -79,6 +79,40 @@
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
 }
+
+/* Empty filter state box */
+.cal-empty-filter-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 16px;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.cal-empty-msg {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+}
+
+.cal-reset-filter-btn {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-primary);
+  background: rgba(225, 6, 0, 0.1);
+  border: 1px solid rgba(225, 6, 0, 0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
 
 /* Section Labels */
 .cal-section-label {
@@ -367,4 +401,35 @@
 .cal-chevron {
   flex-shrink: 0;
 }
+
+@media (max-width: 360px) {
+  .cal-card {
+    padding: 8px 8px;
+    gap: 6px;
+  }
+  
+  .cal-left-block {
+    min-width: 26px;
+  }
+  
+  .cal-gp-title {
+    font-size: 13px;
+  }
+  
+  .cal-circuit-line {
+    font-size: 8px;
+  }
+  
+  .cal-date-text {
+    font-size: 8px;
+  }
+  
+  .cal-badge-next,
+  .cal-badge-past,
+  .cal-badge-upcoming {
+    font-size: 7.5px;
+    padding: 2px 4px;
+  }
+}
+
 
