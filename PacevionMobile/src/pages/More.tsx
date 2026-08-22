@@ -11,7 +11,8 @@ import {
   Database, 
   ShieldCheck, 
   ChevronRight,
-  Zap
+  Zap,
+  Bell
 } from 'lucide-react';
 import './More.css';
 
@@ -128,7 +129,27 @@ export const More: React.FC = () => {
         </div>
       </section>
 
-      {/* 4. Group: Application & System */}
+      {/* 4. Group: Settings */}
+      <section className="more-section">
+        <h2 className="ms-title font-mono">SETTINGS</h2>
+        <div className="more-card-group">
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/more/notifications')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Bell size={16} color="var(--color-primary)" /></div>
+            <div className="mi-content">
+              <span className="mi-title font-heading">NOTIFICATIONS</span>
+              <span className="mi-desc font-mono">Race & Session Reminders</span>
+            </div>
+            <ChevronRight size={14} className="mi-arrow" />
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Group: Application & System */}
       <section className="more-section">
         <h2 className="ms-title font-mono">SYSTEM & ABOUT</h2>
         <div className="more-card-group">

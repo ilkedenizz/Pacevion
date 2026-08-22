@@ -1,8 +1,10 @@
-﻿import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App as CapApp } from '@capacitor/app';
 import { BottomNav } from './components/navigation/BottomNav';
+import { useCalendar } from './hooks/useF1Data';
+import { NotificationService } from './services/notifications';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,6 +28,7 @@ const LiveFeed = lazy(() => import('./pages/LiveFeed'));
 const AboutPacevion = lazy(() => import('./pages/AboutPacevion'));
 const DataSources = lazy(() => import('./pages/DataSources'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'));
+const NotificationSettings = lazy(() => import('./pages/NotificationSettings'));
 
 function NavigationHandler() {
   const { pathname } = useLocation();
@@ -56,35 +59,49 @@ function NavigationHandler() {
   return null;
 }
 
+function NotificationHandler() {
+  const { data: calendar } = useCalendar('current');
+
+  useEffect(() => {
+    if (calendar && calendar.length > 0) {
+      // Sync notifications in the background
+      NotificationService.syncScheduledNotifications(calendar).catch((e) => {
+        console.warn('Notification sync failed, but app continues', e);
+      });
+    }
+  }, [calendar]);
+
+  return null;
+}
+
 export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <NavigationHandler />
+        <NotificationHandler />
         <main className="app-content">
           <Suspense fallback={<div className="loading-fallback" style={{ padding: '16px', color: '#fff' }}>Loading...</div>}>
             <Routes>
-            <Route path="/" element={<Home />} />
-            {/* Redirect /home to / for safety */}
-            <Route path="/home" element={<Navigate to="/" replace />} />
-            
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/races/:season/:round" element={<RaceDetails />} />
-            <Route path="/standings" element={<Standings />} />
-            <Route path="/drivers" element={<Drivers />} />
-            <Route path="/cars" element={<Cars />} />
-            <Route path="/live" element={<LiveFeed />} />
-            <Route path="/more" element={<More />} />
-            
-            {/* Kept nested routes just in case any internal links use them */}
-            <Route path="/more/cars" element={<Navigate to="/cars" replace />} />
-            <Route path="/more/live-feed" element={<Navigate to="/live" replace />} />
-            
-            <Route path="/more/learn" element={<Learn />} />
-            <Route path="/more/about" element={<AboutPacevion />} />
-            <Route path="/more/data-sources" element={<DataSources />} />
-            <Route path="/more/privacy" element={<PrivacyPolicy />} />
-          </Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/home" element={<Navigate to="/" replace />} />
+              <Route path="/calendar" element={<Calendar />} />
+              <Route path="/races/:season/:round" element={<RaceDetails />} />
+              <Route path="/standings" element={<Standings />} />
+              <Route path="/drivers" element={<Drivers />} />
+              <Route path="/cars" element={<Cars />} />
+              <Route path="/live" element={<LiveFeed />} />
+              <Route path="/more" element={<More />} />
+              
+              <Route path="/more/cars" element={<Navigate to="/cars" replace />} />
+              <Route path="/more/live-feed" element={<Navigate to="/live" replace />} />
+              
+              <Route path="/more/notifications" element={<NotificationSettings />} />
+              <Route path="/more/learn" element={<Learn />} />
+              <Route path="/more/about" element={<AboutPacevion />} />
+              <Route path="/more/data-sources" element={<DataSources />} />
+              <Route path="/more/privacy" element={<PrivacyPolicy />} />
+            </Routes>
           </Suspense>
         </main>
         <BottomNav />
