@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCalendar, useRaceResults, useQualifyingResults } from '../hooks/useF1Data';
+import { useCalendar, useRaceResults, useQualifyingResults, useSprintResults } from '../hooks/useF1Data';
 import { getCircuitDetails } from '../data/circuitData';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
@@ -8,7 +8,7 @@ import { getCountryFlag, getWeekendSessions } from '../utils/raceWeekend';
 import { CircuitTrack } from '../components/common/CircuitTrack';
 import { HomeCountdown } from '../components/common/HomeCountdown';
 import { ArrowLeft, ChevronLeft, ChevronRight, Award, Timer, Flag, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
-import type { RaceResult, QualifyingResult } from '../api/types';
+import type { RaceResult, QualifyingResult, SprintResult } from '../api/types';
 import './RaceDetails.css';
 
 export const RaceDetails: React.FC = () => {
@@ -23,6 +23,37 @@ export const RaceDetails: React.FC = () => {
     if (!calendar || calendar.length === 0) return null;
     return calendar.find((r) => r.round === round) || null;
   }, [calendar, round]);
+
+  const isSprint = !!raceInfo?.Sprint;
+
+  const { data: sprintResults, isLoading: sprintLoading } = useSprintResults(season, round, isSprint);
+
+  type SessionTab = 'FP1' | 'FP2' | 'FP3' | 'SPRINT_QUALI' | 'SPRINT' | 'QUALIFYING' | 'RACE';
+
+  const sessionTabs = useMemo((): SessionTab[] => {
+    if (!raceInfo) return ['RACE'];
+    if (isSprint) {
+      return ['FP1', 'SPRINT_QUALI', 'SPRINT', 'QUALIFYING', 'RACE'];
+    }
+    return ['FP1', 'FP2', 'FP3', 'QUALIFYING', 'RACE'];
+  }, [raceInfo, isSprint]);
+
+  const [activeTab, setActiveTab] = useState<SessionTab>('RACE');
+
+  // Reset tab when round changes
+  useEffect(() => {
+    setActiveTab('RACE');
+  }, [round]);
+
+  const sessionTabLabels: Record<SessionTab, string> = {
+    FP1: 'FP1',
+    FP2: 'FP2',
+    FP3: 'FP3',
+    SPRINT_QUALI: 'SPRINT QUALI',
+    SPRINT: 'SPRINT',
+    QUALIFYING: 'QUALIFYING',
+    RACE: 'RACE',
+  };
 
   const isCompleted = useMemo(() => {
     if (raceResults?.Results && raceResults.Results.length > 0) return true;
@@ -52,7 +83,7 @@ export const RaceDetails: React.FC = () => {
     return getWeekendSessions(raceInfo, new Date());
   }, [raceInfo]);
 
-  const isLoading = calendarLoading || resultsLoading || qualyLoading;
+  const isLoading = calendarLoading || resultsLoading || qualyLoading || sprintLoading;
 
   if (isLoading) {
     return (
@@ -178,8 +209,25 @@ export const RaceDetails: React.FC = () => {
 
       </section>
 
-      {/* 4. COMPLETED RACE SECTIONS */}
-      {isCompleted && raceResults?.Results && (
+      {/* 4. SESSION SELECTOR TAB BAR */}
+      {isCompleted && (
+        <div className="rd-session-selector">
+          <div className="rd-session-tabs font-mono">
+            {sessionTabs.map((tab) => (
+              <button
+                key={tab}
+                className={`rd-session-tab ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {sessionTabLabels[tab]}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 5. SESSION CONTENT */}
+      {isCompleted && activeTab === 'RACE' && raceResults?.Results && (
         <>
           {/* Podium Showcase */}
           {(p1Result || p2Result || p3Result) && (
@@ -346,12 +394,17 @@ export const RaceDetails: React.FC = () => {
               })}
             </div>
           </section>
+        </>
+      )}
 
-          {/* Qualifying Results Table (if available) */}
-          {qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 && (
-            <section className="rd-classification-section">
+      {/* QUALIFYING TAB */}
+      {isCompleted && activeTab === 'QUALIFYING' && (
+        <section className="rd-classification-section">
+          {qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 ? (
+            <>
               <div className="rd-section-header font-mono">
-                <span>QUALIFYING RESULTS</span>
+                <Timer size={13} color="var(--color-primary)" />
+                <span>QUALIFYING RESULTS ({qualifyingResults.QualifyingResults.length} DRIVERS)</span>
               </div>
               <div className="rd-qualy-header font-mono">
                 <span className="qualy-pos">POS</span>
@@ -371,12 +424,116 @@ export const RaceDetails: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </section>
+            </>
+          ) : (
+            <div className="rd-no-data font-mono">
+              <AlertCircle size={20} color="var(--color-text-muted)" />
+              <span>QUALIFYING DATA NOT AVAILABLE</span>
+            </div>
           )}
-        </>
+        </section>
       )}
 
-      {/* 5. UPCOMING RACE SCHEDULE & COUNTDOWN */}
+      {/* SPRINT TAB */}
+      {isCompleted && activeTab === 'SPRINT' && (
+        <section className="rd-classification-section">
+          {sprintResults?.SprintResults && sprintResults.SprintResults.length > 0 ? (
+            <>
+              <div className="rd-section-header font-mono">
+                <Flag size={13} color="#FF8000" />
+                <span>SPRINT CLASSIFICATION ({sprintResults.SprintResults.length} DRIVERS)</span>
+              </div>
+              <div className="rd-table-header font-mono">
+                <span className="rd-col-pos">POS</span>
+                <span className="rd-col-driver">DRIVER</span>
+                <span className="rd-col-time">TIME / GAP</span>
+                <span className="rd-col-gain">GRID</span>
+                <span className="rd-col-pts">PTS</span>
+              </div>
+              <div className="rd-table-body">
+                {sprintResults.SprintResults.map((result: SprintResult) => {
+                  const posNum = parseInt(result.position);
+                  const isP1 = posNum === 1;
+                  const isP2 = posNum === 2;
+                  const isP3 = posNum === 3;
+                  const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                  const gridPos = parseInt(result.grid);
+                  const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
+                  let displayTime = '—';
+                  const status = result.status || '';
+                  const timeStr = result.Time?.time;
+
+                  if (isP1) {
+                    displayTime = timeStr || 'WINNER';
+                  } else if (timeStr) {
+                    displayTime = timeStr;
+                  } else if (status === 'Finished') {
+                    displayTime = 'FINISHED';
+                  } else {
+                    displayTime = status || 'DNF';
+                  }
+
+                  return (
+                    <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
+                      <div className="rd-col-pos font-mono">
+                        <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                          {String(result.positionText || result.position).padStart(2, '0')}
+                        </span>
+                      </div>
+                      <div className="rd-col-driver">
+                        <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
+                        <div className="rd-driver-meta">
+                          <span className="rd-driver-name font-heading">
+                            {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
+                          </span>
+                          <span className="rd-team-name font-mono">{result.Constructor.name}</span>
+                        </div>
+                      </div>
+                      <div className="rd-col-time font-mono">
+                        <span className="time-val">{displayTime}</span>
+                      </div>
+                      <div className="rd-col-gain font-mono">
+                        <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                        {posGain !== 0 && gridPos > 0 && (
+                          <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                            {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                          </span>
+                        )}
+                      </div>
+                      <div className="rd-col-pts font-mono">
+                        {result.points && parseFloat(result.points) > 0 ? (
+                          <span className="pts-active">+{result.points}</span>
+                        ) : (
+                          <span className="pts-zero">—</span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          ) : (
+            <div className="rd-no-data font-mono">
+              <AlertCircle size={20} color="var(--color-text-muted)" />
+              <span>SPRINT DATA NOT AVAILABLE</span>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* FP1 / FP2 / FP3 / SPRINT QUALI — NO DATA */}
+      {isCompleted && (activeTab === 'FP1' || activeTab === 'FP2' || activeTab === 'FP3' || activeTab === 'SPRINT_QUALI') && (
+        <section className="rd-classification-section">
+          <div className="rd-no-data font-mono">
+            <AlertCircle size={20} color="var(--color-text-muted)" />
+            <span>{sessionTabLabels[activeTab]} DATA NOT AVAILABLE</span>
+            <span className="rd-no-data-sub">Practice and Sprint Qualifying results are not provided by the current data source.</span>
+          </div>
+        </section>
+      )}
+
+      {/* 6. UPCOMING RACE SCHEDULE & COUNTDOWN */}
       {!isCompleted && (
         <section className="rd-upcoming-section">
           <div className="rd-countdown-card">

@@ -1,4 +1,4 @@
-﻿export interface Driver {
+export interface Driver {
   driverId: string;
   permanentNumber?: string;
   code?: string;
@@ -131,4 +131,15 @@ export interface QualifyingRace extends Race {
 
 export interface MRDataQualifyingResultsResponse {
   MRData: { RaceTable: { Races: QualifyingRace[] } };
+}
+
+// Sprint Results (same shape as RaceResult from the API)
+export type SprintResult = RaceResult;
+
+export interface SprintRace extends Race {
+  SprintResults: SprintResult[];
+}
+
+export interface MRDataSprintResultsResponse {
+  MRData: { RaceTable: { Races: SprintRace[] } };
 }

@@ -1,4 +1,4 @@
-﻿import { useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import {
   getCalendar,
   getDriverStandings,
@@ -9,6 +9,7 @@ import {
   getQualifyingResults,
   getDriverStandingsWithRound,
   getLatestRaceResults,
+  getSprintResults,
 } from '../api/endpoints';
 
 export const useCalendar = (year: string | number = 'current') => {
@@ -102,5 +103,13 @@ export const useQualifyingResults = (season: string | number, round: string | nu
     queryKey: ['qualifyingResults', season, round],
     queryFn: () => getQualifyingResults(season, round),
     enabled: !!season && !!round,
+  });
+};
+
+export const useSprintResults = (season: string | number, round: string | number, isSprint: boolean) => {
+  return useQuery({
+    queryKey: ['sprintResults', season, round],
+    queryFn: () => getSprintResults(season, round),
+    enabled: !!season && !!round && isSprint,
   });
 };
