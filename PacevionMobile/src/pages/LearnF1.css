@@ -1,111 +1,176 @@
-﻿.learn-page {
-  padding: calc(var(--space-4) + env(safe-area-inset-top)) var(--space-4) var(--page-bottom-spacing);
+/* Learn F1 Page Styles */
+.learn-page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  min-height: 100dvh;
+  gap: 14px;
 }
 
-.featured-learn-card {
+.learn-header {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  padding: 2px 0 4px 0;
+}
+
+.lh-top {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.lh-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 24px;
-  position: relative;
-  overflow: hidden;
+  color: var(--color-text-secondary);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  padding: 5px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.lh-back-btn:active {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+}
+
+.lh-title {
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.lh-subtitle {
+  font-size: 9px;
+  color: var(--color-primary);
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+/* Featured Card */
+.featured-learn-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
 }
 
 .flc-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  position: relative;
-  z-index: 2;
+  gap: 6px;
 }
 
-.flc-category {
-  font-size: 10px;
-  color: var(--color-text-secondary);
-  letter-spacing: 1px;
+.flc-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--color-warning);
+  letter-spacing: 0.08em;
 }
 
 .flc-title {
-  font-size: 24px;
-  color: #fff;
-  line-height: 1.2;
-  margin: 0 0 8px 0;
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
 }
 
-.flc-btn {
-  background: transparent;
-  border: none;
+.flc-desc {
+  font-size: 9px;
   color: var(--color-text-secondary);
-  font-size: 10px;
-  padding: 0;
-  text-align: left;
-  cursor: pointer;
-  text-decoration: underline;
+  line-height: 1.4;
 }
 
-.flc-visual {
-  margin-top: 20px;
+/* Topics Section */
+.learn-topics-section {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1;
+  flex-direction: column;
+  gap: 6px;
 }
 
-.flc-img {
-  width: 100%;
-  max-width: 280px;
-  object-fit: contain;
-  /* Shadow matching the reference */
-  filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.5));
+.sec-title {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  padding-left: 2px;
 }
 
 .learn-menu-list {
-  display: flex;
-  flex-direction: column;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
-  padding: 0 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .learn-menu-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: transparent;
-  border: none;
-  padding: 20px 0;
-  cursor: pointer;
+  padding: 10px 12px;
   border-bottom: 1px solid var(--color-border-subtle);
+  gap: 10px;
+  user-select: none;
 }
 
 .learn-menu-item:last-child {
   border-bottom: none;
 }
 
-.lmi-left {
+.lmi-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-subtle);
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.lmi-icon {
-  color: var(--color-text-secondary);
+.lmi-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
 }
 
 .lmi-label {
-  font-size: 14px;
-  color: #fff;
-  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lmi-desc {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .lmi-chevron {
-  color: var(--color-text-secondary);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
   opacity: 0.5;
 }

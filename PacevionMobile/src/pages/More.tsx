@@ -1,93 +1,189 @@
-﻿import React from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Info, Database, Shield, Settings, ChevronRight, Users, Car, BookOpen } from 'lucide-react';
+import { 
+  Users, 
+  Car, 
+  Trophy, 
+  Calendar, 
+  Radio, 
+  BookOpen, 
+  Info, 
+  Database, 
+  ShieldCheck, 
+  ChevronRight,
+  Zap
+} from 'lucide-react';
 import './More.css';
 
 export const More: React.FC = () => {
   const navigate = useNavigate();
+
   return (
     <div className="page more-page fade-in">
-      <header className="brand-header">
-        <h1 className="editorial-headline" style={{ fontSize: '24px' }}>MORE</h1>
-        <span className="editorial-label font-mono">PACEVION F1 2026</span>
+      {/* 1. Header */}
+      <header className="more-header">
+        <div className="mh-left">
+          <h1 className="mh-title font-heading editorial-headline">MORE / HUB</h1>
+          <span className="mh-subtitle font-mono">PACEVION • 2026 FIA FORMULA 1 COMPANION</span>
+        </div>
+        <div className="mh-badge font-mono">
+          <Zap size={10} color="var(--color-primary)" />
+          <span>V2.0.0</span>
+        </div>
       </header>
 
-      <div className="more-section">
-        <h4 className="ms-title editorial-label">MOTORSPORT</h4>
-        <div className="more-group">
-          <div className="more-item" onClick={() => navigate('/drivers')}>
-            <div className="mi-icon"><Users size={18} strokeWidth={2} /></div>
+      {/* 2. Group: Championship */}
+      <section className="more-section">
+        <h2 className="ms-title font-mono">CHAMPIONSHIP & GRID</h2>
+        <div className="more-card-group">
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/drivers')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Users size={16} color="var(--color-primary)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>DRIVERS</span>
-              <span className="mi-desc editorial-label">2026 Grid</span>
+              <span className="mi-title font-heading">2026 DRIVERS LINEUP</span>
+              <span className="mi-desc font-mono">20 Drivers • Stats & H2H Battles</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
-          <div className="more-item" onClick={() => navigate('/cars')}>
-            <div className="mi-icon"><Car size={18} strokeWidth={2} /></div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/cars')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Car size={16} color="var(--color-primary)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>TEAMS & CARS</span>
-              <span className="mi-desc editorial-label">Constructors</span>
+              <span className="mi-title font-heading">CONSTRUCTORS & CARS</span>
+              <span className="mi-desc font-mono">10 Teams • Chassis & Power Units</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
-          <div className="more-item" onClick={() => navigate('/more/learn')}>
-            <div className="mi-icon"><BookOpen size={18} strokeWidth={2} /></div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/standings')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Trophy size={16} color="var(--color-warning)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>LEARN F1</span>
-              <span className="mi-desc editorial-label">Rules & Regulations</span>
+              <span className="mi-title font-heading">WORLD STANDINGS</span>
+              <span className="mi-desc font-mono">Driver & Constructor Points</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
+          </div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/calendar')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Calendar size={16} color="var(--color-text-secondary)" /></div>
+            <div className="mi-content">
+              <span className="mi-title font-heading">RACE CALENDAR</span>
+              <span className="mi-desc font-mono">24 Grand Prix Timetable</span>
+            </div>
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="more-section">
-        <h4 className="ms-title editorial-label">APP</h4>
-        <div className="more-group">
-          <div className="more-item" onClick={() => navigate('/more/about')}>
-            <div className="mi-icon"><Info size={18} strokeWidth={2} /></div>
+      {/* 3. Group: Race & Knowledge */}
+      <section className="more-section">
+        <h2 className="ms-title font-mono">RACE & TELEMETRY</h2>
+        <div className="more-card-group">
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/live')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Radio size={16} color="var(--color-primary)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>ABOUT PACEVION</span>
-              <span className="mi-desc editorial-label">Version 2.0.0</span>
+              <span className="mi-title font-heading">LIVE TIMING FEED</span>
+              <span className="mi-desc font-mono">Race Control & Timing Screen</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
-          <div className="more-item" onClick={() => navigate('/more/data-sources')}>
-            <div className="mi-icon"><Database size={18} strokeWidth={2} /></div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/more/learn')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><BookOpen size={16} color="var(--color-text-secondary)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>DATA SOURCES</span>
-              <span className="mi-desc editorial-label">API Connection</span>
+              <span className="mi-title font-heading">LEARN F1</span>
+              <span className="mi-desc font-mono">Aerodynamics, Tyres & Rules</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
-          </div>
-          <div className="more-item" onClick={() => navigate('/more/privacy')}>
-            <div className="mi-icon"><Shield size={18} strokeWidth={2} /></div>
-            <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>PRIVACY POLICY</span>
-              <span className="mi-desc editorial-label">Terms & Conditions</span>
-            </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
         </div>
-      </div>
+      </section>
 
-      <div className="more-section">
-        <h4 className="ms-title editorial-label">GENERAL</h4>
-        <div className="more-group">
-          <div className="more-item" onClick={() => {}}>
-            <div className="mi-icon"><Settings size={18} strokeWidth={2} /></div>
+      {/* 4. Group: Application & System */}
+      <section className="more-section">
+        <h2 className="ms-title font-mono">SYSTEM & ABOUT</h2>
+        <div className="more-card-group">
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/more/about')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Info size={16} color="var(--color-text-secondary)" /></div>
             <div className="mi-content">
-              <span className="mi-title font-heading editorial-headline" style={{ fontSize: '14px' }}>SETTINGS</span>
-              <span className="mi-desc editorial-label">App Preferences</span>
+              <span className="mi-title font-heading">ABOUT PACEVION</span>
+              <span className="mi-desc font-mono">Architecture & Specs</span>
             </div>
-            <ChevronRight size={16} color="var(--color-text-secondary)" />
+            <ChevronRight size={14} className="mi-arrow" />
+          </div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/more/data-sources')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><Database size={16} color="var(--color-text-secondary)" /></div>
+            <div className="mi-content">
+              <span className="mi-title font-heading">DATA SOURCES</span>
+              <span className="mi-desc font-mono">Jolpica Ergast REST API</span>
+            </div>
+            <ChevronRight size={14} className="mi-arrow" />
+          </div>
+
+          <div 
+            className="more-item" 
+            onClick={() => navigate('/more/privacy')}
+            role="button"
+            tabIndex={0}
+          >
+            <div className="mi-icon"><ShieldCheck size={16} color="var(--color-success)" /></div>
+            <div className="mi-content">
+              <span className="mi-title font-heading">PRIVACY POLICY</span>
+              <span className="mi-desc font-mono">Zero Personal Data Collection</span>
+            </div>
+            <ChevronRight size={14} className="mi-arrow" />
           </div>
         </div>
-      </div>
+      </section>
 
+      {/* 5. Footer Branding */}
+      <footer className="more-footer font-mono">
+        <span className="mf-text">PACEVION MOBILE COMPANION</span>
+        <span className="mf-sub">DESIGNED FOR MOTORSPORT FANS</span>
+      </footer>
     </div>
   );
 };
 
 export default More;
+

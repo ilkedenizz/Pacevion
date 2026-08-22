@@ -1,200 +1,328 @@
-﻿import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDriverStandingsWithPrevious, useConstructorStandingsWithPrevious } from '../hooks/useF1Data';
 import type { DriverStanding, ConstructorStanding } from '../api/types';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
+import { AlertCircle } from 'lucide-react';
 import './Standings.css';
 
 export const Standings: React.FC = () => {
   const [tab, setTab] = useState<'drivers' | 'constructors'>('drivers');
   const navigate = useNavigate();
   
-  const { data: driverData, isLoading: dLoading } = useDriverStandingsWithPrevious('2026');
-  const { data: constructorData, isLoading: cLoading } = useConstructorStandingsWithPrevious('2026');
+  const { data: driverData, isLoading: dLoading, isError: dError, refetch: dRefetch } = useDriverStandingsWithPrevious('2026');
+  const { data: constructorData, isLoading: cLoading, isError: cError, refetch: cRefetch } = useConstructorStandingsWithPrevious('2026');
 
-  const drivers = driverData?.current || [];
-  const prevDrivers = driverData?.previous || [];
+  const drivers = useMemo(() => driverData?.current || [], [driverData]);
+  const prevDrivers = useMemo(() => driverData?.previous || [], [driverData]);
   const topDriver = drivers[0];
-  const otherDrivers = drivers.slice(1);
+  const runnerUpDriver = drivers[1];
+  const driverLeadGap = (topDriver && runnerUpDriver)
+    ? Math.max(0, parseFloat(topDriver.points) - parseFloat(runnerUpDriver.points))
+    : 0;
 
-  const constructors = constructorData?.current || [];
-  const prevConstructors = constructorData?.previous || [];
+  const constructors = useMemo(() => constructorData?.current || [], [constructorData]);
+  const prevConstructors = useMemo(() => constructorData?.previous || [], [constructorData]);
   const topConstructor = constructors[0];
-  const otherConstructors = constructors.slice(1);
+  const runnerUpConstructor = constructors[1];
+  const constructorLeadGap = (topConstructor && runnerUpConstructor)
+    ? Math.max(0, parseFloat(topConstructor.points) - parseFloat(runnerUpConstructor.points))
+    : 0;
 
   const getDriverTrend = (driverId: string, currentPosition: string) => {
-    if (!prevDrivers || prevDrivers.length === 0) return { icon: 'â€”', class: 'trend-same' };
+    if (!prevDrivers || prevDrivers.length === 0) return { text: '—', class: 'trend-same' };
     const prevPos = prevDrivers.find(d => d.Driver.driverId === driverId)?.position;
-    if (!prevPos) return { icon: 'â€”', class: 'trend-same' };
+    if (!prevPos) return { text: '—', class: 'trend-same' };
     
     const diff = parseInt(prevPos) - parseInt(currentPosition);
-    if (diff > 0) return { icon: `â†‘${diff}`, class: 'trend-up' };
-    if (diff < 0) return { icon: `â†“${Math.abs(diff)}`, class: 'trend-down' };
-    return { icon: 'â€”', class: 'trend-same' };
+    if (diff > 0) return { text: `▲${diff}`, class: 'trend-up' };
+    if (diff < 0) return { text: `▼${Math.abs(diff)}`, class: 'trend-down' };
+    return { text: '—', class: 'trend-same' };
   };
 
   const getConstructorTrend = (constructorId: string, currentPosition: string) => {
-    if (!prevConstructors || prevConstructors.length === 0) return { icon: 'â€”', class: 'trend-same' };
+    if (!prevConstructors || prevConstructors.length === 0) return { text: '—', class: 'trend-same' };
     const prevPos = prevConstructors.find(c => c.Constructor.constructorId === constructorId)?.position;
-    if (!prevPos) return { icon: 'â€”', class: 'trend-same' };
+    if (!prevPos) return { text: '—', class: 'trend-same' };
     
     const diff = parseInt(prevPos) - parseInt(currentPosition);
-    if (diff > 0) return { icon: `â†‘${diff}`, class: 'trend-up' };
-    if (diff < 0) return { icon: `â†“${Math.abs(diff)}`, class: 'trend-down' };
-    return { icon: 'â€”', class: 'trend-same' };
+    if (diff > 0) return { text: `▲${diff}`, class: 'trend-up' };
+    if (diff < 0) return { text: `▼${Math.abs(diff)}`, class: 'trend-down' };
+    return { text: '—', class: 'trend-same' };
   };
 
   const handleDriverClick = (driverId: string) => {
-    // Navigate to drivers tab, we can pass state if we had a router set up for it, 
-    // for now just navigate to drivers page.
     navigate('/drivers', { state: { selectedDriverId: driverId } });
   };
 
+  const handleConstructorClick = (_constructorId: string) => {
+    navigate('/cars');
+  };
+
+  if ((tab === 'drivers' && dError) || (tab === 'constructors' && cError)) {
+    return (
+      <div className="page standings-page fade-in" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className="st-error-box">
+          <AlertCircle size={32} color="var(--color-primary)" />
+          <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-primary)' }}>STANDINGS OFFLINE</h2>
+          <p className="editorial-label">UNABLE TO RETRIEVE CHAMPIONSHIP DATA</p>
+          <button onClick={() => { dRefetch(); cRefetch(); }} className="retry-btn font-mono">RECONNECT</button>
+        </div>
+      </div>
+    );
+  }
+
+  const isLoading = tab === 'drivers' ? dLoading : cLoading;
+
   return (
-    <div className="page-container fade-in">
-      <header className="page-header">
-        <h1 className="editorial-headline">CHAMPIONSHIP</h1>
-        
-        <div className="tab-switch font-heading">
-          <button 
-            className={`tab-btn ${tab === 'drivers' ? 'active' : ''}`}
-            onClick={() => setTab('drivers')}
-          >
-            DRIVERS
-          </button>
-          <button 
-            className={`tab-btn ${tab === 'constructors' ? 'active' : ''}`}
-            onClick={() => setTab('constructors')}
-          >
-            CONSTRUCTORS
-          </button>
+    <div className="page standings-page fade-in">
+      {/* 1. Header */}
+      <header className="st-header">
+        <div className="st-header-left">
+          <h1 className="st-title font-heading editorial-headline">2026 CHAMPIONSHIP</h1>
+          <span className="st-subtitle font-mono">FIA FORMULA 1 WORLD CHAMPIONSHIP</span>
         </div>
       </header>
 
-      {tab === 'drivers' ? (
-        dLoading ? <div className="skeleton" style={{ height: 400 }} /> : (
-          <div className="standings-content">
-            {topDriver && (
-              <div className="st-leader-card" onClick={() => handleDriverClick(topDriver.Driver.driverId)}>
-                <div className="st-leader-bg" style={{ background: `linear-gradient(135deg, ${getTeamDetails(topDriver.Constructors[0]?.constructorId).color}44 0%, rgba(0,0,0,0) 70%)` }} />
-                
-                <div className="st-leader-pos editorial-num">01</div>
-                
-                <div className="st-leader-content">
-                  <div className="st-leader-info">
-                    <span className="font-heading editorial-headline name">
-                      {topDriver.Driver.givenName[0]}. {topDriver.Driver.familyName}
+      {/* 2. Switcher */}
+      <div className="st-segment-bar font-mono">
+        <button 
+          className={`st-segment-btn ${tab === 'drivers' ? 'active' : ''}`}
+          onClick={() => setTab('drivers')}
+        >
+          DRIVERS STANDINGS ({drivers.length})
+        </button>
+        <button 
+          className={`st-segment-btn ${tab === 'constructors' ? 'active' : ''}`}
+          onClick={() => setTab('constructors')}
+        >
+          CONSTRUCTORS ({constructors.length})
+        </button>
+      </div>
+
+      {isLoading ? (
+        <div className="st-skeleton-wrap">
+          <div className="skeleton-hero skeleton" style={{ height: 130, borderRadius: 8, marginBottom: 12 }} />
+          <div className="skeleton-row skeleton" style={{ height: 48, borderRadius: 6, marginBottom: 6 }} />
+          <div className="skeleton-row skeleton" style={{ height: 48, borderRadius: 6, marginBottom: 6 }} />
+          <div className="skeleton-row skeleton" style={{ height: 48, borderRadius: 6, marginBottom: 6 }} />
+          <div className="skeleton-row skeleton" style={{ height: 48, borderRadius: 6 }} />
+        </div>
+      ) : tab === 'drivers' ? (
+        <div className="st-content">
+          {/* Top Driver Leader Card */}
+          {topDriver && (
+            <div 
+              className="st-leader-hero" 
+              onClick={() => handleDriverClick(topDriver.Driver.driverId)}
+              role="button"
+              tabIndex={0}
+            >
+              <div 
+                className="st-leader-accent-stripe" 
+                style={{ backgroundColor: getTeamDetails(topDriver.Constructors[0]?.constructorId).color }} 
+              />
+              <div className="st-leader-badge-col font-mono">
+                <span className="st-rank-num">01</span>
+                <span className="st-leader-tag">LEADER</span>
+              </div>
+              <div className="st-leader-avatar-wrap">
+                <img 
+                  src={getDriverVisual(topDriver.Driver.driverId, 'portrait') || ''} 
+                  alt={topDriver.Driver.familyName}
+                  className="st-leader-avatar" 
+                />
+              </div>
+              <div className="st-leader-meta">
+                <span className="editorial-label">CHAMPIONSHIP LEADER</span>
+                <h2 className="st-leader-name font-heading">
+                  {topDriver.Driver.givenName} {topDriver.Driver.familyName}
+                </h2>
+                <div 
+                  className="st-leader-team font-mono"
+                  style={{ color: getTeamDetails(topDriver.Constructors[0]?.constructorId).color }}
+                >
+                  {topDriver.Constructors[0]?.name?.toUpperCase()}
+                </div>
+                <div className="st-leader-stats font-mono">
+                  <span className="st-leader-pts">{topDriver.points} PTS</span>
+                  {driverLeadGap > 0 && runnerUpDriver && (
+                    <span className="st-leader-gap">
+                      +{driverLeadGap} PTS VS {runnerUpDriver.Driver.familyName.toUpperCase()}
                     </span>
-                    <span className="editorial-label team-name">{topDriver.Constructors[0]?.name}</span>
-                    <div className="pts-block">
-                      <span className="font-mono editorial-num pts-val">{topDriver.points}</span>
-                      <span className="editorial-label">PTS</span>
-                    </div>
-                  </div>
-                  
-                  <div className="st-leader-img">
-                    <img 
-                      src={getDriverVisual(topDriver.Driver.driverId, 'portrait')} 
-                      alt={topDriver.Driver.familyName} 
-                    />
-                  </div>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            <div className="st-list timing-board">
-              <div className="tb-header editorial-label">
-                <span className="tb-pos">POS</span>
-                <span className="tb-driver">DRIVER</span>
-                <span className="tb-pts">PTS</span>
-                <span className="tb-trend"></span>
-              </div>
-              
-              {otherDrivers.map((standing: DriverStanding) => {
-                const teamColor = getTeamDetails(standing.Constructors[0]?.constructorId).color || '#333';
+          {/* Drivers Table */}
+          <section className="st-table-section">
+            <div className="st-table-header font-mono">
+              <span className="st-col-pos">POS</span>
+              <span className="st-col-driver">DRIVER</span>
+              <span className="st-col-pts">PTS</span>
+              <span className="st-col-trend">TREND</span>
+            </div>
+
+            <div className="st-table-body">
+              {drivers.map((standing: DriverStanding) => {
+                const posNum = parseInt(standing.position);
+                const isP1 = posNum === 1;
+                const isP2 = posNum === 2;
+                const isP3 = posNum === 3;
+                const teamDetails = getTeamDetails(standing.Constructors[0]?.constructorId);
+                const teamColor = teamDetails.color || '#555';
                 const trend = getDriverTrend(standing.Driver.driverId, standing.position);
+
                 return (
-                  <div key={standing.Driver.driverId} className="tb-row" onClick={() => handleDriverClick(standing.Driver.driverId)}>
-                    <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>
-                    
-                    <div className="tb-driver-col">
-                      <div className="tb-team-line" style={{ background: teamColor }} />
-                      <div className="tb-avatar">
-                        <img loading="lazy" src={getDriverVisual(standing.Driver.driverId, 'portrait')} alt="avatar" />
+                  <div 
+                    key={standing.Driver.driverId} 
+                    className={`st-row ${isP1 ? 'row-p1' : isP2 ? 'row-p2' : isP3 ? 'row-p3' : ''}`}
+                    onClick={() => handleDriverClick(standing.Driver.driverId)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div className="st-col-pos font-mono">
+                      <span className={`st-pos-text ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                        {String(standing.position).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    <div className="st-col-driver">
+                      <div className="st-team-indicator" style={{ backgroundColor: teamColor }} />
+                      <div className="st-avatar-mini">
+                        <img 
+                          src={getDriverVisual(standing.Driver.driverId, 'portrait') || ''} 
+                          alt={standing.Driver.familyName}
+                          loading="lazy" 
+                        />
                       </div>
-                      <div className="tb-names">
-                        <span className="tb-lastname font-heading editorial-headline">{standing.Driver.familyName}</span>
-                        <span className="tb-teamname editorial-label">{standing.Constructors[0]?.name}</span>
+                      <div className="st-driver-names">
+                        <span className="st-driver-family font-heading">
+                          {standing.Driver.givenName?.[0]}. {standing.Driver.familyName.toUpperCase()}
+                        </span>
+                        <span className="st-team-label font-mono">{standing.Constructors[0]?.name}</span>
                       </div>
                     </div>
-                    
-                    <div className="tb-pts font-mono">{standing.points}</div>
-                    <div className={`tb-trend ${trend.class}`}>{trend.icon}</div>
+
+                    <div className="st-col-pts font-mono">
+                      <span className="st-pts-val">{standing.points}</span>
+                    </div>
+
+                    <div className={`st-col-trend font-mono ${trend.class}`}>
+                      {trend.text}
+                    </div>
                   </div>
                 );
               })}
             </div>
-          </div>
-        )
+          </section>
+        </div>
       ) : (
-        cLoading ? <div className="skeleton" style={{ height: 400 }} /> : (
-          <div className="standings-content">
-            {topConstructor && (
-              <div className="st-leader-card">
-                <div className="st-leader-bg" style={{ background: `linear-gradient(135deg, ${getTeamDetails(topConstructor.Constructor.constructorId).color}44 0%, rgba(0,0,0,0) 70%)` }} />
-                
-                <div className="st-leader-pos editorial-num">01</div>
-                
-                <div className="st-leader-content" style={{ paddingBottom: '32px' }}>
-                  <div className="st-leader-info">
-                    <span className="font-heading editorial-headline name">
-                      {topConstructor.Constructor.name}
+        <div className="st-content">
+          {/* Top Constructor Leader Card */}
+          {topConstructor && (
+            <div 
+              className="st-leader-hero constructor-hero" 
+              onClick={() => handleConstructorClick(topConstructor.Constructor.constructorId)}
+              role="button"
+              tabIndex={0}
+            >
+              <div 
+                className="st-leader-accent-stripe" 
+                style={{ backgroundColor: getTeamDetails(topConstructor.Constructor.constructorId).color }} 
+              />
+              <div className="st-leader-badge-col font-mono">
+                <span className="st-rank-num">01</span>
+                <span className="st-leader-tag">P1</span>
+              </div>
+              <div className="st-leader-meta">
+                <span className="editorial-label">CONSTRUCTORS CHAMPIONSHIP LEADER</span>
+                <h2 className="st-leader-name font-heading">
+                  {topConstructor.Constructor.name}
+                </h2>
+                <div 
+                  className="st-leader-team font-mono"
+                  style={{ color: getTeamDetails(topConstructor.Constructor.constructorId).color }}
+                >
+                  {getTeamDetails(topConstructor.Constructor.constructorId).powerUnit.toUpperCase()} POWER • {topConstructor.Constructor.nationality?.toUpperCase()}
+                </div>
+                <div className="st-leader-stats font-mono">
+                  <span className="st-leader-pts">{topConstructor.points} PTS</span>
+                  {constructorLeadGap > 0 && runnerUpConstructor && (
+                    <span className="st-leader-gap">
+                      +{constructorLeadGap} PTS VS {runnerUpConstructor.Constructor.name.toUpperCase()}
                     </span>
-                    <span className="editorial-label team-name">{topConstructor.Constructor.nationality}</span>
-                    <div className="pts-block">
-                      <span className="font-mono editorial-num pts-val">{topConstructor.points}</span>
-                      <span className="editorial-label">PTS</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            <div className="st-list timing-board">
-              <div className="tb-header editorial-label">
-                <span className="tb-pos">POS</span>
-                <span className="tb-driver">TEAM</span>
-                <span className="tb-pts">PTS</span>
-                <span className="tb-trend"></span>
-              </div>
-              
-              {otherConstructors.map((standing: ConstructorStanding) => {
-                const teamColor = getTeamDetails(standing.Constructor.constructorId).color || '#333';
+          {/* Constructors Table */}
+          <section className="st-table-section">
+            <div className="st-table-header font-mono">
+              <span className="st-col-pos">POS</span>
+              <span className="st-col-driver">CONSTRUCTOR</span>
+              <span className="st-col-pts">PTS</span>
+              <span className="st-col-trend">TREND</span>
+            </div>
+
+            <div className="st-table-body">
+              {constructors.map((standing: ConstructorStanding) => {
+                const posNum = parseInt(standing.position);
+                const isP1 = posNum === 1;
+                const isP2 = posNum === 2;
+                const isP3 = posNum === 3;
+                const teamDetails = getTeamDetails(standing.Constructor.constructorId);
+                const teamColor = teamDetails.color || '#555';
                 const trend = getConstructorTrend(standing.Constructor.constructorId, standing.position);
+
                 return (
-                  <div key={standing.Constructor.constructorId} className="tb-row">
-                    <div className="tb-pos font-mono">{standing.position.padStart(2, '0')}</div>
-                    
-                    <div className="tb-driver-col">
-                      <div className="tb-team-line" style={{ background: teamColor }} />
-                      <div className="tb-names" style={{ marginLeft: '12px' }}>
-                        <span className="tb-lastname font-heading editorial-headline">{standing.Constructor.name}</span>
-                        <span className="tb-teamname editorial-label">{standing.Constructor.nationality}</span>
+                  <div 
+                    key={standing.Constructor.constructorId} 
+                    className={`st-row ${isP1 ? 'row-p1' : isP2 ? 'row-p2' : isP3 ? 'row-p3' : ''}`}
+                    onClick={() => handleConstructorClick(standing.Constructor.constructorId)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div className="st-col-pos font-mono">
+                      <span className={`st-pos-text ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                        {String(standing.position).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    <div className="st-col-driver">
+                      <div className="st-team-indicator" style={{ backgroundColor: teamColor }} />
+                      <div className="st-driver-names" style={{ paddingLeft: '4px' }}>
+                        <span className="st-driver-family font-heading">
+                          {standing.Constructor.name.toUpperCase()}
+                        </span>
+                        <span className="st-team-label font-mono">
+                          {teamDetails.powerUnit || standing.Constructor.nationality}
+                        </span>
                       </div>
                     </div>
-                    
-                    <div className="tb-pts font-mono">{standing.points}</div>
-                    <div className={`tb-trend ${trend.class}`}>{trend.icon}</div>
+
+                    <div className="st-col-pts font-mono">
+                      <span className="st-pts-val">{standing.points}</span>
+                    </div>
+
+                    <div className={`st-col-trend font-mono ${trend.class}`}>
+                      {trend.text}
+                    </div>
                   </div>
                 );
               })}
             </div>
-          </div>
-        )
+          </section>
+        </div>
       )}
     </div>
   );
 };
 
 export default Standings;
+

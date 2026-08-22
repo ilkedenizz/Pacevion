@@ -1,14 +1,18 @@
-﻿import React, { useMemo } from 'react';
-import { getCircuitDetails } from '../data/circuitData';
-import { CountdownTimer } from '../components/common/CountdownTimer';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCalendar, useRaceResults, useQualifyingResults } from '../hooks/useF1Data';
+import { getCircuitDetails } from '../data/circuitData';
+import { getTeamDetails } from '../data/teamDetails';
+import { getDriverVisual } from '../data/assets';
+import { getCountryFlag, getWeekendSessions } from '../utils/raceWeekend';
+import { CircuitTrack } from '../components/common/CircuitTrack';
+import { HomeCountdown } from '../components/common/HomeCountdown';
+import { ArrowLeft, ChevronLeft, ChevronRight, Award, Timer, Flag, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
+import type { RaceResult, QualifyingResult } from '../api/types';
 import './RaceDetails.css';
 
-
-
-const RaceDetails: React.FC = () => {
-  const { season = '', round = '' } = useParams<{ season: string; round: string }>();
+export const RaceDetails: React.FC = () => {
+  const { season = '2026', round = '1' } = useParams<{ season: string; round: string }>();
   const navigate = useNavigate();
 
   const { data: calendar, isLoading: calendarLoading, isError: calendarError } = useCalendar(season);
@@ -21,15 +25,13 @@ const RaceDetails: React.FC = () => {
   }, [calendar, round]);
 
   const isCompleted = useMemo(() => {
-    if (raceResults) return true;
+    if (raceResults?.Results && raceResults.Results.length > 0) return true;
     if (!raceInfo) return false;
     const now = new Date();
     const raceTimeStr = raceInfo.time ? (raceInfo.time.endsWith('Z') ? raceInfo.time : `${raceInfo.time}Z`) : '00:00:00Z';
     const raceDate = new Date(`${raceInfo.date}T${raceTimeStr}`);
     return raceDate <= now;
   }, [raceResults, raceInfo]);
-
-  
 
   const navigation = useMemo(() => {
     if (!calendar || calendar.length === 0) return { prev: null, next: null };
@@ -41,229 +43,373 @@ const RaceDetails: React.FC = () => {
     };
   }, [calendar, round]);
 
+  const circuitDetails = useMemo(() => {
+    return raceInfo?.Circuit?.circuitId ? getCircuitDetails(raceInfo.Circuit.circuitId) : null;
+  }, [raceInfo]);
+
+  const sessions = useMemo(() => {
+    if (!raceInfo) return [];
+    return getWeekendSessions(raceInfo, new Date());
+  }, [raceInfo]);
+
   const isLoading = calendarLoading || resultsLoading || qualyLoading;
 
   if (isLoading) {
     return (
-      <div className="race-details-page fade-in">
-        <div className="skeleton" style={{ width: '100%', height: '300px' }} />
-        <div className="skeleton" style={{ width: '100%', height: '400px', marginTop: '16px' }} />
+      <div className="page race-details-page fade-in">
+        <div className="skeleton" style={{ height: 40, borderRadius: 6, marginBottom: 12 }} />
+        <div className="skeleton" style={{ height: 120, borderRadius: 8, marginBottom: 14 }} />
+        <div className="skeleton" style={{ height: 160, borderRadius: 8, marginBottom: 14 }} />
+        <div className="skeleton" style={{ height: 200, borderRadius: 8 }} />
       </div>
     );
   }
 
   if (calendarError || resultsError || !raceInfo) {
     return (
-      <div className="race-details-page fade-in">
-        <div className="rd-empty" style={{ marginTop: '50px' }}>
-          Unable to load race details.
+      <div className="page race-details-page fade-in" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className="rd-error-box font-mono">
+          <AlertCircle size={32} color="var(--color-primary)" />
+          <h2 className="font-heading" style={{ color: 'var(--color-primary)' }}>RACE DETAILS UNAVAILABLE</h2>
+          <p className="editorial-label">UNABLE TO LOAD DATA FOR ROUND {round}</p>
+          <button onClick={() => navigate('/calendar')} className="retry-btn font-mono">BACK TO CALENDAR</button>
         </div>
       </div>
     );
   }
 
-  let winnerStr = 'â€”';
-  let poleStr = 'â€”';
-  let fastestLapStr = 'â€”';
-  let totalLapsStr = getCircuitDetails(raceInfo?.Circuit?.circuitId || '').laps.toString();
-
-  if (raceResults?.Results && raceResults.Results.length > 0) {
-    const winner = raceResults.Results.find(r => r.position === '1');
-    if (winner) {
-      winnerStr = `${winner.Driver.givenName} ${winner.Driver.familyName}`;
-      
-    }
-
-    const fastest = raceResults.Results.find(r => r.FastestLap?.rank === '1');
-    if (fastest) {
-      fastestLapStr = `${fastest.Driver.givenName} ${fastest.Driver.familyName}`;
-    }
-
-    if (qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0) {
-      const p1 = qualifyingResults.QualifyingResults[0];
-      poleStr = `${p1.Driver.givenName} ${p1.Driver.familyName}`;
-    } else {
-      const gridP1 = raceResults.Results.find(r => r.grid === '1');
-      if (gridP1) poleStr = `${gridP1.Driver.givenName} ${gridP1.Driver.familyName}`;
-    }
-  }
+  const flagEmoji = getCountryFlag(raceInfo.Circuit?.Location?.country, raceInfo.Circuit?.Location?.locality);
+  const p1Result = raceResults?.Results?.find(r => r.position === '1');
+  const p2Result = raceResults?.Results?.find(r => r.position === '2');
+  const p3Result = raceResults?.Results?.find(r => r.position === '3');
+  const fastestLapEntry = raceResults?.Results?.find(r => r.FastestLap?.rank === '1');
 
   return (
-    <div className="race-details-page fade-in">
-      <div className="rd-nav">
+    <div className="page race-details-page fade-in">
+      {/* 1. Header Navigation Bar */}
+      <div className="rd-top-bar font-mono">
         <button 
-          className="rd-nav-btn" 
-          disabled={!navigation.prev} 
-          onClick={() => navigation.prev && navigate(`/races/${season}/${navigation.prev.round}`)
-}
+          className="rd-back-btn" 
+          onClick={() => navigate('/calendar')}
+          title="Back to Calendar"
         >
-          â† PREVIOUS
+          <ArrowLeft size={13} />
+          <span>CALENDAR</span>
         </button>
-        <button 
-          className="rd-nav-btn" 
-          disabled={!navigation.next} 
-          onClick={() => navigation.next && navigate(`/races/${season}/${navigation.next.round}`)}
-        >
-          NEXT â†’
-        </button>
+
+        <div className="rd-nav-arrows">
+          <button 
+            className="rd-nav-arrow-btn"
+            disabled={!navigation.prev}
+            onClick={() => navigation.prev && navigate(`/races/${season}/${navigation.prev.round}`)}
+            title="Previous Round"
+          >
+            <ChevronLeft size={14} />
+            <span>R{navigation.prev?.round || '—'}</span>
+          </button>
+          <span className="rd-curr-round">ROUND {String(round).padStart(2, '0')}</span>
+          <button 
+            className="rd-nav-arrow-btn"
+            disabled={!navigation.next}
+            onClick={() => navigation.next && navigate(`/races/${season}/${navigation.next.round}`)}
+            title="Next Round"
+          >
+            <span>R{navigation.next?.round || '—'}</span>
+            <ChevronRight size={14} />
+          </button>
+        </div>
       </div>
 
-      <div className="rd-header">
-        <div className="rd-status-row font-mono">
-          <span className="rd-round">ROUND {round}</span>
-          <span className={`rd-status ${isCompleted ? 'completed' : 'upcoming'}`}>
+      {/* 2. Race Hero Header Card */}
+      <header className="rd-race-hero">
+        <div className="rd-hero-badges font-mono">
+          <span className={`rd-status-tag ${isCompleted ? 'completed' : 'upcoming'}`}>
             {isCompleted ? 'COMPLETED' : 'UPCOMING'}
           </span>
+          {raceInfo.Sprint && (
+            <span className="rd-sprint-tag">SPRINT WEEKEND</span>
+          )}
         </div>
-        <h1 className="rd-title font-heading">{raceInfo.raceName}</h1>
-        <div className="rd-circuit">{raceInfo.Circuit.circuitName}</div>
-        <div className="rd-datetime font-mono">
-          {raceInfo.date} â€˜ {raceInfo.time ? raceInfo.time.replace('Z', ' UTC') : ''}
-        </div>
-      </div>
 
-       {isCompleted && raceResults?.Results ? (
+        <h1 className="rd-race-name font-heading">
+          <span className="rd-flag">{flagEmoji}</span>
+          {raceInfo.raceName}
+        </h1>
+
+        <div className="rd-circuit-loc font-mono">
+          {raceInfo.Circuit.circuitName.toUpperCase()} • {raceInfo.Circuit.Location.locality.toUpperCase()}, {raceInfo.Circuit.Location.country.toUpperCase()}
+        </div>
+
+        <div className="rd-hero-dates font-mono">
+          <CalendarIcon size={12} color="var(--color-primary)" />
+          <span>{raceInfo.date} {raceInfo.time ? `• ${raceInfo.time.replace('Z', ' UTC')}` : ''}</span>
+        </div>
+      </header>
+
+      {/* 3. Circuit Visual & Telemetry */}
+      <section className="rd-circuit-section">
+        <div className="rd-circuit-vis-wrap">
+          <CircuitTrack 
+            circuitId={raceInfo.Circuit.circuitId} 
+            circuitName={raceInfo.Circuit.circuitName}
+            country={raceInfo.Circuit.Location.country}
+            raceName={raceInfo.raceName}
+            round={raceInfo.round}
+            variant="hero"
+          />
+        </div>
+
+        {circuitDetails && (
+          <div className="rd-circuit-telemetry font-mono">
+            <div className="ct-stat">
+              <span className="editorial-label">TOTAL LAPS</span>
+              <span className="ct-val">{circuitDetails.laps} LAPS</span>
+            </div>
+            <div className="ct-stat">
+              <span className="editorial-label">RACE DISTANCE</span>
+              <span className="ct-val">{circuitDetails.distance}</span>
+            </div>
+            <div className="ct-stat">
+              <span className="editorial-label">LOCATION</span>
+              <span className="ct-val">{raceInfo.Circuit.Location.locality?.toUpperCase()}</span>
+            </div>
+          </div>
+        )}
+
+      </section>
+
+      {/* 4. COMPLETED RACE SECTIONS */}
+      {isCompleted && raceResults?.Results && (
         <>
-          <div className="rd-summary">
-            <div className="rd-summary-item">
-              <span className="rd-sum-label">WINNER</span>
-              <span className="rd-sum-value winner">{winnerStr}</span>
-            </div>
-            <div className="rd-summary-item">
-              <span className="rd-sum-label">POLE</span>
-              <span className="rd-sum-value">{poleStr}</span>
-            </div>
-            <div className="rd-summary-item">
-              <span className="rd-sum-label">FASTEST LAP</span>
-              <span className="rd-sum-value">{fastestLapStr}</span>
-            </div>
-            <div className="rd-summary-item">
-              <span className="rd-sum-label">LAPS</span>
-              <span className="rd-sum-value font-mono">{totalLapsStr}</span>
-            </div>
-          </div>
-
-          <div className="rd-section">
-            <h2 className="rd-section-title font-heading">RACE CLASSIFICATION</h2>
-            <div className="rd-table-wrapper">
-              <table className="rd-table">
-                <thead>
-                  <tr>
-                    <th>POS</th>
-                    <th>DRIVER</th>
-                    <th>TEAM</th>
-                    <th>GRID</th>
-                    <th>FINISH</th>
-                    <th>CHANGE</th>
-                    <th>PTS</th>
-                    <th>TIME/STATUS</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {raceResults.Results.map(res => {
-                    const grid = parseInt(res.grid);
-                    const pos = parseInt(res.position);
-                    let changeStr = 'â€”';
-                    let trendClass = 'same';
-                    
-                    if (grid > 0 && pos > 0) {
-                      const change = grid - pos;
-                      if (change > 0) {
-                        changeStr = `â†${change}`;
-                        trendClass = 'up';
-                      } else if (change < 0) {
-                        changeStr = `%i${Math.abs(change)}`;
-                        trendClass = 'down';
-                      }
-                    }
-
-                    return (
-                      <tr key={res.Driver.driverId}>
-                        <td className="rd-pos font-mono">{res.position}</td>
-                        <td style={{ fontWeight: 600 }}>{res.Driver.givenName} {res.Driver.familyName}</td>
-                        <td className="rd-team">{res.Constructor.name}</td>
-                        <td className="font-mono">{res.grid}</td>
-                        <td className="font-mono">{res.position}</td>
-                        <td className={`rd-trend font-mono ${trendClass}`}>{res.grid === '0' ? 'PIT' : changeStr}</td>
-                        <td className="rd-pts font-mono">{res.points}</td>
-                        <td className="font-mono">{res.Time?.time || res.status}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {(() => {
-            const flResult = raceResults.Results.find(r => r.FastestLap?.rank === '1');
-            if (flResult && flResult.FastestLap) {
-              return (
-                <div className="rd-section">
-                  <h2 className="rd-section-title font-heading">FASTEST LAP</h2>
-                  <div className="rd-fastest-lap">
-                    <div>
-                      <div className="rd-fl-driver">{flResult.Driver.givenName} {flResult.Driver.familyName}</div>
-                      <div className="rd-fl-meta">Lap {flResult.FastestLap.lap} â€˜ {flResult.FastestLap.AverageSpeed?.speed} {flResult.FastestLap.AverageSpeed?.units}</div>
+          {/* Podium Showcase */}
+          {(p1Result || p2Result || p3Result) && (
+            <section className="rd-podium-section">
+              <div className="rd-section-header font-mono">
+                <Award size={13} color="var(--color-warning)" />
+                <span>OFFICIAL PODIUM</span>
+              </div>
+              <div className="rd-podium-grid">
+                {/* P2 */}
+                {p2Result && (
+                  <div className="podium-card p2">
+                    <div className="podium-rank font-mono pos-p2">P02</div>
+                    <div className="podium-avatar">
+                      <img 
+                        src={getDriverVisual(p2Result.Driver.driverId, 'portrait') || ''} 
+                        alt={p2Result.Driver.familyName} 
+                      />
                     </div>
-                    <div className="rd-fl-time">{flResult.FastestLap.Time.time}</div>
+                    <span className="podium-name font-heading">{p2Result.Driver.familyName.toUpperCase()}</span>
+                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p2Result.Constructor.constructorId).color }}>
+                      {p2Result.Constructor.name}
+                    </span>
+                    <span className="podium-pts font-mono">+{p2Result.points} PTS</span>
                   </div>
-                </div>
-              );
-            }
-            return null;
-          })()}
+                )}
 
-          {qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 && (
-            <div className="rd-section">
-              <h2 className="rd-section-title font-heading">QUALIFYING</h2>
-              <div className="rd-table-wrapper">
-                <table className="rd-table">
-                  <thead>
-                    <tr>
-                      <th>POS</th>
-                      <th>DRIVER</th>
-                      <th>Q1</th>
-                      <th>Q2</th>
-                      <th>Q3</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {qualifyingResults.QualifyingResults.map(res => (
-                      <tr key={res.Driver.driverId}>
-                        <td className="rd-pos font-mono">{res.position}</td>
-                        <td style={{ fontWeight: 600 }}>{res.Driver.givenName} {res.Driver.familyName}</td>
-                        <td className="font-mono">{res.Q1 || 'â€”'}</td>
-                        <td className="font-mono">{res.Q2 || 'â€”'}</td>
-                        <td className="font-mono">{res.Q3 || 'â€”'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                {/* P1 Winner */}
+                {p1Result && (
+                  <div className="podium-card p1">
+                    <div className="podium-rank font-mono pos-p1">P01</div>
+                    <div className="podium-avatar">
+                      <img 
+                        src={getDriverVisual(p1Result.Driver.driverId, 'portrait') || ''} 
+                        alt={p1Result.Driver.familyName} 
+                      />
+                    </div>
+                    <span className="podium-name font-heading">{p1Result.Driver.familyName.toUpperCase()}</span>
+                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p1Result.Constructor.constructorId).color }}>
+                      {p1Result.Constructor.name}
+                    </span>
+                    <span className="podium-pts font-mono">+{p1Result.points} PTS</span>
+                  </div>
+                )}
+
+                {/* P3 */}
+                {p3Result && (
+                  <div className="podium-card p3">
+                    <div className="podium-rank font-mono pos-p3">P03</div>
+                    <div className="podium-avatar">
+                      <img 
+                        src={getDriverVisual(p3Result.Driver.driverId, 'portrait') || ''} 
+                        alt={p3Result.Driver.familyName} 
+                      />
+                    </div>
+                    <span className="podium-name font-heading">{p3Result.Driver.familyName.toUpperCase()}</span>
+                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p3Result.Constructor.constructorId).color }}>
+                      {p3Result.Constructor.name}
+                    </span>
+                    <span className="podium-pts font-mono">+{p3Result.points} PTS</span>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* Fastest Lap Banner */}
+          {fastestLapEntry && (
+            <div className="rd-fastest-lap-banner font-mono">
+              <div className="fl-left">
+                <Timer size={14} color="#C98EE8" />
+                <span className="fl-label">FASTEST LAP</span>
+              </div>
+              <div className="fl-driver font-heading">
+                {fastestLapEntry.Driver.givenName} {fastestLapEntry.Driver.familyName.toUpperCase()}
+              </div>
+              <div className="fl-time">
+                {fastestLapEntry.FastestLap?.Time.time} (LAP {fastestLapEntry.FastestLap?.lap})
               </div>
             </div>
           )}
-        </>
-      ) : (
-        <div className="rd-section">
-          <div className="rd-upcoming-box">
-            <h2 className="editorial-headline" style={{ fontSize: '20px', marginBottom: '8px' }}>UPCOMING RACE</h2>
-            <div style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>
-              {raceInfo.Circuit.circuitName}<br/>
-              {raceInfo.date} â€˜ {raceInfo.time ? raceInfo.time.replace('Z', ' UTC') : ''}
+
+          {/* Final Classification Board */}
+          <section className="rd-classification-section">
+            <div className="rd-section-header font-mono">
+              <Flag size={13} color="var(--color-primary)" />
+              <span>RACE CLASSIFICATION ({raceResults.Results.length} DRIVERS)</span>
             </div>
-            
-            {!isCompleted && raceInfo && (
-  <CountdownTimer 
-    targetDate={`${raceInfo.date}T${raceInfo.time ? (raceInfo.time.endsWith('Z') ? raceInfo.time : raceInfo.time + 'Z') : '00:00:00Z'}`}
-    className="rd-countdown"
-  />
-)}
+
+            <div className="rd-table-header font-mono">
+              <span className="rd-col-pos">POS</span>
+              <span className="rd-col-driver">DRIVER</span>
+              <span className="rd-col-time">TIME / GAP</span>
+              <span className="rd-col-gain">GRID</span>
+              <span className="rd-col-pts">PTS</span>
+            </div>
+
+            <div className="rd-table-body">
+              {raceResults.Results.map((result: RaceResult) => {
+                const posNum = parseInt(result.position);
+                const isP1 = posNum === 1;
+                const isP2 = posNum === 2;
+                const isP3 = posNum === 3;
+                const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                const gridPos = parseInt(result.grid);
+                const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
+                let displayTime = '—';
+                const status = result.status || '';
+                const timeStr = result.Time?.time;
+
+                if (isP1) {
+                  displayTime = timeStr || 'WINNER';
+                } else if (timeStr) {
+                  displayTime = timeStr;
+                } else if (/lap/i.test(status) || /^\+/.test(status)) {
+                  displayTime = status;
+                } else if (status === 'Finished') {
+                  displayTime = 'FINISHED';
+                } else {
+                  displayTime = status || 'DNF';
+                }
+
+                return (
+                  <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
+                    <div className="rd-col-pos font-mono">
+                      <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                        {String(result.positionText || result.position).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    <div className="rd-col-driver">
+                      <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
+                      <div className="rd-driver-meta">
+                        <span className="rd-driver-name font-heading">
+                          {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
+                        </span>
+                        <span className="rd-team-name font-mono">{result.Constructor.name}</span>
+                      </div>
+                    </div>
+
+                    <div className="rd-col-time font-mono">
+                      <span className="time-val">{displayTime}</span>
+                    </div>
+
+                    <div className="rd-col-gain font-mono">
+                      <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                      {posGain !== 0 && gridPos > 0 && (
+                        <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                          {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="rd-col-pts font-mono">
+                      {result.points && parseFloat(result.points) > 0 ? (
+                        <span className="pts-active">+{result.points}</span>
+                      ) : (
+                        <span className="pts-zero">—</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* Qualifying Results Table (if available) */}
+          {qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 && (
+            <section className="rd-classification-section">
+              <div className="rd-section-header font-mono">
+                <span>QUALIFYING RESULTS</span>
+              </div>
+              <div className="rd-qualy-header font-mono">
+                <span className="qualy-pos">POS</span>
+                <span className="qualy-driver">DRIVER</span>
+                <span className="qualy-q">Q1</span>
+                <span className="qualy-q">Q2</span>
+                <span className="qualy-q">Q3</span>
+              </div>
+              <div className="rd-qualy-body font-mono">
+                {qualifyingResults.QualifyingResults.map((qRes: QualifyingResult) => (
+                  <div key={qRes.Driver.driverId} className="rd-qualy-row">
+                    <span className="qualy-pos">P{qRes.position}</span>
+                    <span className="qualy-driver">{qRes.Driver.givenName?.[0]}. {qRes.Driver.familyName.toUpperCase()}</span>
+                    <span className="qualy-q">{qRes.Q1 || '—'}</span>
+                    <span className="qualy-q">{qRes.Q2 || '—'}</span>
+                    <span className="qualy-q">{qRes.Q3 || '—'}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </>
+      )}
+
+      {/* 5. UPCOMING RACE SCHEDULE & COUNTDOWN */}
+      {!isCompleted && (
+        <section className="rd-upcoming-section">
+          <div className="rd-countdown-card">
+            <span className="editorial-label">GRAND PRIX COUNTDOWN</span>
+            <HomeCountdown 
+              targetDate={`${raceInfo.date}T${raceInfo.time ? (raceInfo.time.endsWith('Z') ? raceInfo.time : raceInfo.time + 'Z') : '00:00:00Z'}`} 
+            />
           </div>
-        </div>
+
+          <div className="rd-sessions-schedule">
+            <div className="rd-section-header font-mono">
+              <CalendarIcon size={13} color="var(--color-primary)" />
+              <span>WEEKEND SESSION SCHEDULE</span>
+            </div>
+            <div className="sessions-list font-mono">
+              {sessions.map((sess, idx) => (
+                <div key={idx} className={`session-row ${sess.status}`}>
+                  <div className="sess-left">
+                    <span className="sess-name">{sess.name.toUpperCase()}</span>
+                    <span className="sess-date">{sess.displayDate} • {sess.displayTime}</span>
+                  </div>
+                  <span className={`sess-status-badge ${sess.status}`}>
+                    {sess.status.toUpperCase()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
       )}
     </div>
   );
 };
 
 export default RaceDetails;
+

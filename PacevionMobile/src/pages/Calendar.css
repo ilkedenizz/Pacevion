@@ -1,133 +1,370 @@
-﻿.calendar-page {
-  min-height: 100dvh;
-  padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
+/* Calendar Page Styles */
+.calendar-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
+/* Header */
 .cal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0 4px 0;
+}
+
+.cal-header-left {
   display: flex;
   flex-direction: column;
 }
 
 .cal-title {
-  font-size: 26px;
-  letter-spacing: -0.04em;
-  color: #fff;
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-primary);
+  line-height: 1;
 }
 
 .cal-subtitle {
-  font-size: 12px;
-  color: var(--color-accent);
-  letter-spacing: 0.15em;
+  font-size: 9px;
+  color: var(--color-primary);
+  letter-spacing: 0.12em;
   font-weight: 800;
+  margin-top: 2px;
 }
 
+/* Error Box */
+.cal-error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 32px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+
+/* Segment Controls */
+.cal-segments-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--color-surface);
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cal-segment-btn {
+  flex: 1;
+  min-width: fit-content;
+  padding: 6px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  background: transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.cal-segment-btn.active {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+}
+
+/* Section Labels */
+.cal-section-label {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+.live-dot.pulse {
+  animation: pulse-ring 2s infinite;
+}
+
+/* Next Race Hero Card */
+.cal-hero-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease;
+}
+
+.cal-hero-card:active {
+  border-color: var(--color-text-secondary);
+}
+
+.ch-top {
+  padding: 8px 12px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.ch-round-badge {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-primary);
+  letter-spacing: 0.1em;
+}
+
+.ch-sprint-badge {
+  font-size: 8px;
+  font-weight: 800;
+  background: rgba(225, 6, 0, 0.15);
+  color: var(--color-primary);
+  border: 1px solid rgba(225, 6, 0, 0.4);
+  padding: 1px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+
+.ch-status-tag {
+  font-size: 8px;
+  font-weight: 900;
+  color: #fff;
+  background: var(--color-primary);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.08em;
+}
+
+.ch-body {
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ch-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.ch-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.ch-flag {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.ch-race-name {
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ch-circuit {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
+}
+
+.ch-date {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-top: 4px;
+}
+
+.ch-track-preview {
+  width: 70px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Calendar Races List */
 .cal-list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 6px;
 }
 
 .cal-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-top: 3px solid var(--color-accent);
-  border-radius: 8px;
+  border-radius: 6px;
   display: flex;
-  flex-direction: column;
-  text-decoration: none;
-  overflow: hidden;
-  position: relative;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  align-items: center;
+  padding: 10px 12px;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
 }
 
 .cal-card:active {
-  transform: scale(0.98);
-  border-color: var(--color-text-secondary);
-}
-
-.cal-card-top {
-  padding: 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  border-bottom: 1px solid var(--color-border-subtle);
-  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 100%);
-}
-
-.cal-round-box {
   background: var(--color-surface-elevated);
-  padding: 4px 12px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
 }
 
-.cal-round {
-  font-size: 10px;
-  color: var(--color-accent);
-  letter-spacing: 0.1em;
+.cal-card.is-next {
+  border-color: var(--color-primary);
+  background: rgba(225, 6, 0, 0.04);
 }
 
-.cal-race-title {
-  font-size: 20px;
-  color: #fff;
-  letter-spacing: -0.02em;
-  margin-top: 12px;
+.cal-card.is-past {
+  opacity: 0.65;
 }
 
-.cal-date-range {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  margin-top: 4px;
-}
-
-.cal-flag {
-  width: 48px;
-  height: 32px;
-  border-radius: 4px;
-  border: 1px solid var(--color-border);
-  object-fit: cover;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-}
-
-.cal-sessions {
-  padding: 12px 16px;
-  background: var(--color-bg);
+/* Left: Round and Flag */
+.cal-left-block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.cal-session-row {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  flex-shrink: 0;
 }
 
-.cal-session-name {
-  font-size: 12px;
+.cal-round-num {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.cal-flag-emoji {
+  font-size: 13px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* Center: Title & Circuit */
+.cal-center-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.cal-gp-title {
+  font-size: 15px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-circuit-line {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cal-date-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+}
+
+.cal-date-text {
+  font-size: 9px;
+  font-weight: 600;
   color: var(--color-text-secondary);
+}
+
+.cal-sprint-pill {
+  font-size: 7px;
+  font-weight: 800;
+  background: rgba(225, 6, 0, 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(225, 6, 0, 0.3);
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+/* Right: Status badge & Chevron */
+.cal-right-block {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.cal-badge-next {
+  font-size: 8px;
+  font-weight: 900;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
+.cal-badge-past {
+  font-size: 8px;
   font-weight: 700;
-  text-transform: uppercase;
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border-subtle);
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
 }
 
-.cal-session-time {
-  font-size: 12px;
-  color: #fff;
+.cal-badge-upcoming {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  letter-spacing: 0.04em;
 }
 
-.cal-session-row.main {
-  margin-top: 4px;
-  padding-top: 8px;
-  border-top: 1px dashed var(--color-border-subtle);
+.cal-chevron {
+  flex-shrink: 0;
 }
 
-.cal-session-row.main .cal-session-name {
-  color: #fff;
-}
-
-.cal-session-row.main .cal-session-time {
-  color: var(--color-accent);
-}

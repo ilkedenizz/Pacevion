@@ -1,142 +1,361 @@
-﻿.standings-page {
-  min-height: 100dvh;
-  padding: var(--page-top-spacing) 16px var(--page-bottom-spacing) 16px;
+/* Standings Page Styles */
+.standings-page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 14px;
 }
 
+/* Header */
 .st-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 2px 0 4px 0;
+}
+
+.st-header-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .st-title {
-  font-size: 26px;
-  letter-spacing: -0.04em;
-  color: #fff;
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  color: var(--color-text-primary);
+  line-height: 1;
 }
 
-.st-tabs {
+.st-subtitle {
+  font-size: 9px;
+  color: var(--color-primary);
+  letter-spacing: 0.12em;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+/* Segment Bar */
+.st-segment-bar {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   background: var(--color-surface);
   padding: 4px;
   border-radius: 6px;
   border: 1px solid var(--color-border);
 }
 
-.st-tab {
-  padding: 8px 16px;
-  border-radius: 4px;
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  background: transparent;
-  border: none;
+.st-segment-btn {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 9px;
   font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  background: transparent;
+  transition: all 0.15s ease;
+  white-space: nowrap;
 }
 
-.st-tab.active {
+.st-segment-btn.active {
   background: var(--color-surface-elevated);
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
 }
 
-.st-list {
+/* Content */
+.st-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
-.st-item {
-  display: flex;
-  align-items: center;
+/* Leader Hero Card */
+.st-leader-hero {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left-width: 4px;
-  border-radius: 6px;
-  padding: 12px 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  gap: 12px;
   position: relative;
   overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease;
 }
 
-.st-item::after {
-  content: '';
+.st-leader-hero:active {
+  border-color: var(--color-text-secondary);
+}
+
+.st-leader-accent-stripe {
   position: absolute;
-  top: 0; right: 0; bottom: 0;
-  width: 60px;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.02));
-  pointer-events: none;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
 }
 
-.st-pos {
-  width: 32px;
-  font-size: 18px;
-  color: #fff;
-}
-
-.st-trend {
-  width: 24px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.st-driver-info {
-  flex: 1;
+.st-leader-badge-col {
   display: flex;
   flex-direction: column;
-  padding-left: 12px;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
 }
 
-.st-name {
-  font-size: 16px;
-  color: #fff;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.st-rank-num {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--color-warning);
+  line-height: 1;
 }
 
-.st-team {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.st-leader-tag {
+  font-size: 7px;
+  font-weight: 800;
+  color: var(--color-warning);
+  letter-spacing: 0.08em;
   margin-top: 2px;
 }
 
-.st-pts-box {
+.st-leader-avatar-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--color-border);
+  background: var(--color-surface-highlight);
+  flex-shrink: 0;
+}
+
+.st-leader-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.st-leader-meta {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  min-width: 0;
+  flex: 1;
 }
 
-.st-pts {
-  font-size: 20px;
-  color: #fff;
+.st-leader-name {
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 1px;
 }
 
-.st-pts-lbl {
-  font-size: 10px;
+.st-leader-team {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-top: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-leader-stats {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.st-leader-pts {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.st-leader-gap {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+/* Standings Table */
+.st-table-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.st-table-header {
+  display: grid;
+  grid-template-columns: 36px 1fr 60px 48px;
+  padding: 6px 10px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 9px;
+  font-weight: 800;
   color: var(--color-text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  align-items: center;
 }
 
-/* P1 highlight */
-.st-item:nth-child(1) {
-  padding: 16px;
+@media (max-width: 360px) {
+  .st-table-header {
+    grid-template-columns: 30px 1fr 50px 40px;
+    padding: 6px 6px;
+  }
+}
+
+.st-table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.st-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 60px 48px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.1s ease;
+}
+
+@media (max-width: 360px) {
+  .st-row {
+    grid-template-columns: 30px 1fr 50px 40px;
+    padding: 7px 6px;
+  }
+}
+
+.st-row:last-child {
+  border-bottom: none;
+}
+
+.st-row:active {
   background: var(--color-surface-elevated);
 }
-.st-item:nth-child(1) .st-pos {
-  font-size: 24px;
-  color: #FFD700;
+
+.st-row.row-p1 {
+  background: rgba(255, 184, 0, 0.03);
 }
-.st-item:nth-child(1) .st-name {
-  font-size: 20px;
+
+.st-col-pos {
+  display: flex;
+  align-items: center;
 }
-.st-item:nth-child(1) .st-pts {
-  font-size: 26px;
+
+.st-pos-text {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+}
+
+.st-pos-text.pos-p1 { color: var(--color-warning); font-weight: 900; }
+.st-pos-text.pos-p2 { color: #C0C0C0; font-weight: 900; }
+.st-pos-text.pos-p3 { color: #CD7F32; font-weight: 900; }
+
+.st-col-driver {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding-right: 6px;
+}
+
+.st-team-indicator {
+  width: 3px;
+  height: 26px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.st-avatar-mini {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: #191D27;
+  flex-shrink: 0;
+}
+
+.st-avatar-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.st-driver-names {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.st-driver-family {
+  font-size: 14px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-team-label {
+  font-size: 8px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.st-col-pts {
+  display: flex;
+  align-items: center;
+}
+
+.st-pts-val {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.st-col-trend {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.trend-up { color: var(--color-trend-up); }
+.trend-down { color: var(--color-trend-down); }
+.trend-same { color: var(--color-text-muted); }
+
+/* Error box */
+.st-error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 32px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
 }

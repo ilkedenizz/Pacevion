@@ -38,7 +38,7 @@ export const MOCK_2026_CALENDAR: Race[] = [
   },
   {
     season: '2026', round: '8', url: '', raceName: 'Spanish Grand Prix',
-    Circuit: { circuitId: 'catalunya', url: '', circuitName: 'Circuit de Barcelona-Catalunya', Location: { lat: '41.57', long: '2.26111', locality: 'MontmelÃ³', country: 'Spain' } },
+    Circuit: { circuitId: 'catalunya', url: '', circuitName: 'Circuit de Barcelona-Catalunya', Location: { lat: '41.57', long: '2.26111', locality: 'Montmeló', country: 'Spain' } },
     date: '2026-06-14', time: '13:00:00Z',
   },
   {
@@ -83,12 +83,12 @@ export const MOCK_2026_CALENDAR: Race[] = [
   },
   {
     season: '2026', round: '17', url: '', raceName: 'Mexico City Grand Prix',
-    Circuit: { circuitId: 'rodriguez', url: '', circuitName: 'AutÃ³dromo Hermanos RodrÃ­guez', Location: { lat: '19.4042', long: '-99.0907', locality: 'Mexico City', country: 'Mexico' } },
+    Circuit: { circuitId: 'rodriguez', url: '', circuitName: 'Autódromo Hermanos Rodríguez', Location: { lat: '19.4042', long: '-99.0907', locality: 'Mexico City', country: 'Mexico' } },
     date: '2026-11-08', time: '20:00:00Z',
   },
   {
-    season: '2026', round: '18', url: '', raceName: 'SÃ£o Paulo Grand Prix',
-    Circuit: { circuitId: 'interlagos', url: '', circuitName: 'AutÃ³dromo JosÃ© Carlos Pace', Location: { lat: '-23.7036', long: '-46.6997', locality: 'SÃ£o Paulo', country: 'Brazil' } },
+    season: '2026', round: '18', url: '', raceName: 'São Paulo Grand Prix',
+    Circuit: { circuitId: 'interlagos', url: '', circuitName: 'Autódromo José Carlos Pace', Location: { lat: '-23.7036', long: '-46.6997', locality: 'São Paulo', country: 'Brazil' } },
     date: '2026-11-22', time: '17:00:00Z',
   },
   {

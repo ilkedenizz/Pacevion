@@ -49,7 +49,7 @@ export const TECHNICAL_HOTSPOTS: TechnicalHotspot[] = [
     id: 'brakes',
     name: 'BRAKES',
     badge: 'CARBON-CARBON',
-    summary: 'Carbon rotors operating over 1,000Â°C delivering up to 5G deceleration.',
+    summary: 'Carbon rotors operating over 1,000°C delivering up to 5G deceleration.',
     details: 'Constructed from carbon-composite materials, F1 brakes can slow a car from 330 km/h to 100 km/h in under 2.5 seconds, generating immense thermal energy.',
   },
   {

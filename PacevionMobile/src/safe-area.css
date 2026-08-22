@@ -1,4 +1,4 @@
-/* Safe Area Variables */
+﻿/* Safe Area Variables */
 :root {
   --safe-top: env(safe-area-inset-top, 24px);
   --safe-bottom: env(safe-area-inset-bottom, 24px);

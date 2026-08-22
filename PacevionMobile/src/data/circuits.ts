@@ -1,6 +1,6 @@
 ﻿// src/data/circuits.ts
 // Circuit SVG paths generated from https://github.com/julesr0y/f1-circuits-svg
-// License: Attribution 4.0 International (CC BY 4.0) - Copyright Â© 2024-2026 ROY Jules (julesr0y)
+// License: Attribution 4.0 International (CC BY 4.0) - Copyright © 2024-2026 ROY Jules (julesr0y)
 
 export interface CircuitLayout {
   id: string;

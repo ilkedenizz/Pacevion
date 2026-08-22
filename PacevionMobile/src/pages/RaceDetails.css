@@ -1,209 +1,588 @@
-﻿.rd-page {
-  min-height: 100dvh;
+.race-details-page {
+  min-height: 100%;
   padding: 0;
   display: flex;
   flex-direction: column;
+}
+
+.rd-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rd-nav-btn {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+.rd-nav-btn:disabled {
+  opacity: 0.3;
 }
 
 .rd-hero {
   position: relative;
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
-  padding: var(--page-top-spacing) 24px 24px 24px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
 }
 
 .rd-bg-glow {
-  position: absolute;
-  top: -50px; left: -50px;
-  width: 200px; height: 200px;
-  background: var(--color-accent);
-  filter: blur(100px);
-  opacity: 0.2;
-  border-radius: 50%;
-  z-index: 0;
+  cursor: default;
 }
 
-.rd-header {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.rd-curr-round {
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--color-text-primary);
+  padding: 0 4px;
 }
 
-.rd-back {
-  background: rgba(0,0,0,0.5);
+/* 2. Race Hero Card */
+.rd-race-hero {
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  border-left: 3px solid var(--color-primary);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rd-hero-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 8px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.rd-status-tag {
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
+.rd-status-tag.completed {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.rd-status-tag.upcoming {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.rd-sprint-tag {
+  background: #FF8000;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.06em;
+}
+
+.rd-race-name {
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rd-flag {
+  font-size: 16px;
+}
+
+.rd-circuit-loc {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rd-hero-dates {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  margin-top: 4px;
+}
+
+/* 3. Circuit Section */
+.rd-circuit-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-circuit-vis-wrap {
+  padding: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
+  background: radial-gradient(circle at center, rgba(225, 6, 0, 0.04) 0%, transparent 70%);
 }
 
-.rd-round {
-  font-size: 14px;
-  color: var(--color-accent);
-  letter-spacing: 0.1em;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.rd-content {
-  position: relative;
-  z-index: 2;
-  margin-top: 24px;
-  display: flex;
-  flex-direction: column;
-}
-
-.rd-title {
-  font-size: 32px;
-  line-height: 1.1;
-  color: #fff;
-  letter-spacing: -0.03em;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
-}
-
-.rd-circuit {
-  font-size: 14px;
-  color: var(--color-text-secondary);
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-top: 8px;
-  text-transform: uppercase;
-}
-
-.rd-summary {
+.rd-circuit-telemetry {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--color-surface-elevated);
+  border-top: 1px solid var(--color-border-subtle);
+  padding: 8px 10px;
+  gap: 6px;
 }
 
-.rd-summary-item {
-  background: rgba(0,0,0,0.3);
-  border: 1px solid var(--color-border);
-  padding: 12px;
-  border-radius: 8px;
+@media (max-width: 360px) {
+  .rd-circuit-telemetry {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ct-stat {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.rd-sum-label {
-  font-size: 10px;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-}
-
-.rd-sum-value {
-  font-size: 16px;
-  color: #fff;
-  margin-top: 4px;
-  font-weight: 800;
-}
-
-/* Tabs */
-.rd-tabs {
-  display: flex;
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  padding: 0 16px;
-  overflow-x: auto;
-  gap: 24px;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.rd-tab {
-  padding: 16px 0;
-  color: var(--color-text-secondary);
+.ct-val {
   font-size: 12px;
   font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: none;
-  background: transparent;
-  cursor: pointer;
+  color: var(--color-text-primary);
+}
+
+/* 4. Section General */
+.rd-section-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  letter-spacing: 0.08em;
+}
+
+/* Podium Section */
+.rd-podium-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-podium-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 10px;
+  align-items: flex-end;
+}
+
+.podium-card {
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 6px;
+  padding: 8px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.podium-card.p1 {
+  border-color: rgba(255, 184, 0, 0.4);
+  background: rgba(255, 184, 0, 0.04);
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.podium-rank {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.podium-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: #191D27;
+}
+
+.podium-card.p1 .podium-avatar {
+  width: 48px;
+  height: 48px;
+  border-color: var(--color-warning);
+}
+
+.podium-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.podium-name {
+  font-size: 13px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
   white-space: nowrap;
-  position: relative;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.rd-tab.active {
-  color: #fff;
+.podium-team {
+  font-size: 7px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.rd-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: var(--color-accent);
-  border-radius: 3px 3px 0 0;
+.podium-pts {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-top: 2px;
 }
 
-/* Results Area */
-.rd-results {
-  padding: 24px 16px var(--page-bottom-spacing) 16px;
+/* Fastest Lap Banner */
+.rd-fastest-lap-banner {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid #C98EE8;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+}
+
+.fl-left {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #C98EE8;
+  font-weight: 800;
+}
+
+.fl-driver {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+}
+
+.fl-time {
+  color: var(--color-text-muted);
+}
+
+/* Classification Section */
+.rd-classification-section {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-table-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 90px 48px 40px;
+  padding: 6px 10px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+  align-items: center;
+}
+
+@media (max-width: 360px) {
+  .rd-table-header {
+    grid-template-columns: 28px 1fr 75px 40px 36px;
+    padding: 6px 6px;
+  }
+}
+
+.rd-table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-table-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 90px 48px 40px;
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  align-items: center;
+}
+
+@media (max-width: 360px) {
+  .rd-table-row {
+    grid-template-columns: 28px 1fr 75px 40px 36px;
+    padding: 6px 6px;
+  }
+}
+
+.rd-table-row:last-child {
+  border-bottom: none;
+}
+
+.rd-table-row.is-p1 {
+  background: rgba(255, 184, 0, 0.03);
+}
+
+.rd-col-pos {
+  display: flex;
+  align-items: center;
+}
+
+.rd-col-driver {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding-right: 4px;
+}
+
+.rd-driver-stripe {
+  width: 3px;
+  height: 22px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.rd-driver-meta {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.rd-driver-name {
+  font-size: 13px;
+  line-height: 1.1;
+  color: var(--color-text-primary);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rd-team-name {
+  font-size: 7px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rd-col-time {
+  display: flex;
+  align-items: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rd-col-gain {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 8px;
+}
+
+.grid-start {
+  color: var(--color-text-muted);
+}
+
+.gain-indicator {
+  font-weight: 800;
+}
+
+.gain-up { color: var(--color-trend-up); }
+.gain-down { color: var(--color-trend-down); }
+
+.rd-col-pts {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.pts-active {
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.pts-zero {
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
+/* Qualifying Table */
+.rd-qualy-header {
+  display: grid;
+  grid-template-columns: 32px 1fr 50px 50px 50px;
+  padding: 6px 10px;
+  background: var(--color-surface-elevated);
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  letter-spacing: 0.06em;
+}
+
+.rd-qualy-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.rd-qualy-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 50px 50px 50px;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 9px;
+  align-items: center;
+}
+
+.rd-qualy-row:last-child {
+  border-bottom: none;
+}
+
+.qualy-pos { font-weight: 800; color: var(--color-text-secondary); }
+.qualy-driver { font-weight: 700; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.qualy-q { color: var(--color-text-secondary); font-size: 8px; }
+
+/* 5. Upcoming Race Countdown & Timetable */
+.rd-upcoming-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rd-countdown-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.rd-res-item {
-  display: flex;
-  align-items: center;
+.rd-sessions-schedule {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
-  padding: 12px;
-}
-
-.rd-res-pos {
-  width: 32px;
-  font-size: 18px;
-  color: #fff;
-}
-
-.rd-res-driver {
-  flex: 1;
+  border-radius: 8px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  padding-left: 12px;
-  border-left: 1px solid var(--color-border-subtle);
 }
 
-.rd-res-name {
-  font-size: 16px;
-  color: #fff;
-  font-weight: 700;
+.sessions-list {
+  display: flex;
+  flex-direction: column;
 }
 
-.rd-res-team {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  margin-top: 2px;
+.session-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
-.rd-res-time {
-  font-size: 14px;
-  color: #fff;
-  text-align: right;
-  min-width: 80px;
+.session-row:last-child {
+  border-bottom: none;
 }
 
-.rd-res-time.dnf {
+.sess-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sess-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.sess-date {
+  font-size: 8px;
   color: var(--color-text-muted);
 }
+
+.sess-status-badge {
+  font-size: 8px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.sess-status-badge.completed {
+  background: var(--color-surface-elevated);
+  color: var(--color-text-muted);
+}
+
+.sess-status-badge.current {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+.sess-status-badge.upcoming {
+  background: var(--color-surface-highlight);
+  color: var(--color-text-secondary);
+}
+
+/* Error box */
+.rd-error-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 32px 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  width: 100%;
+  max-width: 360px;
+}
+

@@ -61,8 +61,9 @@ export function App() {
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
         <NavigationHandler />
-        <Suspense fallback={<div className="loading-fallback" style={{ padding: '16px', color: '#fff' }}>Loading...</div>}>
-          <Routes>
+        <main className="app-content">
+          <Suspense fallback={<div className="loading-fallback" style={{ padding: '16px', color: '#fff' }}>Loading...</div>}>
+            <Routes>
             <Route path="/" element={<Home />} />
             {/* Redirect /home to / for safety */}
             <Route path="/home" element={<Navigate to="/" replace />} />
@@ -84,7 +85,8 @@ export function App() {
             <Route path="/more/data-sources" element={<DataSources />} />
             <Route path="/more/privacy" element={<PrivacyPolicy />} />
           </Routes>
-        </Suspense>
+          </Suspense>
+        </main>
         <BottomNav />
       </BrowserRouter>
     </QueryClientProvider>
