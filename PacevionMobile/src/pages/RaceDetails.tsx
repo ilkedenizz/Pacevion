@@ -214,35 +214,33 @@ export const RaceDetails: React.FC = () => {
   return (
     <div className="page race-details-page fade-in">
       {/* 1. Header Navigation Bar */}
-      <div className="rd-top-bar font-mono">
+      <div className="rd-nav font-mono">
         <button 
-          className="rd-back-btn" 
+          className="rd-nav-btn" 
           onClick={() => navigate('/calendar')}
           title="Back to Calendar"
         >
-          <ArrowLeft size={13} />
+          <ArrowLeft size={14} style={{ marginRight: 6 }} />
           <span>CALENDAR</span>
         </button>
 
-        <div className="rd-nav-arrows">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <button 
-            className="rd-nav-arrow-btn"
+            className="rd-nav-btn"
             disabled={!navigation.prev}
             onClick={() => navigation.prev && navigate(`/races/${season}/${navigation.prev.round}`)}
             title="Previous Round"
           >
-            <ChevronLeft size={14} />
-            <span>R{navigation.prev?.round || '—'}</span>
+            <ChevronLeft size={16} />
           </button>
           <span className="rd-curr-round">ROUND {String(round).padStart(2, '0')}</span>
           <button 
-            className="rd-nav-arrow-btn"
+            className="rd-nav-btn"
             disabled={!navigation.next}
             onClick={() => navigation.next && navigate(`/races/${season}/${navigation.next.round}`)}
             title="Next Round"
           >
-            <span>R{navigation.next?.round || '—'}</span>
-            <ChevronRight size={14} />
+            <ChevronRight size={16} />
           </button>
         </div>
       </div>

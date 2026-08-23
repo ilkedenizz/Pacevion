@@ -68,8 +68,13 @@ export const LiveFeed: React.FC = () => {
     displayBadge = "STANDBY";
     displaySubtitle = raceState.nextSession ? raceState.nextSession.name.toUpperCase() : 'UNKNOWN';
   } else if (raceState?.status === 'POST_RACE') {
-    displayTitle = "RACE RESULT";
-    displayBadge = "OFFICIAL";
+    if (resultsArray.length > 0) {
+      displayTitle = "RACE RESULT";
+      displayBadge = "OFFICIAL";
+    } else {
+      displayTitle = "RESULT PENDING";
+      displayBadge = "PENDING";
+    }
     displaySubtitle = raceState?.race ? `ROUND ${String(raceState.race.round).padStart(2, '0')} • ${raceState.race.season}` : '';
   }
 
@@ -111,7 +116,9 @@ export const LiveFeed: React.FC = () => {
   if (isManualRefreshing) {
     updateText = 'CHECKING...';
   } else if (resultsArray.length === 0) {
-    if (pollingInterval) {
+    if (raceState?.status === 'POST_RACE') {
+      updateText = 'AWAITING OFFICIAL DATA';
+    } else if (pollingInterval) {
       updateText = 'POLLING ACTIVE';
     } else {
       updateText = 'DATA UNAVAILABLE';
