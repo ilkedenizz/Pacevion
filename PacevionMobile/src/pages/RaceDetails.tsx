@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useRef, useLayoutEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCalendar, useRaceResults, useQualifyingResults, useSprintResults } from '../hooks/useF1Data';
 import { getCircuitDetails } from '../data/circuitData';
@@ -28,33 +28,6 @@ export const RaceDetails: React.FC = () => {
 
   const { data: sprintResults, isLoading: sprintLoading } = useSprintResults(season, round, isSprint);
 
-  type SessionTab = 'FP1' | 'FP2' | 'FP3' | 'SPRINT_QUALI' | 'SPRINT' | 'QUALIFYING' | 'RACE';
-
-  const sessionTabs = useMemo((): SessionTab[] => {
-    if (!raceInfo) return ['RACE'];
-    if (isSprint) {
-      return ['FP1', 'SPRINT_QUALI', 'SPRINT', 'QUALIFYING', 'RACE'];
-    }
-    return ['FP1', 'FP2', 'FP3', 'QUALIFYING', 'RACE'];
-  }, [raceInfo, isSprint]);
-
-  const [activeTab, setActiveTab] = useState<SessionTab>('RACE');
-
-  // Reset tab when round changes
-  useEffect(() => {
-    setActiveTab('RACE');
-  }, [round]);
-
-  const sessionTabLabels: Record<SessionTab, string> = {
-    FP1: 'FP1',
-    FP2: 'FP2',
-    FP3: 'FP3',
-    SPRINT_QUALI: 'SPRINT QUALI',
-    SPRINT: 'SPRINT',
-    QUALIFYING: 'QUALIFYING',
-    RACE: 'RACE',
-  };
-
   const isCompleted = useMemo(() => {
     if (raceResults?.Results && raceResults.Results.length > 0) return true;
     if (!raceInfo) return false;
@@ -83,9 +56,132 @@ export const RaceDetails: React.FC = () => {
     return getWeekendSessions(raceInfo, new Date());
   }, [raceInfo]);
 
-  const isLoading = calendarLoading || resultsLoading || qualyLoading || sprintLoading;
+  type SessionTab = 'FP1' | 'FP2' | 'FP3' | 'SPRINT_QUALI' | 'SPRINT' | 'QUALIFYING' | 'RACE';
 
-  if (isLoading) {
+  const sessionTabs = useMemo((): SessionTab[] => {
+    if (!raceInfo) return ['RACE'];
+    if (isSprint) {
+      return ['FP1', 'SPRINT_QUALI', 'SPRINT', 'QUALIFYING', 'RACE'];
+    }
+    return ['FP1', 'FP2', 'FP3', 'QUALIFYING', 'RACE'];
+  }, [raceInfo, isSprint]);
+
+  const getTabSessionName = (tab: SessionTab): string => {
+    switch (tab) {
+      case 'FP1': return 'PRACTICE 1';
+      case 'FP2': return 'PRACTICE 2';
+      case 'FP3': return 'PRACTICE 3';
+      case 'SPRINT_QUALI': return 'SPRINT SHOOTOUT';
+      case 'SPRINT': return 'SPRINT';
+      case 'QUALIFYING': return 'QUALIFYING';
+      case 'RACE': return 'GRAND PRIX';
+    }
+  };
+
+  const getTabStatus = (tab: SessionTab): 'completed' | 'current' | 'upcoming' => {
+    const sessionName = getTabSessionName(tab);
+    const sess = sessions.find(s => s.name.toUpperCase() === sessionName);
+    if (sess) return sess.status;
+    return isCompleted ? 'completed' : 'upcoming';
+  };
+
+  const getTabStatusLabel = (tab: SessionTab): string => {
+    const status = getTabStatus(tab);
+    if (status === 'current') return 'LIVE';
+    if (status === 'upcoming') return 'UPCOMING';
+    
+    // For completed sessions, check if we have results
+    if (tab === 'RACE') {
+      return raceResults?.Results && raceResults.Results.length > 0 ? 'RESULTS' : 'NO DATA';
+    }
+    if (tab === 'QUALIFYING') {
+      return qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 ? 'RESULTS' : 'NO DATA';
+    }
+    if (tab === 'SPRINT') {
+      return sprintResults?.SprintResults && sprintResults.SprintResults.length > 0 ? 'RESULTS' : 'NO DATA';
+    }
+    return 'NO DATA';
+  };
+
+  const defaultTab = useMemo((): SessionTab => {
+    if (isCompleted) return 'RACE';
+    if (!sessions || sessions.length === 0) return 'RACE';
+
+    const nameToTabMap: Record<string, SessionTab> = {
+      'PRACTICE 1': 'FP1',
+      'PRACTICE 2': 'FP2',
+      'PRACTICE 3': 'FP3',
+      'SPRINT SHOOTOUT': 'SPRINT_QUALI',
+      'SPRINT': 'SPRINT',
+      'QUALIFYING': 'QUALIFYING',
+      'GRAND PRIX': 'RACE'
+    };
+
+    const activeOrUpcomingSess = sessions.find(s => s.status === 'current') || sessions.find(s => s.status === 'upcoming');
+    if (activeOrUpcomingSess) {
+      return nameToTabMap[activeOrUpcomingSess.name.toUpperCase()] || 'RACE';
+    }
+
+    return 'RACE';
+  }, [sessions, isCompleted]);
+
+  const [activeTab, setActiveTab] = useState<SessionTab>('RACE');
+
+  const scrollRef = useRef<{ beforeScrollTop: number; beforeSelectorTop: number } | null>(null);
+
+  const handleTabClick = (tab: SessionTab) => {
+    if (tab === activeTab) return;
+    const page = document.querySelector('.race-details-page');
+    const selector = document.querySelector('.rd-session-selector');
+    if (page && selector) {
+      scrollRef.current = {
+        beforeScrollTop: page.scrollTop,
+        beforeSelectorTop: selector.getBoundingClientRect().top
+      };
+    }
+    setActiveTab(tab);
+  };
+
+  useLayoutEffect(() => {
+    if (scrollRef.current) {
+      const { beforeSelectorTop } = scrollRef.current;
+      scrollRef.current = null;
+      
+      const page = document.querySelector('.race-details-page');
+      const selector = document.querySelector('.rd-session-selector');
+      
+      if (page && selector) {
+        const afterSelectorTop = selector.getBoundingClientRect().top;
+        const currentScrollTop = page.scrollTop;
+        
+        // Sadece görünür bir kayma olduysa (tarayıcı native olarak clamp yaptıysa) müdahale et
+        if (Math.abs(afterSelectorTop - beforeSelectorTop) > 1) {
+          const desiredScrollTop = currentScrollTop + (afterSelectorTop - beforeSelectorTop);
+          // Tarayıcı bu değeri yeni scrollHeight sınırlarına otomatik olarak clamp edecektir (güvenli)
+          page.scrollTop = desiredScrollTop;
+        }
+      }
+    }
+  }, [activeTab]);
+
+  // Reset tab when defaultTab changes
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
+  const sessionTabLabels: Record<SessionTab, string> = {
+    FP1: 'FP1',
+    FP2: 'FP2',
+    FP3: 'FP3',
+    SPRINT_QUALI: 'SPRINT QUALI',
+    SPRINT: 'SPRINT',
+    QUALIFYING: 'QUALIFYING',
+    RACE: 'RACE',
+  };
+
+  const isPageLoading = calendarLoading || !raceInfo;
+
+  if (isPageLoading) {
     return (
       <div className="page race-details-page fade-in">
         <div className="skeleton" style={{ height: 40, borderRadius: 6, marginBottom: 12 }} />
@@ -96,7 +192,7 @@ export const RaceDetails: React.FC = () => {
     );
   }
 
-  if (calendarError || resultsError || !raceInfo) {
+  if (calendarError || !raceInfo) {
     return (
       <div className="page race-details-page fade-in" style={{ justifyContent: 'center', alignItems: 'center' }}>
         <div className="rd-error-box font-mono">
@@ -210,359 +306,485 @@ export const RaceDetails: React.FC = () => {
       </section>
 
       {/* 4. SESSION SELECTOR TAB BAR */}
-      {isCompleted && (
-        <div className="rd-session-selector">
-          <div className="rd-session-tabs font-mono">
-            {sessionTabs.map((tab) => (
-              <button
+      <div className="rd-session-selector">
+        <div className="rd-session-tabs font-mono">
+          {sessionTabs.map((tab) => {
+            const status = getTabStatus(tab);
+            const statusLabel = getTabStatusLabel(tab);
+            return (
+              <div
                 key={tab}
+                role="button"
                 className={`rd-session-tab ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => handleTabClick(tab)}
               >
-                {sessionTabLabels[tab]}
-              </button>
-            ))}
-          </div>
+                <span className="rd-tab-name">{sessionTabLabels[tab]}</span>
+                <span className={`rd-tab-status-dot ${status}`} title={statusLabel} />
+              </div>
+            );
+          })}
         </div>
-      )}
+      </div>
 
       {/* 5. SESSION CONTENT */}
-      {isCompleted && activeTab === 'RACE' && raceResults?.Results && (
+      
+      {/* 5.1 PRACTICE & SPRINT SHOOTOUT SESSIONS (FP1, FP2, FP3, SPRINT_QUALI) */}
+      {(activeTab === 'FP1' || activeTab === 'FP2' || activeTab === 'FP3' || activeTab === 'SPRINT_QUALI') && (
+        <section className="rd-classification-section">
+          {(() => {
+            const status = getTabStatus(activeTab);
+            const statusLabel = getTabStatusLabel(activeTab);
+            const sessionName = getTabSessionName(activeTab);
+            const sess = sessions.find(s => s.name.toUpperCase() === sessionName);
+            const dateStr = sess ? `${sess.displayDate} • ${sess.displayTime}` : '';
+            return (
+              <>
+                <div className="rd-section-header font-mono">
+                  <CalendarIcon size={13} color="var(--color-primary)" />
+                  <span>{sessionName} INFORMATION</span>
+                </div>
+                <div className="rd-session-info-strip font-mono">
+                  <div className="rd-sis-item">
+                    <span className="editorial-label">STATUS</span>
+                    <span className={`rd-sis-status ${status}`}>{statusLabel}</span>
+                  </div>
+                  {dateStr && (
+                    <div className="rd-sis-item">
+                      <span className="editorial-label">SCHEDULE</span>
+                      <span className="rd-sis-val">{dateStr}</span>
+                    </div>
+                  )}
+                </div>
+                <div className="rd-no-data font-mono">
+                  <AlertCircle size={20} color="var(--color-text-muted)" />
+                  <span>{sessionTabLabels[activeTab]} DATA NOT AVAILABLE</span>
+                  <span className="rd-no-data-sub">Practice and Sprint Qualifying results are not provided by the current data source.</span>
+                </div>
+              </>
+            );
+          })()}
+        </section>
+      )}
+
+      {/* 5.2 QUALIFYING SESSION */}
+      {activeTab === 'QUALIFYING' && (
+        <section className="rd-classification-section">
+          {(() => {
+            const status = getTabStatus('QUALIFYING');
+            const statusLabel = getTabStatusLabel('QUALIFYING');
+            const sessionName = getTabSessionName('QUALIFYING');
+            const sess = sessions.find(s => s.name.toUpperCase() === sessionName);
+            const dateStr = sess ? `${sess.displayDate} • ${sess.displayTime}` : '';
+            const hasData = qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0;
+            return (
+              <>
+                <div className="rd-section-header font-mono">
+                  <Timer size={13} color="var(--color-primary)" />
+                  <span>QUALIFYING RESULTS</span>
+                </div>
+                <div className="rd-session-info-strip font-mono">
+                  <div className="rd-sis-item">
+                    <span className="editorial-label">STATUS</span>
+                    <span className={`rd-sis-status ${status}`}>{statusLabel}</span>
+                  </div>
+                  {dateStr && (
+                    <div className="rd-sis-item">
+                      <span className="editorial-label">SCHEDULE</span>
+                      <span className="rd-sis-val">{dateStr}</span>
+                    </div>
+                  )}
+                </div>
+                {qualyLoading ? (
+                  <div className="rd-no-data font-mono">
+                    <span className="rd-pulse-text">RETRIEVING QUALIFYING TIMING...</span>
+                  </div>
+                ) : hasData ? (
+                  <div className="rd-table-wrapper">
+                    <div className="rd-qualy-header font-mono">
+                      <span className="qualy-pos">POS</span>
+                      <span className="qualy-driver">DRIVER</span>
+                      <span className="qualy-q">Q1</span>
+                      <span className="qualy-q">Q2</span>
+                      <span className="qualy-q">Q3</span>
+                    </div>
+                    <div className="rd-qualy-body font-mono">
+                      {qualifyingResults.QualifyingResults.map((qRes: QualifyingResult) => (
+                        <div key={qRes.Driver.driverId} className="rd-qualy-row">
+                          <span className="qualy-pos">P{qRes.position}</span>
+                          <span className="qualy-driver">{qRes.Driver.givenName?.[0]}. {qRes.Driver.familyName.toUpperCase()}</span>
+                          <span className="qualy-q">{qRes.Q1 || '—'}</span>
+                          <span className="qualy-q">{qRes.Q2 || '—'}</span>
+                          <span className="qualy-q">{qRes.Q3 || '—'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rd-no-data font-mono">
+                    <AlertCircle size={20} color="var(--color-text-muted)" />
+                    {status === 'upcoming' ? (
+                      <span>QUALIFYING HAS NOT STARTED YET</span>
+                    ) : status === 'current' ? (
+                      <span>QUALIFYING SESSION IS LIVE / IN PROGRESS</span>
+                    ) : (
+                      <span>QUALIFYING DATA NOT AVAILABLE</span>
+                    )}
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </section>
+      )}
+
+      {/* 5.3 SPRINT SESSION */}
+      {activeTab === 'SPRINT' && (
+        <section className="rd-classification-section">
+          {(() => {
+            const status = getTabStatus('SPRINT');
+            const statusLabel = getTabStatusLabel('SPRINT');
+            const sessionName = getTabSessionName('SPRINT');
+            const sess = sessions.find(s => s.name.toUpperCase() === sessionName);
+            const dateStr = sess ? `${sess.displayDate} • ${sess.displayTime}` : '';
+            const hasData = sprintResults?.SprintResults && sprintResults.SprintResults.length > 0;
+            return (
+              <>
+                <div className="rd-section-header font-mono">
+                  <Flag size={13} color="#FF8000" />
+                  <span>SPRINT CLASSIFICATION</span>
+                </div>
+                <div className="rd-session-info-strip font-mono">
+                  <div className="rd-sis-item">
+                    <span className="editorial-label">STATUS</span>
+                    <span className={`rd-sis-status ${status}`}>{statusLabel}</span>
+                  </div>
+                  {dateStr && (
+                    <div className="rd-sis-item">
+                      <span className="editorial-label">SCHEDULE</span>
+                      <span className="rd-sis-val">{dateStr}</span>
+                    </div>
+                  )}
+                </div>
+                {sprintLoading ? (
+                  <div className="rd-no-data font-mono">
+                    <span className="rd-pulse-text">RETRIEVING SPRINT TIMING...</span>
+                  </div>
+                ) : hasData ? (
+                  <div className="rd-table-wrapper">
+                    <div className="rd-table-header font-mono">
+                      <span className="rd-col-pos">POS</span>
+                      <span className="rd-col-driver">DRIVER</span>
+                      <span className="rd-col-time">TIME / GAP</span>
+                      <span className="rd-col-gain">GRID</span>
+                      <span className="rd-col-pts">PTS</span>
+                    </div>
+                    <div className="rd-table-body">
+                      {sprintResults.SprintResults.map((result: SprintResult) => {
+                        const posNum = parseInt(result.position);
+                        const isP1 = posNum === 1;
+                        const isP2 = posNum === 2;
+                        const isP3 = posNum === 3;
+                        const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                        const gridPos = parseInt(result.grid);
+                        const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
+                        let displayTime = '—';
+                        const statusVal = result.status || '';
+                        const timeStr = result.Time?.time;
+
+                        if (isP1) {
+                          displayTime = timeStr || 'WINNER';
+                        } else if (timeStr) {
+                          displayTime = timeStr;
+                        } else if (statusVal === 'Finished') {
+                          displayTime = 'FINISHED';
+                        } else {
+                          displayTime = statusVal || 'DNF';
+                        }
+
+                        return (
+                          <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
+                            <div className="rd-col-pos font-mono">
+                              <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                                {String(result.positionText || result.position).padStart(2, '0')}
+                              </span>
+                            </div>
+                            <div className="rd-col-driver">
+                              <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
+                              <div className="rd-driver-meta">
+                                <span className="rd-driver-name font-heading">
+                                  {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
+                                </span>
+                                <span className="rd-team-name font-mono">{result.Constructor.name}</span>
+                              </div>
+                            </div>
+                            <div className="rd-col-time font-mono">
+                              <span className="time-val">{displayTime}</span>
+                            </div>
+                            <div className="rd-col-gain font-mono">
+                              <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                              {posGain !== 0 && gridPos > 0 && (
+                                <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                                  {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                                </span>
+                              )}
+                            </div>
+                            <div className="rd-col-pts font-mono">
+                              {result.points && parseFloat(result.points) > 0 ? (
+                                <span className="pts-active">+{result.points}</span>
+                              ) : (
+                                <span className="pts-zero">—</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rd-no-data font-mono">
+                    <AlertCircle size={20} color="var(--color-text-muted)" />
+                    {status === 'upcoming' ? (
+                      <span>SPRINT HAS NOT STARTED YET</span>
+                    ) : status === 'current' ? (
+                      <span>SPRINT IS CURRENTLY LIVE / IN PROGRESS</span>
+                    ) : (
+                      <span>SPRINT DATA NOT AVAILABLE</span>
+                    )}
+                  </div>
+                )}
+              </>
+            );
+          })()}
+        </section>
+      )}
+
+      {/* 5.4 GRAND PRIX (RACE) SESSION */}
+      {activeTab === 'RACE' && (
         <>
-          {/* Podium Showcase */}
-          {(p1Result || p2Result || p3Result) && (
-            <section className="rd-podium-section">
+          {resultsLoading ? (
+            <section className="rd-classification-section">
               <div className="rd-section-header font-mono">
-                <Award size={13} color="var(--color-warning)" />
-                <span>OFFICIAL PODIUM</span>
+                <Flag size={13} color="var(--color-primary)" />
+                <span>RACE CLASSIFICATION</span>
               </div>
-              <div className="rd-podium-grid">
-                {/* P2 */}
-                {p2Result && (
-                  <div className="podium-card p2">
-                    <div className="podium-rank font-mono pos-p2">P02</div>
-                    <div className="podium-avatar">
-                      <img 
-                        src={getDriverVisual(p2Result.Driver.driverId, 'portrait') || ''} 
-                        alt={p2Result.Driver.familyName} 
-                      />
-                    </div>
-                    <span className="podium-name font-heading">{p2Result.Driver.familyName.toUpperCase()}</span>
-                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p2Result.Constructor.constructorId).color }}>
-                      {p2Result.Constructor.name}
-                    </span>
-                    <span className="podium-pts font-mono">+{p2Result.points} PTS</span>
+              <div className="rd-no-data font-mono">
+                <span className="rd-pulse-text">RETRIEVING OFFICIAL CLASSIFICATION...</span>
+              </div>
+            </section>
+          ) : resultsError ? (
+            <section className="rd-classification-section">
+              <div className="rd-section-header font-mono">
+                <Flag size={13} color="var(--color-primary)" />
+                <span>RACE CLASSIFICATION</span>
+              </div>
+              <div className="rd-no-data font-mono">
+                <AlertCircle size={20} color="var(--color-text-muted)" />
+                <span>CLASSIFICATION DATA OFFLINE</span>
+                <span className="rd-no-data-sub">Could not retrieve results from data source.</span>
+              </div>
+            </section>
+          ) : raceResults?.Results && raceResults.Results.length > 0 ? (
+            <>
+              {/* Podium Showcase */}
+              {(p1Result || p2Result || p3Result) && (
+                <section className="rd-podium-section">
+                  <div className="rd-section-header font-mono">
+                    <Award size={13} color="var(--color-warning)" />
+                    <span>OFFICIAL PODIUM</span>
                   </div>
-                )}
+                  <div className="rd-podium-grid">
+                    {/* P2 */}
+                    {p2Result && (
+                      <div className="podium-card p2">
+                        <div className="podium-rank font-mono pos-p2">P02</div>
+                        <div className="podium-avatar">
+                          <img 
+                            src={getDriverVisual(p2Result.Driver.driverId, 'portrait') || ''} 
+                            alt={p2Result.Driver.familyName} 
+                          />
+                        </div>
+                        <span className="podium-name font-heading">{p2Result.Driver.familyName.toUpperCase()}</span>
+                        <span className="podium-team font-mono" style={{ color: getTeamDetails(p2Result.Constructor.constructorId).color }}>
+                          {p2Result.Constructor.name}
+                        </span>
+                        <span className="podium-pts font-mono">+{p2Result.points} PTS</span>
+                      </div>
+                    )}
 
-                {/* P1 Winner */}
-                {p1Result && (
-                  <div className="podium-card p1">
-                    <div className="podium-rank font-mono pos-p1">P01</div>
-                    <div className="podium-avatar">
-                      <img 
-                        src={getDriverVisual(p1Result.Driver.driverId, 'portrait') || ''} 
-                        alt={p1Result.Driver.familyName} 
-                      />
-                    </div>
-                    <span className="podium-name font-heading">{p1Result.Driver.familyName.toUpperCase()}</span>
-                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p1Result.Constructor.constructorId).color }}>
-                      {p1Result.Constructor.name}
-                    </span>
-                    <span className="podium-pts font-mono">+{p1Result.points} PTS</span>
-                  </div>
-                )}
+                    {/* P1 Winner */}
+                    {p1Result && (
+                      <div className="podium-card p1">
+                        <div className="podium-rank font-mono pos-p1">P01</div>
+                        <div className="podium-avatar">
+                          <img 
+                            src={getDriverVisual(p1Result.Driver.driverId, 'portrait') || ''} 
+                            alt={p1Result.Driver.familyName} 
+                          />
+                        </div>
+                        <span className="podium-name font-heading">{p1Result.Driver.familyName.toUpperCase()}</span>
+                        <span className="podium-team font-mono" style={{ color: getTeamDetails(p1Result.Constructor.constructorId).color }}>
+                          {p1Result.Constructor.name}
+                        </span>
+                        <span className="podium-pts font-mono">+{p1Result.points} PTS</span>
+                      </div>
+                    )}
 
-                {/* P3 */}
-                {p3Result && (
-                  <div className="podium-card p3">
-                    <div className="podium-rank font-mono pos-p3">P03</div>
-                    <div className="podium-avatar">
-                      <img 
-                        src={getDriverVisual(p3Result.Driver.driverId, 'portrait') || ''} 
-                        alt={p3Result.Driver.familyName} 
-                      />
-                    </div>
-                    <span className="podium-name font-heading">{p3Result.Driver.familyName.toUpperCase()}</span>
-                    <span className="podium-team font-mono" style={{ color: getTeamDetails(p3Result.Constructor.constructorId).color }}>
-                      {p3Result.Constructor.name}
-                    </span>
-                    <span className="podium-pts font-mono">+{p3Result.points} PTS</span>
+                    {/* P3 */}
+                    {p3Result && (
+                      <div className="podium-card p3">
+                        <div className="podium-rank font-mono pos-p3">P03</div>
+                        <div className="podium-avatar">
+                          <img 
+                            src={getDriverVisual(p3Result.Driver.driverId, 'portrait') || ''} 
+                            alt={p3Result.Driver.familyName} 
+                          />
+                        </div>
+                        <span className="podium-name font-heading">{p3Result.Driver.familyName.toUpperCase()}</span>
+                        <span className="podium-team font-mono" style={{ color: getTeamDetails(p3Result.Constructor.constructorId).color }}>
+                          {p3Result.Constructor.name}
+                        </span>
+                        <span className="podium-pts font-mono">+{p3Result.points} PTS</span>
+                      </div>
+                    )}
                   </div>
-                )}
+                </section>
+              )}
+
+              {/* Fastest Lap Banner */}
+              {fastestLapEntry && (
+                <div className="rd-fastest-lap-banner font-mono">
+                  <div className="fl-left">
+                    <Timer size={14} color="#C98EE8" />
+                    <span className="fl-label">FASTEST LAP</span>
+                  </div>
+                  <div className="fl-driver font-heading">
+                    {fastestLapEntry.Driver.givenName} {fastestLapEntry.Driver.familyName.toUpperCase()}
+                  </div>
+                  <div className="fl-time">
+                    {fastestLapEntry.FastestLap?.Time.time} (LAP {fastestLapEntry.FastestLap?.lap})
+                  </div>
+                </div>
+              )}
+
+              {/* Final Classification Board */}
+              <section className="rd-classification-section">
+                <div className="rd-section-header font-mono">
+                  <Flag size={13} color="var(--color-primary)" />
+                  <span>RACE CLASSIFICATION ({raceResults.Results.length} DRIVERS)</span>
+                </div>
+
+                <div className="rd-table-wrapper">
+                  <div className="rd-table-header font-mono">
+                    <span className="rd-col-pos">POS</span>
+                    <span className="rd-col-driver">DRIVER</span>
+                    <span className="rd-col-time">TIME / GAP</span>
+                    <span className="rd-col-gain">GRID</span>
+                    <span className="rd-col-pts">PTS</span>
+                  </div>
+
+                  <div className="rd-table-body">
+                    {raceResults.Results.map((result: RaceResult) => {
+                      const posNum = parseInt(result.position);
+                      const isP1 = posNum === 1;
+                      const isP2 = posNum === 2;
+                      const isP3 = posNum === 3;
+                      const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                      const gridPos = parseInt(result.grid);
+                      const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
+                      let displayTime = '—';
+                      const status = result.status || '';
+                      const timeStr = result.Time?.time;
+
+                      if (isP1) {
+                        displayTime = timeStr || 'WINNER';
+                      } else if (timeStr) {
+                        displayTime = timeStr;
+                      } else if (/lap/i.test(status) || /^\+/.test(status)) {
+                        displayTime = status;
+                      } else if (status === 'Finished') {
+                        displayTime = 'FINISHED';
+                      } else {
+                        displayTime = status || 'DNF';
+                      }
+
+                      return (
+                        <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
+                          <div className="rd-col-pos font-mono">
+                            <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
+                              {String(result.positionText || result.position).padStart(2, '0')}
+                            </span>
+                          </div>
+
+                          <div className="rd-col-driver">
+                            <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
+                            <div className="rd-driver-meta">
+                              <span className="rd-driver-name font-heading">
+                                {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
+                              </span>
+                              <span className="rd-team-name font-mono">{result.Constructor.name}</span>
+                            </div>
+                          </div>
+
+                          <div className="rd-col-time font-mono">
+                            <span className="time-val">{displayTime}</span>
+                          </div>
+
+                          <div className="rd-col-gain font-mono">
+                            <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                            {posGain !== 0 && gridPos > 0 && (
+                              <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                                {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="rd-col-pts font-mono">
+                            {result.points && parseFloat(result.points) > 0 ? (
+                              <span className="pts-active">+{result.points}</span>
+                            ) : (
+                              <span className="pts-zero">—</span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+            </>
+          ) : (
+            <section className="rd-upcoming-section">
+              <div className="rd-countdown-card">
+                <span className="editorial-label">GRAND PRIX COUNTDOWN</span>
+                <HomeCountdown 
+                  targetDate={`${raceInfo.date}T${raceInfo.time ? (raceInfo.time.endsWith('Z') ? raceInfo.time : raceInfo.time + 'Z') : '00:00:00Z'}`} 
+                />
+              </div>
+
+              <div className="rd-sessions-schedule">
+                <div className="rd-section-header font-mono">
+                  <CalendarIcon size={13} color="var(--color-primary)" />
+                  <span>WEEKEND SESSION SCHEDULE</span>
+                </div>
+                <div className="sessions-list font-mono">
+                  {sessions.map((sess, idx) => (
+                    <div key={idx} className={`session-row ${sess.status}`}>
+                      <div className="sess-left">
+                        <span className="sess-name">{sess.name.toUpperCase()}</span>
+                        <span className="sess-date">{sess.displayDate} • {sess.displayTime}</span>
+                      </div>
+                      <span className={`sess-status-badge ${sess.status}`}>
+                        {sess.status.toUpperCase()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </section>
           )}
-
-          {/* Fastest Lap Banner */}
-          {fastestLapEntry && (
-            <div className="rd-fastest-lap-banner font-mono">
-              <div className="fl-left">
-                <Timer size={14} color="#C98EE8" />
-                <span className="fl-label">FASTEST LAP</span>
-              </div>
-              <div className="fl-driver font-heading">
-                {fastestLapEntry.Driver.givenName} {fastestLapEntry.Driver.familyName.toUpperCase()}
-              </div>
-              <div className="fl-time">
-                {fastestLapEntry.FastestLap?.Time.time} (LAP {fastestLapEntry.FastestLap?.lap})
-              </div>
-            </div>
-          )}
-
-          {/* Final Classification Board */}
-          <section className="rd-classification-section">
-            <div className="rd-section-header font-mono">
-              <Flag size={13} color="var(--color-primary)" />
-              <span>RACE CLASSIFICATION ({raceResults.Results.length} DRIVERS)</span>
-            </div>
-
-            <div className="rd-table-header font-mono">
-              <span className="rd-col-pos">POS</span>
-              <span className="rd-col-driver">DRIVER</span>
-              <span className="rd-col-time">TIME / GAP</span>
-              <span className="rd-col-gain">GRID</span>
-              <span className="rd-col-pts">PTS</span>
-            </div>
-
-            <div className="rd-table-body">
-              {raceResults.Results.map((result: RaceResult) => {
-                const posNum = parseInt(result.position);
-                const isP1 = posNum === 1;
-                const isP2 = posNum === 2;
-                const isP3 = posNum === 3;
-                const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
-                const gridPos = parseInt(result.grid);
-                const posGain = gridPos > 0 ? gridPos - posNum : 0;
-
-                let displayTime = '—';
-                const status = result.status || '';
-                const timeStr = result.Time?.time;
-
-                if (isP1) {
-                  displayTime = timeStr || 'WINNER';
-                } else if (timeStr) {
-                  displayTime = timeStr;
-                } else if (/lap/i.test(status) || /^\+/.test(status)) {
-                  displayTime = status;
-                } else if (status === 'Finished') {
-                  displayTime = 'FINISHED';
-                } else {
-                  displayTime = status || 'DNF';
-                }
-
-                return (
-                  <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
-                    <div className="rd-col-pos font-mono">
-                      <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
-                        {String(result.positionText || result.position).padStart(2, '0')}
-                      </span>
-                    </div>
-
-                    <div className="rd-col-driver">
-                      <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
-                      <div className="rd-driver-meta">
-                        <span className="rd-driver-name font-heading">
-                          {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
-                        </span>
-                        <span className="rd-team-name font-mono">{result.Constructor.name}</span>
-                      </div>
-                    </div>
-
-                    <div className="rd-col-time font-mono">
-                      <span className="time-val">{displayTime}</span>
-                    </div>
-
-                    <div className="rd-col-gain font-mono">
-                      <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
-                      {posGain !== 0 && gridPos > 0 && (
-                        <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
-                          {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="rd-col-pts font-mono">
-                      {result.points && parseFloat(result.points) > 0 ? (
-                        <span className="pts-active">+{result.points}</span>
-                      ) : (
-                        <span className="pts-zero">—</span>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
         </>
-      )}
-
-      {/* QUALIFYING TAB */}
-      {isCompleted && activeTab === 'QUALIFYING' && (
-        <section className="rd-classification-section">
-          {qualifyingResults?.QualifyingResults && qualifyingResults.QualifyingResults.length > 0 ? (
-            <>
-              <div className="rd-section-header font-mono">
-                <Timer size={13} color="var(--color-primary)" />
-                <span>QUALIFYING RESULTS ({qualifyingResults.QualifyingResults.length} DRIVERS)</span>
-              </div>
-              <div className="rd-qualy-header font-mono">
-                <span className="qualy-pos">POS</span>
-                <span className="qualy-driver">DRIVER</span>
-                <span className="qualy-q">Q1</span>
-                <span className="qualy-q">Q2</span>
-                <span className="qualy-q">Q3</span>
-              </div>
-              <div className="rd-qualy-body font-mono">
-                {qualifyingResults.QualifyingResults.map((qRes: QualifyingResult) => (
-                  <div key={qRes.Driver.driverId} className="rd-qualy-row">
-                    <span className="qualy-pos">P{qRes.position}</span>
-                    <span className="qualy-driver">{qRes.Driver.givenName?.[0]}. {qRes.Driver.familyName.toUpperCase()}</span>
-                    <span className="qualy-q">{qRes.Q1 || '—'}</span>
-                    <span className="qualy-q">{qRes.Q2 || '—'}</span>
-                    <span className="qualy-q">{qRes.Q3 || '—'}</span>
-                  </div>
-                ))}
-              </div>
-            </>
-          ) : (
-            <div className="rd-no-data font-mono">
-              <AlertCircle size={20} color="var(--color-text-muted)" />
-              <span>QUALIFYING DATA NOT AVAILABLE</span>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* SPRINT TAB */}
-      {isCompleted && activeTab === 'SPRINT' && (
-        <section className="rd-classification-section">
-          {sprintResults?.SprintResults && sprintResults.SprintResults.length > 0 ? (
-            <>
-              <div className="rd-section-header font-mono">
-                <Flag size={13} color="#FF8000" />
-                <span>SPRINT CLASSIFICATION ({sprintResults.SprintResults.length} DRIVERS)</span>
-              </div>
-              <div className="rd-table-header font-mono">
-                <span className="rd-col-pos">POS</span>
-                <span className="rd-col-driver">DRIVER</span>
-                <span className="rd-col-time">TIME / GAP</span>
-                <span className="rd-col-gain">GRID</span>
-                <span className="rd-col-pts">PTS</span>
-              </div>
-              <div className="rd-table-body">
-                {sprintResults.SprintResults.map((result: SprintResult) => {
-                  const posNum = parseInt(result.position);
-                  const isP1 = posNum === 1;
-                  const isP2 = posNum === 2;
-                  const isP3 = posNum === 3;
-                  const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
-                  const gridPos = parseInt(result.grid);
-                  const posGain = gridPos > 0 ? gridPos - posNum : 0;
-
-                  let displayTime = '—';
-                  const status = result.status || '';
-                  const timeStr = result.Time?.time;
-
-                  if (isP1) {
-                    displayTime = timeStr || 'WINNER';
-                  } else if (timeStr) {
-                    displayTime = timeStr;
-                  } else if (status === 'Finished') {
-                    displayTime = 'FINISHED';
-                  } else {
-                    displayTime = status || 'DNF';
-                  }
-
-                  return (
-                    <div key={result.Driver.driverId} className={`rd-table-row ${isP1 ? 'is-p1' : ''}`}>
-                      <div className="rd-col-pos font-mono">
-                        <span className={`pos-badge ${isP1 ? 'pos-p1' : isP2 ? 'pos-p2' : isP3 ? 'pos-p3' : ''}`}>
-                          {String(result.positionText || result.position).padStart(2, '0')}
-                        </span>
-                      </div>
-                      <div className="rd-col-driver">
-                        <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
-                        <div className="rd-driver-meta">
-                          <span className="rd-driver-name font-heading">
-                            {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
-                          </span>
-                          <span className="rd-team-name font-mono">{result.Constructor.name}</span>
-                        </div>
-                      </div>
-                      <div className="rd-col-time font-mono">
-                        <span className="time-val">{displayTime}</span>
-                      </div>
-                      <div className="rd-col-gain font-mono">
-                        <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
-                        {posGain !== 0 && gridPos > 0 && (
-                          <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
-                            {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
-                          </span>
-                        )}
-                      </div>
-                      <div className="rd-col-pts font-mono">
-                        {result.points && parseFloat(result.points) > 0 ? (
-                          <span className="pts-active">+{result.points}</span>
-                        ) : (
-                          <span className="pts-zero">—</span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            <div className="rd-no-data font-mono">
-              <AlertCircle size={20} color="var(--color-text-muted)" />
-              <span>SPRINT DATA NOT AVAILABLE</span>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* FP1 / FP2 / FP3 / SPRINT QUALI — NO DATA */}
-      {isCompleted && (activeTab === 'FP1' || activeTab === 'FP2' || activeTab === 'FP3' || activeTab === 'SPRINT_QUALI') && (
-        <section className="rd-classification-section">
-          <div className="rd-no-data font-mono">
-            <AlertCircle size={20} color="var(--color-text-muted)" />
-            <span>{sessionTabLabels[activeTab]} DATA NOT AVAILABLE</span>
-            <span className="rd-no-data-sub">Practice and Sprint Qualifying results are not provided by the current data source.</span>
-          </div>
-        </section>
-      )}
-
-      {/* 6. UPCOMING RACE SCHEDULE & COUNTDOWN */}
-      {!isCompleted && (
-        <section className="rd-upcoming-section">
-          <div className="rd-countdown-card">
-            <span className="editorial-label">GRAND PRIX COUNTDOWN</span>
-            <HomeCountdown 
-              targetDate={`${raceInfo.date}T${raceInfo.time ? (raceInfo.time.endsWith('Z') ? raceInfo.time : raceInfo.time + 'Z') : '00:00:00Z'}`} 
-            />
-          </div>
-
-          <div className="rd-sessions-schedule">
-            <div className="rd-section-header font-mono">
-              <CalendarIcon size={13} color="var(--color-primary)" />
-              <span>WEEKEND SESSION SCHEDULE</span>
-            </div>
-            <div className="sessions-list font-mono">
-              {sessions.map((sess, idx) => (
-                <div key={idx} className={`session-row ${sess.status}`}>
-                  <div className="sess-left">
-                    <span className="sess-name">{sess.name.toUpperCase()}</span>
-                    <span className="sess-date">{sess.displayDate} • {sess.displayTime}</span>
-                  </div>
-                  <span className={`sess-status-badge ${sess.status}`}>
-                    {sess.status.toUpperCase()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
       )}
     </div>
   );
