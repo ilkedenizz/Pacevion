@@ -1,4 +1,4 @@
-﻿import type { ResultRace, QualifyingRace, DriverStanding } from '../api/types';
+import type { ResultRace, QualifyingRace, DriverStanding } from '../api/types';
 
 export interface DriverForm {
   raceName: string;
@@ -18,7 +18,7 @@ export interface DriverTeammateComparison {
   teammateQualyWins: number;
 }
 
-export function getDriverForm(driverId: string, races: ResultRace[] | undefined, limit: number = 5): DriverForm[] {
+export function getDriverForm(driverId: string, races: ResultRace[] | undefined, limit?: number): DriverForm[] {
   if (!races) return [];
   
   const forms: DriverForm[] = [];
@@ -35,8 +35,8 @@ export function getDriverForm(driverId: string, races: ResultRace[] | undefined,
     }
   }
 
-  // return the last `limit` races
-  return forms.slice(-limit);
+  // return the last `limit` races if provided
+  return limit ? forms.slice(-limit) : forms;
 }
 
 export function getDriverStatsAggr(driverId: string, races: ResultRace[] | undefined) {

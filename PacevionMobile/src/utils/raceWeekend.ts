@@ -49,7 +49,7 @@ export function getNextSession(races: Race[], now: Date = new Date()): NextSessi
   if (upcomingRaces.length === 0) return null;
 
   const race = upcomingRaces[0];
-  const isSprint = !!race.Sprint;
+  const isSprint = !!race.Sprint?.date;
 
   const sessions: { name: string; date: Date }[] = [];
 
@@ -147,7 +147,7 @@ export interface WeekendSessionItem {
 }
 
 export function getWeekendSessions(race: Race, now: Date = new Date()): WeekendSessionItem[] {
-  const isSprint = !!race.Sprint;
+  const isSprint = !!race.Sprint?.date;
   const sessions: { name: string; date: Date; timeStr: string }[] = [];
 
   const addSess = (name: string, dateStr?: string, timeStr?: string) => {
@@ -198,6 +198,175 @@ export function getWeekendSessions(race: Race, now: Date = new Date()): WeekendS
       status
     };
   });
+}
+
+// ==========================================
+// RACE STATE ENGINE
+// ==========================================
+
+export type SessionType = 'PRACTICE' | 'QUALIFYING' | 'SPRINT' | 'RACE';
+
+export interface SessionInfo {
+  name: string;
+  shortName: string;
+  type: SessionType;
+  date: Date;
+  endDate: Date;
+}
+
+export type RaceStateStatus = 
+  | 'NO_RACE_WEEKEND'
+  | 'UPCOMING_WEEKEND'
+  | 'ACTIVE_SESSION'
+  | 'WAITING_FOR_SESSION'
+  | 'POST_RACE';
+
+export interface CurrentRaceState {
+  status: RaceStateStatus;
+  race: Race | null;
+  nextRace: Race | null;
+  activeSession: SessionInfo | null;
+  nextSession: SessionInfo | null;
+  lastCompletedSession: SessionInfo | null;
+  allSessions: SessionInfo[];
+}
+
+export function parseSessionDateSecure(dateStr?: string, timeStr?: string): Date | null {
+  if (!dateStr) return null;
+  const time = timeStr ? timeStr.replace('Z', '') : '00:00:00';
+  const d = new Date(`${dateStr}T${time}Z`);
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+
+export function buildSessionsForRace(race: Race): SessionInfo[] {
+  const sessions: SessionInfo[] = [];
+  const isSprint = !!race.Sprint?.date;
+
+  const add = (name: string, short: string, type: SessionType, d?: string, t?: string, durationMins: number = 60) => {
+    const date = parseSessionDateSecure(d, t);
+    if (date) {
+      sessions.push({
+        name,
+        shortName: short,
+        type,
+        date,
+        endDate: new Date(date.getTime() + durationMins * 60000)
+      });
+    }
+  };
+
+  add('Practice 1', 'FP1', 'PRACTICE', race.FirstPractice?.date, race.FirstPractice?.time, 60);
+
+  if (isSprint) {
+    add('Sprint Shootout', 'SQ', 'QUALIFYING', race.SprintQualifying?.date, race.SprintQualifying?.time, 45);
+    add('Sprint', 'SPRINT', 'SPRINT', race.Sprint?.date, race.Sprint?.time, 60);
+    add('Qualifying', 'QUALIFYING', 'QUALIFYING', race.Qualifying?.date, race.Qualifying?.time, 60);
+  } else {
+    add('Practice 2', 'FP2', 'PRACTICE', race.SecondPractice?.date, race.SecondPractice?.time, 60);
+    add('Practice 3', 'FP3', 'PRACTICE', race.ThirdPractice?.date, race.ThirdPractice?.time, 60);
+    add('Qualifying', 'QUALIFYING', 'QUALIFYING', race.Qualifying?.date, race.Qualifying?.time, 60);
+  }
+
+  add('Race', 'RACE', 'RACE', race.date, race.time, 120);
+
+  // Sort chronologically
+  sessions.sort((a, b) => a.date.getTime() - b.date.getTime());
+  return sessions;
+}
+
+export function isWeekendCompleted(race: Race, now: Date = new Date()): boolean {
+  const sessions = buildSessionsForRace(race);
+  if (sessions.length === 0) return false;
+  return sessions.every(s => now > s.endDate);
+}
+
+export function getCurrentRaceState(calendar: Race[], now: Date = new Date()): CurrentRaceState {
+  if (!calendar || calendar.length === 0) {
+    return { status: 'NO_RACE_WEEKEND', race: null, activeSession: null, nextSession: null, lastCompletedSession: null, allSessions: [], nextRace: null };
+  }
+
+  let targetRace: Race | null = null;
+  
+  for (const race of calendar) {
+    const sessions = buildSessionsForRace(race);
+    if (sessions.length === 0) continue;
+
+    const firstSession = sessions[0];
+    const lastSession = sessions[sessions.length - 1];
+
+    const weekendStart = new Date(firstSession.date.getTime() - 2 * 24 * 60 * 60 * 1000); // 2 days before FP1
+    const weekendEnd = new Date(lastSession.endDate.getTime() + 24 * 60 * 60 * 1000); // 1 day after Race
+
+    if (now >= weekendStart && now <= weekendEnd) {
+      targetRace = race;
+      break;
+    }
+  }
+
+  if (!targetRace) {
+    targetRace = calendar.find(r => {
+      const sessions = buildSessionsForRace(r);
+      if (sessions.length === 0) return false;
+      return sessions[sessions.length - 1].endDate > now;
+    }) || calendar[calendar.length - 1];
+  }
+
+  const allSessions = buildSessionsForRace(targetRace);
+  if (allSessions.length === 0) {
+    return { status: 'NO_RACE_WEEKEND', race: targetRace, activeSession: null, nextSession: null, lastCompletedSession: null, allSessions: [], nextRace: null };
+  }
+
+  const first = allSessions[0];
+  const last = allSessions[allSessions.length - 1];
+
+  let activeSession: SessionInfo | null = null;
+  let nextSession: SessionInfo | null = null;
+  let lastCompleted: SessionInfo | null = null;
+
+  for (let i = 0; i < allSessions.length; i++) {
+    const s = allSessions[i];
+    if (now >= s.date && now <= s.endDate) {
+      activeSession = s;
+    } else if (now > s.endDate) {
+      lastCompleted = s;
+    } else if (now < s.date && !nextSession) {
+      nextSession = s;
+    }
+  }
+
+  let status: RaceStateStatus = 'NO_RACE_WEEKEND';
+
+  if (now > last.endDate) {
+    status = 'POST_RACE';
+  } else if (now < first.date) {
+    const hoursToFirst = (first.date.getTime() - now.getTime()) / 3600000;
+    if (hoursToFirst < 72) {
+      status = 'UPCOMING_WEEKEND';
+    } else {
+      status = 'NO_RACE_WEEKEND';
+    }
+  } else if (activeSession) {
+    status = 'ACTIVE_SESSION';
+  } else if (nextSession) {
+    status = 'WAITING_FOR_SESSION';
+  }
+
+  const nextRace = calendar.find(r => {
+    const sessions = buildSessionsForRace(r);
+    if (sessions.length === 0) return false;
+    return sessions[sessions.length - 1].endDate > now;
+  }) || null;
+
+  return {
+    status,
+    race: targetRace,
+    nextRace,
+    activeSession,
+    nextSession,
+    lastCompletedSession: lastCompleted,
+    allSessions
+  };
 }
 
 

@@ -220,10 +220,19 @@ export const NotificationSettings: React.FC = () => {
           <h2 className="ns-group-title font-mono">REMINDER TIME</h2>
           <div className="ns-time-options">
             <button 
+              className={`ns-time-btn font-mono ${prefs.reminderMinutes === 5 ? 'active' : ''}`}
+              onClick={() => handleTimeChange(5)}
+              disabled={isSyncing}
+            >
+              {prefs.reminderMinutes === 5 && <span style={{ marginRight: '4px' }}>✓</span>}
+              5 MIN
+            </button>
+            <button 
               className={`ns-time-btn font-mono ${prefs.reminderMinutes === 15 ? 'active' : ''}`}
               onClick={() => handleTimeChange(15)}
               disabled={isSyncing}
             >
+              {prefs.reminderMinutes === 15 && <span style={{ marginRight: '4px' }}>✓</span>}
               15 MIN
             </button>
             <button 
@@ -231,6 +240,7 @@ export const NotificationSettings: React.FC = () => {
               onClick={() => handleTimeChange(30)}
               disabled={isSyncing}
             >
+              {prefs.reminderMinutes === 30 && <span style={{ marginRight: '4px' }}>✓</span>}
               30 MIN
             </button>
             <button 
@@ -238,6 +248,7 @@ export const NotificationSettings: React.FC = () => {
               onClick={() => handleTimeChange(60)}
               disabled={isSyncing}
             >
+              {prefs.reminderMinutes === 60 && <span style={{ marginRight: '4px' }}>✓</span>}
               1 HOUR
             </button>
           </div>

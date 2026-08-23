@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
-import { formatRaceDateRange, getCountryFlag } from '../utils/raceWeekend';
+import { formatRaceDateRange, getCountryFlag, isWeekendCompleted } from '../utils/raceWeekend';
 import CircuitTrack from '../components/common/CircuitTrack';
 import { ChevronRight, Flag } from 'lucide-react';
 
@@ -9,11 +9,6 @@ import type { Race } from '../api/types';
 import './Calendar.css';
 
 type FilterType = 'all' | 'upcoming' | 'completed' | 'sprint';
-
-const parseRaceDate = (dateStr: string, timeStr?: string): Date => {
-  const time = timeStr ? timeStr.replace('Z', '') : '15:00:00';
-  return new Date(`${dateStr}T${time}Z`);
-};
 
 export const Calendar: React.FC = () => {
   const navigate = useNavigate();
@@ -26,13 +21,13 @@ export const Calendar: React.FC = () => {
 
   const nextRace = useMemo(() => {
     if (races.length === 0) return null;
-    return races.find(r => parseRaceDate(r.date, r.time) > now) || null;
+    return races.find(r => !isWeekendCompleted(r, now)) || null;
   }, [races, now]);
 
   const filteredRaces = useMemo(() => {
     return races.filter(race => {
-      const isSprint = !!race.Sprint;
-      const isPast = parseRaceDate(race.date, race.time) <= now;
+      const isSprint = !!race.Sprint?.date;
+      const isPast = isWeekendCompleted(race, now);
       const isFuture = !isPast;
 
       if (filter === 'upcoming') return isFuture;
@@ -121,7 +116,7 @@ export const Calendar: React.FC = () => {
           >
             <div className="ch-top">
               <div className="ch-round-badge font-mono">ROUND {String(nextRace.round).padStart(2, '0')}</div>
-              {nextRace.Sprint && <div className="ch-sprint-badge font-mono">SPRINT WEEKEND</div>}
+              {nextRace.Sprint?.date && <div className="ch-sprint-badge font-mono">SPRINT WEEKEND</div>}
               <div className="ch-status-tag font-mono">NEXT RACE</div>
             </div>
             <div className="ch-body">
@@ -174,8 +169,8 @@ export const Calendar: React.FC = () => {
           <div className="cal-list">
             {filteredRaces.map((race: Race) => {
               const isNext = nextRace && nextRace.round === race.round;
-              const isPast = parseRaceDate(race.date, race.time) <= now;
-              const isSprint = !!race.Sprint;
+              const isPast = isWeekendCompleted(race, now);
+              const isSprint = !!race.Sprint?.date;
               const flag = getCountryFlag(race.Circuit?.Location?.country, race.Circuit?.Location?.locality);
               const dateRange = formatRaceDateRange(race);
 
@@ -205,6 +200,16 @@ export const Calendar: React.FC = () => {
                       <span className="cal-date-text">{dateRange}</span>
                       {isSprint && <span className="cal-sprint-pill font-mono">SPRINT</span>}
                     </div>
+                  </div>
+
+                  <div className="cal-track-preview" style={{ width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, opacity: 0.8 }}>
+                    <CircuitTrack 
+                      circuitId={race.Circuit?.circuitId || ''} 
+                      circuitName={race.Circuit?.circuitName || ''}
+                      country={race.Circuit?.Location?.country || ''}
+                      raceName={race.raceName}
+                      variant="compact" 
+                    />
                   </div>
 
                   {/* Right: Status / Arrow */}

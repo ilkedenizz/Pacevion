@@ -24,7 +24,7 @@ export const RaceDetails: React.FC = () => {
     return calendar.find((r) => r.round === round) || null;
   }, [calendar, round]);
 
-  const isSprint = !!raceInfo?.Sprint;
+  const isSprint = !!raceInfo?.Sprint?.date;
 
   const { data: sprintResults, isLoading: sprintLoading } = useSprintResults(season, round, isSprint);
 
@@ -253,7 +253,7 @@ export const RaceDetails: React.FC = () => {
           <span className={`rd-status-tag ${isCompleted ? 'completed' : 'upcoming'}`}>
             {isCompleted ? 'COMPLETED' : 'UPCOMING'}
           </span>
-          {raceInfo.Sprint && (
+          {raceInfo.Sprint?.date && (
             <span className="rd-sprint-tag">SPRINT WEEKEND</span>
           )}
         </div>
@@ -488,7 +488,7 @@ export const RaceDetails: React.FC = () => {
                         const gridPos = parseInt(result.grid);
                         const posGain = gridPos > 0 ? gridPos - posNum : 0;
 
-                        let displayTime = '—';
+                        let displayTime: React.ReactNode = '—';
                         const statusVal = result.status || '';
                         const timeStr = result.Time?.time;
 
@@ -496,10 +496,21 @@ export const RaceDetails: React.FC = () => {
                           displayTime = timeStr || 'WINNER';
                         } else if (timeStr) {
                           displayTime = timeStr;
+                        } else if (/lap/i.test(statusVal) || /^\+/.test(statusVal)) {
+                          displayTime = statusVal;
                         } else if (statusVal === 'Finished') {
                           displayTime = 'FINISHED';
                         } else {
-                          displayTime = statusVal || 'DNF';
+                          if (result.laps && parseInt(result.laps, 10) > 0) {
+                            displayTime = (
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2 }}>
+                                <span style={{ color: 'var(--color-primary)' }}>RET</span>
+                                <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)' }}>Lap {result.laps} — {statusVal}</span>
+                              </div>
+                            );
+                          } else {
+                            displayTime = <span style={{ color: 'var(--color-primary)' }}>RET — {statusVal || 'DNF'}</span>;
+                          }
                         }
 
                         return (
@@ -693,7 +704,7 @@ export const RaceDetails: React.FC = () => {
                       const gridPos = parseInt(result.grid);
                       const posGain = gridPos > 0 ? gridPos - posNum : 0;
 
-                      let displayTime = '—';
+                      let displayTime: React.ReactNode = '—';
                       const status = result.status || '';
                       const timeStr = result.Time?.time;
 
@@ -706,7 +717,16 @@ export const RaceDetails: React.FC = () => {
                       } else if (status === 'Finished') {
                         displayTime = 'FINISHED';
                       } else {
-                        displayTime = status || 'DNF';
+                        if (result.laps && parseInt(result.laps, 10) > 0) {
+                          displayTime = (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2 }}>
+                              <span style={{ color: 'var(--color-primary)' }}>RET</span>
+                              <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)' }}>Lap {result.laps} — {status}</span>
+                            </div>
+                          );
+                        } else {
+                          displayTime = <span style={{ color: 'var(--color-primary)' }}>RET — {status || 'DNF'}</span>;
+                        }
                       }
 
                       return (

@@ -45,7 +45,7 @@
   --safe-area-top: env(safe-area-inset-top, 0px);
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --page-horizontal-padding: 16px;
-  --page-bottom-spacing: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + 16px);
+  --page-bottom-spacing: 24px;
 }
 
 *, *::before, *::after {

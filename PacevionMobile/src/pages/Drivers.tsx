@@ -77,7 +77,7 @@ export const Drivers: React.FC = () => {
   }, [activeDriverId, allResults, allQualifying, isQualifyingError]);
 
   const dStatsAggr = useMemo(() => activeDriverId && allResults ? getDriverStatsAggr(activeDriverId, allResults) : { bestFinish: null, avgFinish: null }, [activeDriverId, allResults]);
-  const dForm = useMemo(() => activeDriverId && allResults ? getDriverForm(activeDriverId, allResults, 8) : [], [activeDriverId, allResults]);
+  const dForm = useMemo(() => activeDriverId && allResults ? getDriverForm(activeDriverId, allResults) : [], [activeDriverId, allResults]);
   const teammateComp = useMemo(() => {
     if (!activeDriverId || !activeDriver || !allResults) return null;
     return getTeammateComparison(activeDriverId, activeDriver.Constructors[0]?.constructorId, standings, allResults, allQualifying);

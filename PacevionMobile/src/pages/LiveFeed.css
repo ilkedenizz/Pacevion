@@ -15,20 +15,38 @@
 .lh-top {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .lh-left {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
 
 .live-title {
   font-size: 24px;
   letter-spacing: 0.06em;
   color: var(--color-text-primary);
-  line-height: 1;
+  line-height: 1.1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 390px) {
+  .live-title {
+    font-size: 20px;
+  }
+}
+
+.lh-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .live-subtitle {

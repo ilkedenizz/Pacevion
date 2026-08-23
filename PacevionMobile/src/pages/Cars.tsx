@@ -78,7 +78,7 @@ export const Cars: React.FC = () => {
         <div className="ch-left">
           <h1 className="ch-title font-heading editorial-headline">2026 CONSTRUCTORS</h1>
           <span className="ch-subtitle font-mono">
-            {standings.length} TEAMS • 20 DRIVERS • 10 POWER UNITS
+            {standings.length} TEAMS • {driverStandings?.length || 20} DRIVERS • {new Set(standings.map(t => getTeamDetails(t.Constructor.constructorId).powerUnit)).size || 4} POWER UNITS
           </span>
         </div>
 

@@ -527,14 +527,21 @@
 .form-chart-bars {
   display: flex;
   align-items: flex-end;
-  justify-content: space-between;
   height: 80px;
-  gap: 4px;
+  gap: 8px;
   padding-top: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  /* Hide scrollbar for a cleaner look while maintaining scroll */
+  scrollbar-width: none;
+}
+.form-chart-bars::-webkit-scrollbar {
+  display: none;
 }
 
 .form-bar-col {
-  flex: 1;
+  flex: 0 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;

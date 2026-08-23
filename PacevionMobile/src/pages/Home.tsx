@@ -1,116 +1,71 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  useCalendar, 
   useDriverStandings, 
   useConstructorStandings, 
-  useLatestRaceResults 
+  useRaceResults
 } from '../hooks/useF1Data';
+import { useRaceState } from '../hooks/useRaceState';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import { getCircuitDetails } from '../data/circuitData';
 import { HomeCountdown } from '../components/common/HomeCountdown';
-import { getNextSession, formatRaceDateRange, getCountryFlag } from '../utils/raceWeekend';
+import { formatRaceDateRange, getCountryFlag, parseSessionDateSecure, isWeekendCompleted } from '../utils/raceWeekend';
 import CircuitTrack from '../components/common/CircuitTrack';
 import { ChevronRight, Calendar, Radio, Trophy, CheckCircle2, Clock } from 'lucide-react';
 import './Home.css';
 
-
-interface WeekendSession {
-  name: string;
-  shortName: string;
-  date: Date;
-  status: 'completed' | 'current' | 'upcoming';
-}
-
-const parseSessionDate = (d?: string, t?: string): Date | null => {
-  if (!d) return null;
-  const time = t ? t.replace('Z', '') : '00:00:00';
-  return new Date(`${d}T${time}Z`);
-};
-
 export const Home: React.FC = () => {
-  const { data: calendar, isLoading: isCalendarLoading, isError: isCalendarError, refetch: refetchCalendar } = useCalendar('2026');
+  const { calendar, isLoading: isCalendarLoading, isError: isCalendarError, now, raceState, refetchCalendar } = useRaceState();
   const { data: standings, isLoading: isStandingsLoading, isError: isStandingsError, refetch: refetchStandings } = useDriverStandings('2026');
   const { data: constructors } = useConstructorStandings('2026');
-  const { data: latestRace } = useLatestRaceResults();
   const navigate = useNavigate();
 
-  const now = useMemo(() => new Date(), []);
+  // If the current weekend is POST_RACE (all sessions done but within 24h), the "next" race for Home is the nextRace
+  const isPostRace = raceState?.status === 'POST_RACE';
+  const nextRace = isPostRace ? raceState?.nextRace : raceState?.race;
+  const nextSessionInfo = isPostRace 
+    ? (raceState?.nextRace ? { name: 'Practice 1', date: parseSessionDateSecure(raceState.nextRace.FirstPractice?.date, raceState.nextRace.FirstPractice?.time) || new Date() } : null) 
+    : (raceState?.activeSession || raceState?.nextSession);
 
-  const nextRace = useMemo(() => {
-    if (!calendar || !Array.isArray(calendar) || calendar.length === 0) return null;
-    const upcoming = calendar.find(r => {
-      const raceDate = parseSessionDate(r.date, r.time);
-      return raceDate && raceDate > now;
-    });
-    return upcoming || calendar[calendar.length - 1];
-  }, [calendar, now]);
-
-  const nextSessionInfo = useMemo(() => {
-    return calendar ? getNextSession(calendar, now) : null;
-  }, [calendar, now]);
-
-  const weekendSessions = useMemo((): WeekendSession[] => {
-    if (!nextRace) return [];
-    const list: { name: string; shortName: string; date: Date }[] = [];
-
-    const fp1 = parseSessionDate(nextRace.FirstPractice?.date, nextRace.FirstPractice?.time);
-    if (fp1) list.push({ name: 'Practice 1', shortName: 'FP1', date: fp1 });
-
-    if (nextRace.Sprint) {
-      const sq = parseSessionDate(nextRace.SprintQualifying?.date, nextRace.SprintQualifying?.time);
-      if (sq) list.push({ name: 'Sprint Qualifying', shortName: 'SQ', date: sq });
-      const sprint = parseSessionDate(nextRace.Sprint?.date, nextRace.Sprint?.time);
-      if (sprint) list.push({ name: 'Sprint Race', shortName: 'SPRINT', date: sprint });
-      const qual = parseSessionDate(nextRace.Qualifying?.date, nextRace.Qualifying?.time);
-      if (qual) list.push({ name: 'Qualifying', shortName: 'QUALIFYING', date: qual });
-    } else {
-      const fp2 = parseSessionDate(nextRace.SecondPractice?.date, nextRace.SecondPractice?.time);
-      if (fp2) list.push({ name: 'Practice 2', shortName: 'FP2', date: fp2 });
-      const fp3 = parseSessionDate(nextRace.ThirdPractice?.date, nextRace.ThirdPractice?.time);
-      if (fp3) list.push({ name: 'Practice 3', shortName: 'FP3', date: fp3 });
-      const qual = parseSessionDate(nextRace.Qualifying?.date, nextRace.Qualifying?.time);
-      if (qual) list.push({ name: 'Qualifying', shortName: 'QUALIFYING', date: qual });
-    }
-
-    const mainRaceDate = parseSessionDate(nextRace.date, nextRace.time);
-    if (mainRaceDate) list.push({ name: 'Grand Prix', shortName: 'GRAND PRIX', date: mainRaceDate });
-
-    list.sort((a, b) => a.date.getTime() - b.date.getTime());
+  const weekendSessions = useMemo(() => {
+    if (!raceState) return [];
+    
+    // If we shifted focus to nextRace, don't show the old race's weekend sessions
+    if (isPostRace) return [];
 
     let foundActive = false;
-    return list.map(s => {
-      if (s.date < now) {
-        return { ...s, status: 'completed' as const };
-      }
-      if (!foundActive) {
+    return raceState.allSessions.map(s => {
+      let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+      if (now > s.endDate) {
+        status = 'completed';
+      } else if (now >= s.date && now <= s.endDate) {
         foundActive = true;
-        return { ...s, status: 'current' as const };
+        status = 'current';
+      } else if (!foundActive && now > s.date) {
+         status = 'completed';
       }
-      return { ...s, status: 'upcoming' as const };
+      return { ...s, status };
     });
-  }, [nextRace, now]);
+  }, [raceState, now, isPostRace]);
 
   const upcomingRaces = useMemo(() => {
     if (!calendar || calendar.length === 0) return [];
     return calendar.filter(r => {
-      const rDate = parseSessionDate(r.date, r.time);
+      const rDate = parseSessionDateSecure(r.date, r.time);
       return rDate && rDate > now && nextRace && r.round !== nextRace.round;
     }).slice(0, 3);
   }, [calendar, now, nextRace]);
 
   const totalRaces = calendar?.length || 24;
-  const completedRaces = useMemo(() => {
-    if (!calendar) return 0;
-    return calendar.filter(r => {
-      const rDate = parseSessionDate(r.date, r.time);
-      return rDate && rDate <= now;
-    }).length;
+  const completedRacesList = useMemo(() => {
+    if (!calendar) return [];
+    return calendar.filter(r => isWeekendCompleted(r, now));
   }, [calendar, now]);
+  const completedRaces = completedRacesList.length;
+  const lastCompletedRace = completedRacesList.length > 0 ? completedRacesList[completedRacesList.length - 1] : null;
 
   const remainingRaces = Math.max(0, totalRaces - completedRaces);
-
   const leaderDriver = standings && standings.length > 0 ? standings[0] : null;
   const runnerUpDriver = standings && standings.length > 1 ? standings[1] : null;
   const driverLeadPts = (leaderDriver && runnerUpDriver)
@@ -119,6 +74,22 @@ export const Home: React.FC = () => {
 
   const leaderConstructor = constructors && constructors.length > 0 ? constructors[0] : null;
   const topTeamDetail = leaderConstructor ? getTeamDetails(leaderConstructor.Constructor.constructorId) : null;
+
+  const targetSeason = raceState?.race?.season || '2026';
+  const targetRound = raceState?.race?.round || '1';
+  const isWeekendActive = raceState?.status && raceState.status !== 'NO_RACE_WEEKEND' && raceState.status !== 'UPCOMING_WEEKEND';
+  
+  const { data: currentRaceAPI } = useRaceResults(targetSeason, targetRound, isWeekendActive);
+  const { data: previousRaceAPI } = useRaceResults(lastCompletedRace?.season || '2026', lastCompletedRace?.round || '0', !isWeekendActive && !!lastCompletedRace);
+
+  let podiumData = null;
+  if (!isWeekendActive) {
+    if (previousRaceAPI && previousRaceAPI.Results && previousRaceAPI.Results.length > 0) {
+      podiumData = previousRaceAPI;
+    }
+  } else if (currentRaceAPI && currentRaceAPI.Results && currentRaceAPI.Results.length > 0) {
+    podiumData = currentRaceAPI;
+  }
 
   if (isCalendarError || isStandingsError) {
     return (
@@ -154,9 +125,9 @@ export const Home: React.FC = () => {
   const cInfo = getCircuitDetails(circuitId);
   const flagEmoji = getCountryFlag(nextRace.Circuit?.Location?.country, nextRace.Circuit?.Location?.locality);
 
-  const p1 = latestRace?.Results?.[0];
-  const p2 = latestRace?.Results?.[1];
-  const p3 = latestRace?.Results?.[2];
+  const p1 = podiumData?.Results?.[0];
+  const p2 = podiumData?.Results?.[1];
+  const p3 = podiumData?.Results?.[2];
 
   return (
     <div className="page home-page fade-in">
@@ -182,7 +153,7 @@ export const Home: React.FC = () => {
             <span className="hero-session-tag font-mono">
               NEXT GRAND PRIX • ROUND {String(nextRace.round || '1').padStart(2, '0')}
             </span>
-            {nextRace.Sprint && (
+            {nextRace.Sprint?.date && (
               <span className="hero-sprint-badge font-mono">SPRINT</span>
             )}
           </div>
@@ -198,9 +169,9 @@ export const Home: React.FC = () => {
         {nextSessionInfo && (
           <div className="hero-countdown-wrapper">
             <div className="hc-target-label font-mono">
-              COUNTDOWN TO {nextSessionInfo.sessionName.toUpperCase()}
+              COUNTDOWN TO {nextSessionInfo.name.toUpperCase()}
             </div>
-            <HomeCountdown targetDate={nextSessionInfo.sessionDate.toISOString()} />
+            <HomeCountdown targetDate={nextSessionInfo.date.toISOString()} />
           </div>
         )}
 
@@ -269,12 +240,12 @@ export const Home: React.FC = () => {
         </section>
       )}
 
-      {latestRace && (p1 || p2 || p3) && (
+      {podiumData && (p1 || p2 || p3) && (
         <section className="dashboard-module podium-module">
           <div className="module-header">
             <Trophy size={14} color="var(--color-primary)" />
             <span className="editorial-label">
-              LAST RACE PODIUM • {latestRace.raceName?.toUpperCase() || 'GRAND PRIX'}
+              LAST RACE PODIUM • {podiumData.raceName?.toUpperCase() || 'GRAND PRIX'}
             </span>
           </div>
           <div className="podium-grid">

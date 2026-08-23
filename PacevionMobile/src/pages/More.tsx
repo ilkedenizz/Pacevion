@@ -14,10 +14,14 @@ import {
   Zap,
   Bell
 } from 'lucide-react';
+import { useDriverStandings, useConstructorStandings, useCalendar } from '../hooks/useF1Data';
 import './More.css';
 
 export const More: React.FC = () => {
   const navigate = useNavigate();
+  const { data: drivers } = useDriverStandings('2026');
+  const { data: constructors } = useConstructorStandings('2026');
+  const { data: calendar } = useCalendar('2026');
 
   return (
     <div className="page more-page fade-in">
@@ -46,7 +50,7 @@ export const More: React.FC = () => {
             <div className="mi-icon"><Users size={16} color="var(--color-primary)" /></div>
             <div className="mi-content">
               <span className="mi-title font-heading">2026 DRIVERS LINEUP</span>
-              <span className="mi-desc font-mono">20 Drivers • Stats & H2H Battles</span>
+              <span className="mi-desc font-mono">{drivers?.length || 20} Drivers • Stats & H2H Battles</span>
             </div>
             <ChevronRight size={14} className="mi-arrow" />
           </div>
@@ -60,7 +64,7 @@ export const More: React.FC = () => {
             <div className="mi-icon"><Car size={16} color="var(--color-primary)" /></div>
             <div className="mi-content">
               <span className="mi-title font-heading">CONSTRUCTORS & CARS</span>
-              <span className="mi-desc font-mono">10 Teams • Chassis & Power Units</span>
+              <span className="mi-desc font-mono">{constructors?.length || 10} Teams • Chassis & Power Units</span>
             </div>
             <ChevronRight size={14} className="mi-arrow" />
           </div>
@@ -88,7 +92,7 @@ export const More: React.FC = () => {
             <div className="mi-icon"><Calendar size={16} color="var(--color-text-secondary)" /></div>
             <div className="mi-content">
               <span className="mi-title font-heading">RACE CALENDAR</span>
-              <span className="mi-desc font-mono">24 Grand Prix Timetable</span>
+              <span className="mi-desc font-mono">{calendar?.length || 24} Grand Prix Timetable</span>
             </div>
             <ChevronRight size={14} className="mi-arrow" />
           </div>

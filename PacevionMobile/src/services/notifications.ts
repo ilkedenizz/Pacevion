@@ -105,7 +105,7 @@ export class NotificationService {
           }
         }
 
-        const isSprint = !!race.Sprint;
+        const isSprint = !!race.Sprint?.date;
 
         // QUALIFYING
         if (prefs.qualifyingReminderEnabled && race.Qualifying?.date) {

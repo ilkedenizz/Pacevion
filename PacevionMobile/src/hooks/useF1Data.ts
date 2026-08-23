@@ -66,19 +66,22 @@ export const useConstructorStandingsWithPrevious = (year: string | number = 'cur
   });
 };
 
-export const useRaceResults = (season: string | number, round: string | number) => {
+export const useRaceResults = (season: string | number, round: string | number, enabled: boolean = true, pollingInterval: number | null = null) => {
   return useQuery({
     queryKey: ['raceResults', season, round],
     queryFn: () => getRaceResults(season, round),
-    enabled: !!season && !!round,
+    enabled: !!season && !!round && enabled,
+    refetchInterval: pollingInterval || false,
+    staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
   });
 };
 
-export const useLatestRaceResults = () => {
+export const useLatestRaceResults = (pollingInterval: number | null = null) => {
   return useQuery({
     queryKey: ['latest-race-results'],
     queryFn: () => getLatestRaceResults(),
-    staleTime: 1000 * 60 * 5,
+    refetchInterval: pollingInterval || false,
+    staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
   });
 };
 
@@ -98,18 +101,22 @@ export const useAllSeasonQualifying = (season: string | number) => {
   });
 };
 
-export const useQualifyingResults = (season: string | number, round: string | number) => {
+export const useQualifyingResults = (season: string | number, round: string | number, enabled: boolean = true, pollingInterval: number | null = null) => {
   return useQuery({
     queryKey: ['qualifyingResults', season, round],
     queryFn: () => getQualifyingResults(season, round),
-    enabled: !!season && !!round,
+    enabled: !!season && !!round && enabled,
+    refetchInterval: pollingInterval || false,
+    staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
   });
 };
 
-export const useSprintResults = (season: string | number, round: string | number, isSprint: boolean) => {
+export const useSprintResults = (season: string | number, round: string | number, isSprint: boolean, pollingInterval: number | null = null) => {
   return useQuery({
     queryKey: ['sprintResults', season, round],
     queryFn: () => getSprintResults(season, round),
     enabled: !!season && !!round && isSprint,
+    refetchInterval: pollingInterval || false,
+    staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
   });
 };
