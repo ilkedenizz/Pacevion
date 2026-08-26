@@ -338,20 +338,17 @@
 /* Classification Section */
 .rd-classification-section,
 .rd-upcoming-section {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
   min-height: 320px;
   width: 100%;
   min-width: 0;
+  border-top: 1px solid var(--color-border);
 }
 
 .rd-table-header {
   display: grid;
-  grid-template-columns: 32px 1fr 90px 48px 40px;
+  grid-template-columns: 32px 1fr 90px 40px;
   padding: 6px 10px;
   background: var(--color-surface-elevated);
   border-bottom: 1px solid var(--color-border-subtle);
@@ -364,7 +361,7 @@
 
 @media (max-width: 360px) {
   .rd-table-header {
-    grid-template-columns: 28px 1fr 75px 40px 36px;
+    grid-template-columns: 28px 1fr 75px 36px;
     padding: 6px 6px;
   }
 }
@@ -376,7 +373,7 @@
 
 .rd-table-row {
   display: grid;
-  grid-template-columns: 32px 1fr 90px 48px 40px;
+  grid-template-columns: 32px 1fr 90px 40px;
   padding: 7px 10px;
   border-bottom: 1px solid var(--color-border-subtle);
   align-items: center;
@@ -384,7 +381,7 @@
 
 @media (max-width: 360px) {
   .rd-table-row {
-    grid-template-columns: 28px 1fr 75px 40px 36px;
+    grid-template-columns: 28px 1fr 75px 36px;
     padding: 6px 6px;
   }
 }
@@ -400,21 +397,18 @@
 .rd-col-pos {
   display: flex;
   align-items: center;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 11px;
+  color: var(--color-text-secondary);
 }
 
 .rd-col-driver {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 0;
   min-width: 0;
   padding-right: 4px;
-}
-
-.rd-driver-stripe {
-  width: 3px;
-  height: 22px;
-  border-radius: 2px;
-  flex-shrink: 0;
 }
 
 .rd-driver-meta {
@@ -435,19 +429,21 @@
 }
 
 .rd-team-name {
-  font-size: 7px;
+  font-size: 8px;
   color: var(--color-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top: 2px;
 }
 
 .rd-col-time {
   display: flex;
   align-items: center;
-  font-size: 9px;
-  font-weight: 700;
-  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
