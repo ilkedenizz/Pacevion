@@ -44,6 +44,13 @@ function NavigationHandler() {
     const rootPaths = ['/', '/standings', '/live', '/drivers', '/cars', '/more', '/calendar'];
 
     const backListener = CapApp.addListener('backButton', () => {
+      const customEvent = new CustomEvent('pacevion:hardwareBack', { cancelable: true });
+      window.dispatchEvent(customEvent);
+      
+      if (customEvent.defaultPrevented) {
+        return;
+      }
+
       if (!rootPaths.includes(pathname)) {
         navigate(-1);
       } else {

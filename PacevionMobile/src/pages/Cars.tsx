@@ -21,6 +21,20 @@ export const Cars: React.FC = () => {
     }
   }, [standings, selectedId]);
 
+  useEffect(() => {
+    if (viewMode === 'detail') {
+      const handleHardwareBack = (e: Event) => {
+        e.preventDefault();
+        setViewMode('lineup');
+      };
+      
+      window.addEventListener('pacevion:hardwareBack', handleHardwareBack);
+      return () => {
+        window.removeEventListener('pacevion:hardwareBack', handleHardwareBack);
+      };
+    }
+  }, [viewMode]);
+
   const selectTeam = (constructorId: string) => {
     setSelectedId(constructorId);
     setViewMode('detail');

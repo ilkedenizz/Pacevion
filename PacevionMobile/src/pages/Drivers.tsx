@@ -24,6 +24,20 @@ export const Drivers: React.FC = () => {
     }
   }, [state]);
 
+  useEffect(() => {
+    if (viewMode === 'profile') {
+      const handleHardwareBack = (e: Event) => {
+        e.preventDefault();
+        setViewMode('lineup');
+      };
+      
+      window.addEventListener('pacevion:hardwareBack', handleHardwareBack);
+      return () => {
+        window.removeEventListener('pacevion:hardwareBack', handleHardwareBack);
+      };
+    }
+  }, [viewMode]);
+
   const selectDriver = (driverId: string) => {
     setSelectedId(driverId);
     setViewMode('profile');
