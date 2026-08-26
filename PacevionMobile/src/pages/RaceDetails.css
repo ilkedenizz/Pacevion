@@ -106,15 +106,16 @@
 }
 
 .rd-race-name {
-  font-size: 22px;
-  line-height: 1.1;
+  font-size: 26px;
+  line-height: 1;
   color: var(--color-text-primary);
-  letter-spacing: 0.04em;
+  letter-spacing: 0.02em;
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
   word-break: break-word;
+  font-weight: 900;
 }
 
 .rd-flag {

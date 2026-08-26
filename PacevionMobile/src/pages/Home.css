@@ -148,10 +148,13 @@
 .hero-race-name {
   font-size: 28px;
   line-height: 1.05;
-  letter-spacing: 0.04em;
   color: #fff;
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
   font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .hero-race-loc {
@@ -396,9 +399,9 @@
   border-color: rgba(255, 184, 0, 0.4);
   background: linear-gradient(180deg, rgba(255, 184, 0, 0.08) 0%, var(--color-surface-elevated) 100%);
   padding-top: 14px;
-  transform: translateY(-4px);
+  transform: translateY(-6px) scale(1.02);
   z-index: 2;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
 }
 
 .pod-avatar-wrap {

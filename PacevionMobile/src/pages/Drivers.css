@@ -180,25 +180,21 @@
 
 /* Drivers Grid */
 .drivers-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-@media (max-width: 340px) {
-  .drivers-grid {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .driver-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  padding: 10px;
+  padding: 10px 14px 10px 20px;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -220,19 +216,22 @@
   top: 0;
   left: 0;
   bottom: 0;
-  width: 3px;
+  width: 4px;
 }
 
 .dc-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 9px;
+  flex-direction: column;
+  align-items: flex-end;
+  order: 2;
+  font-size: 11px;
   font-weight: 800;
+  gap: 4px;
 }
 
 .dc-pos {
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+  font-size: 14px;
 }
 
 .dc-pos.pos-p1 { color: var(--color-warning); font-weight: 900; }
@@ -246,13 +245,15 @@
 .dc-body {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
+  order: 1;
+  flex: 1;
 }
 
 .dc-avatar-wrap {
-  width: 36px;
-  height: 36px;
+  width: 42px;
+  height: 42px;
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--color-border);

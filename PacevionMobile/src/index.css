@@ -70,6 +70,16 @@ html, body, #root {
   overscroll-behavior-y: none;
 }
 
+/* Defensive CSS Utilities */
+.text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.flex-min-0 {
+  min-width: 0;
+}
+
 #root {
   display: flex;
   flex-direction: column;

@@ -28,17 +28,18 @@
 }
 
 .live-title {
-  font-size: 24px;
-  letter-spacing: 0.06em;
+  font-size: 28px;
+  letter-spacing: 0.02em;
   color: var(--color-text-primary);
-  line-height: 1.1;
+  line-height: 1;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  font-weight: 900;
 }
 
 @media (max-width: 390px) {
   .live-title {
-    font-size: 20px;
+    font-size: 24px;
   }
 }
 
@@ -50,9 +51,9 @@
 }
 
 .live-subtitle {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--color-primary);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.15em;
   font-weight: 800;
   margin-top: 2px;
 }
@@ -64,14 +65,26 @@
   gap: 5px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  padding: 4px 8px;
+  padding: 4px 10px;
   height: 26px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--color-text-secondary);
   flex-shrink: 0;
+}
+
+.lh-badge-live.badge-live {
+  background: rgba(225, 6, 0, 0.15);
+  border-color: rgba(225, 6, 0, 0.4);
+  color: var(--color-primary);
+}
+
+.lh-badge-live.badge-standby {
+  background: rgba(255, 184, 0, 0.1);
+  border-color: rgba(255, 184, 0, 0.3);
+  color: var(--color-warning);
 }
 
 
@@ -151,14 +164,16 @@
 
 /* 3. Fast Telemetry Quick Stats */
 .live-telemetry-strip {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: 6px;
 }
 
-@media (max-width: 360px) {
+@media (min-width: 600px) {
   .live-telemetry-strip {
-    grid-template-columns: 1fr;
+    flex-direction: row;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
@@ -166,10 +181,10 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  padding: 6px 8px;
+  padding: 8px 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   min-width: 0;
 }
 
@@ -181,7 +196,7 @@
 }
 
 .lt-chip-val {
-  font-size: 13px;
+  font-size: 16px;
   line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
