@@ -379,7 +379,7 @@
   align-items: flex-end;
   justify-content: center;
   gap: 8px;
-  padding: 16px 12px 12px 12px;
+  padding: 16px 12px 20px 12px;
 }
 
 .pod-step {
@@ -399,9 +399,9 @@
   border-color: rgba(255, 184, 0, 0.4);
   background: linear-gradient(180deg, rgba(255, 184, 0, 0.08) 0%, var(--color-surface-elevated) 100%);
   padding-top: 14px;
-  transform: translateY(-6px) scale(1.02);
+  transform: translateY(-4px);
   z-index: 2;
-  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .pod-avatar-wrap {
