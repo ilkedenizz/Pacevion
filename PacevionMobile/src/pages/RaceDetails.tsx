@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useState, useRef, useLayoutEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCalendar, useRaceResults, useQualifyingResults, useSprintResults } from '../hooks/useF1Data';
+import { getCircuitDetails } from '../data/circuitData';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import { getCountryFlag, getWeekendSessions } from '../utils/raceWeekend';
+import { CircuitTrack } from '../components/common/CircuitTrack';
 import { HomeCountdown } from '../components/common/HomeCountdown';
 import { ArrowLeft, ChevronLeft, ChevronRight, Award, Timer, Flag, AlertCircle, Calendar as CalendarIcon } from 'lucide-react';
 import type { RaceResult, QualifyingResult, SprintResult } from '../api/types';
@@ -45,6 +47,9 @@ export const RaceDetails: React.FC = () => {
     };
   }, [calendar, round]);
 
+  const circuitDetails = useMemo(() => {
+    return raceInfo?.Circuit?.circuitId ? getCircuitDetails(raceInfo.Circuit.circuitId) : null;
+  }, [raceInfo]);
 
   const sessions = useMemo(() => {
     if (!raceInfo) return [];
@@ -239,27 +244,64 @@ export const RaceDetails: React.FC = () => {
           </button>
         </div>
       </div>
-        {/* 2. Race Hero Header Card */}
+
+      {/* 2. Race Hero Header Card */}
       <header className="rd-race-hero">
-        <div className="rd-hero-top font-mono">
-          <span className="rd-hero-round">ROUND {String(round).padStart(2, '0')}</span>
-          <span className="rd-hero-date">{raceInfo.date} {raceInfo.time ? `? ${raceInfo.time.replace('Z', ' UTC')}` : ''}</span>
-        </div>
-
-        <h1 className="rd-race-name font-heading">
-          <span className="rd-flag">{flagEmoji}</span>
-          {raceInfo.raceName.toUpperCase()}
-        </h1>
-
         <div className="rd-hero-badges font-mono">
           <span className={`rd-status-tag ${isCompleted ? 'completed' : 'upcoming'}`}>
             {isCompleted ? 'COMPLETED' : 'UPCOMING'}
           </span>
           {raceInfo.Sprint?.date && (
-            <span className="rd-sprint-tag">SPRINT</span>
+            <span className="rd-sprint-tag">SPRINT WEEKEND</span>
           )}
         </div>
+
+        <h1 className="rd-race-name font-heading">
+          <span className="rd-flag">{flagEmoji}</span>
+          {raceInfo.raceName}
+        </h1>
+
+        <div className="rd-circuit-loc font-mono">
+          {raceInfo.Circuit.circuitName.toUpperCase()} • {raceInfo.Circuit.Location.locality.toUpperCase()}, {raceInfo.Circuit.Location.country.toUpperCase()}
+        </div>
+
+        <div className="rd-hero-dates font-mono">
+          <CalendarIcon size={12} color="var(--color-primary)" />
+          <span>{raceInfo.date} {raceInfo.time ? `• ${raceInfo.time.replace('Z', ' UTC')}` : ''}</span>
+        </div>
       </header>
+
+      {/* 3. Circuit Visual & Telemetry */}
+      <section className="rd-circuit-section">
+        <div className="rd-circuit-vis-wrap">
+          <CircuitTrack 
+            circuitId={raceInfo.Circuit.circuitId} 
+            circuitName={raceInfo.Circuit.circuitName}
+            country={raceInfo.Circuit.Location.country}
+            raceName={raceInfo.raceName}
+            round={raceInfo.round}
+            variant="hero"
+          />
+        </div>
+
+        {circuitDetails && (
+          <div className="rd-circuit-telemetry font-mono">
+            <div className="ct-stat">
+              <span className="editorial-label">TOTAL LAPS</span>
+              <span className="ct-val">{circuitDetails.laps} LAPS</span>
+            </div>
+            <div className="ct-stat">
+              <span className="editorial-label">RACE DISTANCE</span>
+              <span className="ct-val">{circuitDetails.distance}</span>
+            </div>
+            <div className="ct-stat">
+              <span className="editorial-label">LOCATION</span>
+              <span className="ct-val">{raceInfo.Circuit.Location.locality?.toUpperCase()}</span>
+            </div>
+          </div>
+        )}
+
+      </section>
 
       {/* 4. SESSION SELECTOR TAB BAR */}
       <div className="rd-session-selector">
@@ -431,6 +473,7 @@ export const RaceDetails: React.FC = () => {
                       <span className="rd-col-pos">POS</span>
                       <span className="rd-col-driver">DRIVER</span>
                       <span className="rd-col-time">TIME / GAP</span>
+                      <span className="rd-col-gain">GRID</span>
                       <span className="rd-col-pts">PTS</span>
                     </div>
                     <div className="rd-table-body">
@@ -439,7 +482,10 @@ export const RaceDetails: React.FC = () => {
                         const isP1 = posNum === 1;
                         const isP2 = posNum === 2;
                         const isP3 = posNum === 3;
-                        
+                        const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                        const gridPos = parseInt(result.grid);
+                        const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
                         let displayTime: React.ReactNode = '—';
                         const statusVal = result.status || '';
                         const timeStr = result.Time?.time;
@@ -448,20 +494,20 @@ export const RaceDetails: React.FC = () => {
                           displayTime = timeStr || 'WINNER';
                         } else if (timeStr) {
                           displayTime = timeStr;
-                        } else if (/lap/i.test(statusVal) || /^\\+/.test(statusVal)) {
+                        } else if (/lap/i.test(statusVal) || /^\+/.test(statusVal)) {
                           displayTime = statusVal;
                         } else if (statusVal === 'Finished') {
                           displayTime = 'FINISHED';
                         } else {
                           if (result.laps && parseInt(result.laps, 10) > 0) {
                             displayTime = (
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2 }}>
-                                <span style={{ color: 'var(--color-primary)' }}>RET</span>
-                                <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)' }}>Lap {result.laps} — {statusVal}</span>
+                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2, minWidth: 0, width: '100%' }}>
+                                <span style={{ color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', display: 'block', textAlign: 'right' }}>RET</span>
+                                <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'right' }}>Lap {result.laps} — {statusVal}</span>
                               </div>
                             );
                           } else {
-                            displayTime = <span style={{ color: 'var(--color-primary)' }}>RET — {statusVal || 'DNF'}</span>;
+                            displayTime = <span style={{ color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', display: 'block', textAlign: 'right' }}>RET — {statusVal || 'DNF'}</span>;
                           }
                         }
 
@@ -473,6 +519,7 @@ export const RaceDetails: React.FC = () => {
                               </span>
                             </div>
                             <div className="rd-col-driver">
+                              <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
                               <div className="rd-driver-meta">
                                 <span className="rd-driver-name font-heading">
                                   {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
@@ -482,6 +529,14 @@ export const RaceDetails: React.FC = () => {
                             </div>
                             <div className="rd-col-time font-mono">
                               <span className="time-val">{displayTime}</span>
+                            </div>
+                            <div className="rd-col-gain font-mono">
+                              <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                              {posGain !== 0 && gridPos > 0 && (
+                                <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                                  {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                                </span>
+                              )}
                             </div>
                             <div className="rd-col-pts font-mono">
                               {result.points && parseFloat(result.points) > 0 ? (
@@ -623,11 +678,17 @@ export const RaceDetails: React.FC = () => {
 
               {/* Final Classification Board */}
               <section className="rd-classification-section">
+                <div className="rd-section-header font-mono">
+                  <Flag size={13} color="var(--color-primary)" />
+                  <span>RACE CLASSIFICATION ({raceResults.Results.length} DRIVERS)</span>
+                </div>
+
                 <div className="rd-table-wrapper">
                   <div className="rd-table-header font-mono">
                     <span className="rd-col-pos">POS</span>
                     <span className="rd-col-driver">DRIVER</span>
                     <span className="rd-col-time">TIME / GAP</span>
+                    <span className="rd-col-gain">GRID</span>
                     <span className="rd-col-pts">PTS</span>
                   </div>
 
@@ -637,7 +698,10 @@ export const RaceDetails: React.FC = () => {
                       const isP1 = posNum === 1;
                       const isP2 = posNum === 2;
                       const isP3 = posNum === 3;
-                      
+                      const teamColor = getTeamDetails(result.Constructor.constructorId).color || '#555';
+                      const gridPos = parseInt(result.grid);
+                      const posGain = gridPos > 0 ? gridPos - posNum : 0;
+
                       let displayTime: React.ReactNode = '—';
                       const status = result.status || '';
                       const timeStr = result.Time?.time;
@@ -646,20 +710,20 @@ export const RaceDetails: React.FC = () => {
                         displayTime = timeStr || 'WINNER';
                       } else if (timeStr) {
                         displayTime = timeStr;
-                      } else if (/lap/i.test(status) || /^\\+/.test(status)) {
+                      } else if (/lap/i.test(status) || /^\+/.test(status)) {
                         displayTime = status;
                       } else if (status === 'Finished') {
                         displayTime = 'FINISHED';
                       } else {
                         if (result.laps && parseInt(result.laps, 10) > 0) {
                           displayTime = (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2 }}>
-                              <span style={{ color: 'var(--color-primary)' }}>RET</span>
-                              <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)' }}>Lap {result.laps} — {status}</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.2, minWidth: 0, width: '100%' }}>
+                              <span style={{ color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', display: 'block', textAlign: 'right' }}>RET</span>
+                              <span style={{ fontSize: '0.8em', color: 'var(--color-text-muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', textAlign: 'right' }}>Lap {result.laps} — {status}</span>
                             </div>
                           );
                         } else {
-                          displayTime = <span style={{ color: 'var(--color-primary)' }}>RET — {status || 'DNF'}</span>;
+                          displayTime = <span style={{ color: 'var(--color-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width: '100%', display: 'block', textAlign: 'right' }}>RET — {status || 'DNF'}</span>;
                         }
                       }
 
@@ -672,6 +736,7 @@ export const RaceDetails: React.FC = () => {
                           </div>
 
                           <div className="rd-col-driver">
+                            <div className="rd-driver-stripe" style={{ backgroundColor: teamColor }} />
                             <div className="rd-driver-meta">
                               <span className="rd-driver-name font-heading">
                                 {result.Driver.givenName?.[0]}. {result.Driver.familyName.toUpperCase()}
@@ -682,6 +747,15 @@ export const RaceDetails: React.FC = () => {
 
                           <div className="rd-col-time font-mono">
                             <span className="time-val">{displayTime}</span>
+                          </div>
+
+                          <div className="rd-col-gain font-mono">
+                            <span className="grid-start">{result.grid === '0' ? 'PIT' : `P${result.grid}`}</span>
+                            {posGain !== 0 && gridPos > 0 && (
+                              <span className={`gain-indicator ${posGain > 0 ? 'gain-up' : 'gain-down'}`}>
+                                {posGain > 0 ? `▲${posGain}` : `▼${Math.abs(posGain)}`}
+                              </span>
+                            )}
                           </div>
 
                           <div className="rd-col-pts font-mono">
