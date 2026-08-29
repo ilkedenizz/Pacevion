@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Users, Car, BookOpen, Bell, ChevronRight } from 'lucide-react';
+import { Users, Car, BookOpen, ChevronRight } from 'lucide-react';
 import './More.css';
 
 const moreItems = [
