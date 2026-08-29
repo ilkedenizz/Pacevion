@@ -11,6 +11,8 @@ const DriverProfilePage = lazy(() => import('../pages/DriverProfile'));
 const CarsPage = lazy(() => import('../pages/Cars'));
 const StandingsPage = lazy(() => import('../pages/Standings'));
 const LearnPage = lazy(() => import('../pages/Learn'));
+const MorePage = lazy(() => import('../pages/More'));
+const LivePage = lazy(() => import('../pages/LiveFeed'));
 
 const Router: React.FC = () => (
   <Routes>
@@ -80,6 +82,22 @@ const Router: React.FC = () => (
         element={
           <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
             <LearnPage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/more"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <MorePage />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/live"
+        element={
+          <Suspense fallback={<div className="page-loader-suspense"><Loader size={36} /></div>}>
+            <LivePage />
           </Suspense>
         }
       />

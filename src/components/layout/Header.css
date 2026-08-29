@@ -320,7 +320,7 @@
 /* Responsive breakdowns */
 @media (max-width: 768px) {
   .sidebar-toggle-btn {
-    display: flex; /* Visible on mobile */
+    display: none !important; /* Hidden on mobile in favor of BottomNav */
   }
   
   .desktop-nav {

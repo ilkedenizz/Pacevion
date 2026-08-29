@@ -3,6 +3,7 @@ import Header from '../components/layout/Header';
 import Navigation from '../components/layout/Navigation';
 import WelcomeOverlay from '../components/ui/WelcomeOverlay';
 import Footer from '../components/layout/Footer';
+import BottomNav from '../components/layout/BottomNav';
 import { Outlet } from 'react-router-dom';
 
 const AppLayout: React.FC = () => {
@@ -46,6 +47,7 @@ const AppLayout: React.FC = () => {
           <Footer />
         </main>
       </div>
+      <BottomNav />
       <WelcomeOverlay />
     </div>
   );

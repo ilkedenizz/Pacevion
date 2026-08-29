@@ -6,7 +6,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  overflow: hidden; /* Prevent bleeding out of the container */
+  overflow: hidden;
   position: relative;
   background-color: transparent;
 }
@@ -17,25 +17,23 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 10%; /* Breathing room */
+  padding: 10%;
   box-sizing: border-box;
 }
 
-/* Base SVG styling - ensuring proper scale and no overflow */
 .circuit-svg {
   width: 100%;
   height: auto;
   max-height: 100%;
   max-width: 100%;
-  overflow: visible; /* Track path might bleed slightly beyond viewBox, allow it within the padded wrapper */
+  overflow: visible;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
 }
 
-/* The actual track geometry */
 .circuit-path {
   fill: none;
-  stroke: #ffffff; /* Clean white circuit line */
+  stroke: #ffffff;
   stroke-width: 8;
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -44,7 +42,6 @@
   z-index: 2;
 }
 
-/* Subtle glow behind the track */
 .circuit-path-glow {
   fill: none;
   stroke: var(--f1-red, #e10600);
@@ -56,7 +53,6 @@
   filter: blur(8px);
 }
 
-/* Hover effects for premium feel */
 .circuit-track-container:hover .circuit-svg {
   transform: scale(1.05);
 }
@@ -69,7 +65,6 @@
   opacity: 0.6;
 }
 
-/* Unavailable Fallback */
 .circuit-unavailable {
   display: flex;
   flex-direction: column;
@@ -106,7 +101,6 @@
 
 /* ─── VARIANTS ─── */
 
-/* Variant: Hero (Dashboard) */
 .variant-hero .circuit-svg-wrapper {
   padding: 5%;
 }
@@ -117,10 +111,9 @@
 
 .variant-hero .circuit-path-glow {
   stroke-width: 10;
-  opacity: 0.3; /* Always subtle glow in hero */
+  opacity: 0.3;
 }
 
-/* Variant: Detail (Race Details) */
 .variant-detail .circuit-svg-wrapper {
   padding: 2rem;
 }
@@ -132,46 +125,21 @@
 /* Mobile Adjustments */
 @media (max-width: 768px) {
   .circuit-svg-wrapper {
-    padding: 10%; /* Reduced from 15% to 10% as general mobile padding */
+    padding: 4%;
   }
   
   .circuit-path {
-    stroke-width: 10; /* Thicker on mobile for visibility */
+    stroke-width: 10;
   }
   
-  /* Calendar Card Variant Specific Sizing on Mobile */
   .variant-card .circuit-svg-wrapper {
-    padding: 0;
+    padding: 4%;
   }
 
   .variant-card .circuit-svg {
-    width: 60%;
-    max-width: 100%;
-    height: auto;
-  }
-}
-
-/* Specific standard mobile breakpoints to precisely hit the 55-75% target */
-@media (max-width: 430px) {
-  .variant-card .circuit-svg {
-    width: 72%;
-  }
-}
-
-@media (max-width: 390px) {
-  .variant-card .circuit-svg {
-    width: 68%;
-  }
-}
-
-@media (max-width: 375px) {
-  .variant-card .circuit-svg {
-    width: 65%;
-  }
-}
-
-@media (max-width: 320px) {
-  .variant-card .circuit-svg {
-    width: 55%;
+    width: 100%;
+    height: 100%;
+    max-height: 120px;
+    object-fit: contain;
   }
 }

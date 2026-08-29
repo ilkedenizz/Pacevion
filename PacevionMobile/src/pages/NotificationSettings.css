@@ -1,6 +1,7 @@
 /* Notification Settings Styles */
 .notif-settings-page {
-  padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 80px);
+  display: flex;
+  flex-direction: column;
 }
 
 .ns-content {

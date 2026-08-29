@@ -39,5 +39,14 @@
 @media (max-width: 768px) {
   .page-content-wrapper {
     padding: var(--ds-space-sm);
+    /* Safe-area padding to prevent overlapping with BottomNav */
+    padding-bottom: calc(var(--bottom-nav-height) + var(--safe-area-bottom) + var(--ds-space-lg));
+  }
+  
+  /* Fix vertical flex sizing so pages can scroll properly */
+  .page-container {
+    overflow-y: auto;
+
+    height: 100dvh; 
   }
 }

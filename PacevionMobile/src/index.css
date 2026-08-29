@@ -86,9 +86,9 @@ html, body, #root {
   position: relative;
 }
 
-/* Base App Content Wrapper */
 .app-content {
   flex: 1;
+  min-height: 0; /* CRITICAL for flex scrolling */
   width: 100%;
   max-width: 100%;
   display: flex;

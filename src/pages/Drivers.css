@@ -704,7 +704,7 @@
   padding: var(--space-5) var(--space-8);
   border: 1px solid rgba(255,255,255,0.1);
   backdrop-filter: blur(12px);
-  margin-bottom: -100px;
+  margin-top: -32px;
 }
 
 .dp-stat-item {

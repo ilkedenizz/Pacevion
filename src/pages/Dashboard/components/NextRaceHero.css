@@ -99,6 +99,8 @@
   margin: 0 0 var(--space-1) 0;
   letter-spacing: 2px;
   line-height: 1;
+  text-wrap: balance;
+  overflow-wrap: break-word;
   text-shadow: 0 4px 24px rgba(0,0,0,0.8);
 }
 
@@ -111,6 +113,8 @@
   letter-spacing: 4px;
   margin: 0 0 var(--space-6) 0;
   text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+  text-wrap: balance;
+  overflow-wrap: break-word;
 }
 
 .hero-action-btn {

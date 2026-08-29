@@ -1,4 +1,4 @@
-﻿/* src/components/common/CircuitTrack.css */
+/* src/components/common/CircuitTrack.css */
 
 .circuit-track-container {
   display: flex;
@@ -23,9 +23,8 @@
 
 .circuit-svg {
   width: 100%;
-  height: auto;
-  max-height: 100%;
-  max-width: 100%;
+  height: 100%;
+  object-fit: contain;
   overflow: visible;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }

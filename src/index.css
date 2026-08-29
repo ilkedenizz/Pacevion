@@ -60,6 +60,11 @@
   --ds-radius-lg: 12px;
   --ds-radius-xl: 16px;
 
+  /* --- MOBILE LAYOUT --- */
+  --bottom-nav-height: 64px;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
+
   /* --- MOTION --- */
   --ds-transition-fast: 150ms;
   --ds-transition-normal: 300ms;
