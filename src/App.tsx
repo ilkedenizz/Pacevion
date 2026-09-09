@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Router from './router';
 
 import { LanguageProvider } from './context/LanguageContext';
+import { SeasonProvider } from './context/SeasonContext';
 import ScrollToTop from './components/utils/ScrollToTop';
 
 const queryClient = new QueryClient({
@@ -17,12 +18,14 @@ const queryClient = new QueryClient({
 
 const App: React.FC = () => (
   <LanguageProvider>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <ScrollToTop />
-        <Router />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <SeasonProvider>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <ScrollToTop />
+          <Router />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </SeasonProvider>
   </LanguageProvider>
 );
 

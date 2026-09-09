@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCalendar } from '../hooks/useF1Data';
+import { useSeason } from '../context/SeasonContext';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import CircuitTrack from '../components/ui/CircuitTrack';
@@ -10,10 +11,11 @@ const RaceCalendar: React.FC = () => {
   const navigate = useNavigate();
   const { data: races, isLoading, isError, refetch } = useCalendar();
   const [filter, setFilter] = useState<'all' | 'completed' | 'upcoming'>('all');
+  const { season } = useSeason();
 
   useSEO({
-    title: '2026 F1 Race Calendar & Schedule | Pacevion',
-    description: 'Formula 1 2026 sezonundaki tüm yarışların takvimi.',
+    title: `${season} F1 Race Calendar & Schedule | Pacevion`,
+    description: `Formula 1 ${season} sezonundaki tüm yarışların takvimi.`,
     canonicalPath: '/calendar'
   });
 
@@ -78,8 +80,8 @@ const RaceCalendar: React.FC = () => {
     <div className="calendar-board-container">
       <div className="calendar-board-header">
         <div className="cbh-titles">
-          <h1 className="cbh-main">2026 RACE CALENDAR</h1>
-          <span className="cbh-sub">SEASON 2026</span>
+          <h1 className="cbh-main">{season} RACE CALENDAR</h1>
+          <span className="cbh-sub">SEASON {season}</span>
         </div>
         
         <div className="cbh-stats">

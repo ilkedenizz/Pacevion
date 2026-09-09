@@ -1,14 +1,15 @@
-// src/hooks/useF1Data.ts
 import { useQuery } from '@tanstack/react-query';
 import { getCalendar, getDriverStandings, getRaceResults, getConstructorStandings, getSeasonCalendar, getQualifyingResults } from '../api/endpoints';
+import { useSeason } from '../context/SeasonContext';
 
 /**
  * Hook to fetch the current season's race calendar.
  */
 export function useCalendar() {
+  const { season } = useSeason();
   return useQuery({
-    queryKey: ['calendar'],
-    queryFn: getCalendar,
+    queryKey: ['calendar', season],
+    queryFn: () => getCalendar(season),
   });
 }
 
@@ -16,9 +17,10 @@ export function useCalendar() {
  * Hook to fetch the current season's driver standings.
  */
 export function useDriverStandings() {
+  const { season } = useSeason();
   return useQuery({
-    queryKey: ['driverStandings'],
-    queryFn: getDriverStandings,
+    queryKey: ['driverStandings', season],
+    queryFn: () => getDriverStandings(season),
   });
 }
 
@@ -37,9 +39,10 @@ export function useRaceResults(season: string, round: string) {
  * Hook to fetch the current season's constructor standings.
  */
 export function useConstructorStandings() {
+  const { season } = useSeason();
   return useQuery({
-    queryKey: ['constructorStandings'],
-    queryFn: getConstructorStandings,
+    queryKey: ['constructorStandings', season],
+    queryFn: () => getConstructorStandings(season),
   });
 }
 
@@ -64,3 +67,4 @@ export function useQualifyingResults(season: string, round: string) {
     enabled: !!season && !!round,
   });
 }
+

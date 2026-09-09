@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDriverStandings, useConstructorStandings } from '../hooks/useF1Data';
+import { useSeason } from '../context/SeasonContext';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import { getDriverVisual } from '../data/assets';
@@ -9,6 +10,7 @@ import './Standings.css';
 const Standings: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'drivers' | 'constructors'>('drivers');
+  const { season } = useSeason();
 
   useSEO({
     title: 'F1 Driver & Constructor Standings | Pacevion',
@@ -63,7 +65,7 @@ const Standings: React.FC = () => {
       <div className="standings-board-header">
         <div className="sbh-titles">
           <h1 className="sbh-main">{activeTab === 'drivers' ? 'DRIVER CHAMPIONSHIP' : 'CONSTRUCTOR CHAMPIONSHIP'}</h1>
-          <span className="sbh-sub">2026 SEASON</span>
+          <span className="sbh-sub">{season} SEASON</span>
         </div>
         <div className="sbh-tabs">
           <button 
@@ -83,6 +85,12 @@ const Standings: React.FC = () => {
 
       <div className="standings-board-content">
         {activeTab === 'drivers' ? (
+          driverStandings?.length === 0 ? (
+            <div className="empty-state" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+              <h3>Season not started</h3>
+              <p>Standings will be available after the first race of {season}.</p>
+            </div>
+          ) : (
           <div className="timing-board-wrapper">
             <div className="tb-header-row">
               <div className="tb-col-pos">POS</div>
@@ -136,7 +144,14 @@ const Standings: React.FC = () => {
               })}
             </div>
           </div>
+          )
         ) : (
+          constructorStandings?.length === 0 ? (
+            <div className="empty-state" style={{ padding: '40px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+              <h3>Season not started</h3>
+              <p>Standings will be available after the first race of {season}.</p>
+            </div>
+          ) : (
           <div className="timing-board-wrapper">
             <div className="tb-header-row">
               <div className="tb-col-pos">POS</div>
@@ -186,6 +201,7 @@ const Standings: React.FC = () => {
               })}
             </div>
           </div>
+          )
         )}
       </div>
     </div>

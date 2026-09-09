@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDriverStandings } from '../hooks/useF1Data';
+import { useSeason } from '../context/SeasonContext';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import { getDriverVisual } from '../data/assets';
@@ -9,10 +10,11 @@ import './Drivers.css';
 const Drivers: React.FC = () => {
   const navigate = useNavigate();
   const { data: standings, isLoading, isError, refetch } = useDriverStandings();
+  const { season } = useSeason();
 
   useSEO({
     title: 'F1 Drivers Directory | Pacevion',
-    description: 'Formula 1 2026 sezonu resmi sürücü kadrosu, pilot numaraları ve pilot bilgileri.',
+    description: `Formula 1 ${season} sezonu resmi sürücü kadrosu, pilot numaraları ve pilot bilgileri.`,
     canonicalPath: '/drivers'
   });
 
@@ -29,10 +31,19 @@ const Drivers: React.FC = () => {
     );
   }
 
-  if (isError || !standings || standings.length === 0) {
+  if (isError || !standings) {
     return (
       <div className="drv-page error">
         <ErrorState message="Unable to load drivers list." onRetry={refetch} />
+      </div>
+    );
+  }
+
+  if (standings.length === 0) {
+    return (
+      <div className="drv-page empty" style={{ padding: '80px 20px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-text-primary)' }}>{season} SEASON NOT STARTED</h2>
+        <p style={{ marginTop: '10px' }}>Driver lineup will be available after the first race of {season}.</p>
       </div>
     );
   }
@@ -52,7 +63,7 @@ const Drivers: React.FC = () => {
       {/* ── PAGE HEADER ── */}
       <header className="drv-header">
         <div className="drv-header-left">
-          <span className="drv-header-tag">PACEVION // F1 2026</span>
+          <span className="drv-header-tag">PACEVION // F1 {season}</span>
           <h1 className="drv-header-title">
             <span className="drv-title-thin">DRIVER</span>
             <span className="drv-title-bold">GRID</span>

@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useConstructorStandings, useDriverStandings } from '../hooks/useF1Data';
+import { useSeason } from '../context/SeasonContext';
 import { useSEO } from '../hooks/useSEO';
 import { getTeamVisual } from '../data/assets';
 import { getTeamDetails } from '../data/teamDetails';
@@ -7,19 +8,18 @@ import ErrorState from '../components/ui/ErrorState';
 import './Cars.css';
 
 const Cars: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: constructors, isLoading: cLoading, isError: cError, refetch: cRefetch } = useConstructorStandings() as { data: any[], isLoading: boolean, isError: boolean, refetch: () => void };
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { data: drivers, isLoading: dLoading } = useDriverStandings() as { data: any[], isLoading: boolean };
+  const { data: constructors, isLoading: cLoading, isError: cError, refetch: cRefetch } = useConstructorStandings();
+  const { data: drivers, isLoading: dLoading, isError: dError } = useDriverStandings();
+  const { season } = useSeason();
 
   useSEO({
-    title: 'F1 Cars & Technical Gallery | Pacevion',
-    description: 'Explore the machines defining the 2026 Formula 1 season. Technical details and real F1 car photography.',
+    title: 'F1 Cars & Constructor Details | Pacevion',
+    description: `Explore the machines defining the ${season} Formula 1 season. Technical details and real F1 car photography.`,
     canonicalPath: '/cars'
   });
 
   const isLoading = cLoading || dLoading;
-  const isError = cError;
+  const isError = cError || dError;
 
   const teamDriversMap = useMemo(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -50,10 +50,19 @@ const Cars: React.FC = () => {
     );
   }
 
-  if (isError || !constructors || constructors.length === 0) {
+  if (isError || !constructors) {
     return (
       <div className="cars-gallery-page error">
-        <ErrorState message="Unable to load 2026 F1 Cars Gallery." onRetry={cRefetch} />
+        <ErrorState message={`Unable to load ${season} F1 Cars Gallery.`} onRetry={cRefetch} />
+      </div>
+    );
+  }
+
+  if (constructors.length === 0) {
+    return (
+      <div className="cars-gallery-page empty" style={{ padding: '80px 20px', textAlign: 'center', color: 'var(--color-text-secondary)' }}>
+        <h2 style={{ fontFamily: 'var(--font-heading)', color: 'var(--color-text-primary)' }}>{season} SEASON NOT STARTED</h2>
+        <p style={{ marginTop: '10px' }}>Car gallery will be available after the first race of {season}.</p>
       </div>
     );
   }
@@ -62,11 +71,11 @@ const Cars: React.FC = () => {
     <div className="cars-gallery-page">
       <header className="cg-header">
         <div className="cg-header-top">
-          <span className="cg-tag">2026 SEASON // CAR GALLERY</span>
+          <span className="cg-tag">{season} SEASON // CAR GALLERY</span>
         </div>
         <h1 className="cg-title">THE MACHINES OF FORMULA 1</h1>
         <p className="cg-desc">
-          2026 sezonundaki tüm takımları, araçlarını, sürücülerini ve constructor performanslarını tek yerde incele.
+          {season} sezonundaki tüm takımları, araçlarını, sürücülerini ve constructor performanslarını tek yerde incele.
         </p>
       </header>
 
