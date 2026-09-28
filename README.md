@@ -90,6 +90,13 @@ Make sure you have the following installed:
 - [Git](https://git-scm.com/)
 
 ### Installation
+## 📱 Download
+
+### Android
+
+[⬇️ Download Pacevion APK](https://github.com/ilkedenizz/Pacevion/releases)
+
+Download the latest Android APK from GitHub Releases.
 
 1. Clone the repository:
    ```bash
