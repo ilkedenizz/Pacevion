@@ -258,3 +258,34 @@ export interface MRDataSprintResultsResponse {
     RaceTable: SprintRaceTable;
   };
 }
+
+export interface PitStop {
+  driverId: string;
+  lap: string;
+  stop: string;
+  time: string;
+  duration?: string;
+}
+
+export interface PitStopRace extends Race {
+  PitStops: PitStop[];
+}
+
+export interface PitStopRaceTable {
+  season?: string;
+  round?: string;
+  Races: PitStopRace[];
+}
+
+export interface MRDataPitStopsResponse {
+  MRData: {
+    xmlns?: string;
+    series?: string;
+    url?: string;
+    limit?: string;
+    offset?: string;
+    total?: string;
+    RaceTable: PitStopRaceTable;
+  };
+}
+

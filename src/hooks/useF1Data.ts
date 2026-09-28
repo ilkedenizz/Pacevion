@@ -8,7 +8,8 @@ import {
   getConstructorStandings,
   getSeasonCalendar,
   getQualifyingResults,
-  getSprintResults
+  getSprintResults,
+  getPitStops
 } from '../api/endpoints';
 import { useSeason } from '../context/SeasonContext';
 
@@ -109,3 +110,16 @@ export function useSprintResults(season: string, round: string) {
     enabled: !!season && !!round,
   });
 }
+
+/**
+ * Hook to fetch pit stops for a specific race.
+ */
+export function usePitStops(season: string, round: string, pollingInterval: number | null = null) {
+  return useQuery({
+    queryKey: ['pitStops', season, round],
+    queryFn: () => getPitStops(season, round),
+    enabled: !!season && !!round,
+    refetchInterval: pollingInterval || false,
+  });
+}
+

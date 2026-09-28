@@ -10,6 +10,7 @@ import {
   getDriverStandingsWithRound,
   getLatestRaceResults,
   getSprintResults,
+  getPitStops,
 } from '../api/endpoints';
 
 export const useCalendar = (year: string | number = 'current') => {
@@ -120,3 +121,14 @@ export const useSprintResults = (season: string | number, round: string | number
     staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
   });
 };
+
+export const usePitStops = (season: string | number, round: string | number, enabled: boolean = true, pollingInterval: number | null = null) => {
+  return useQuery({
+    queryKey: ['pitStops', season, round],
+    queryFn: () => getPitStops(season, round),
+    enabled: !!season && !!round && enabled,
+    refetchInterval: pollingInterval || false,
+    staleTime: pollingInterval ? 0 : 1000 * 60 * 5,
+  });
+};
+

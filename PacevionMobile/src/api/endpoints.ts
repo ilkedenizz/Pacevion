@@ -127,3 +127,14 @@ export async function getSprintResults(season: string | number, round: string | 
     return null;
   }
 }
+
+export async function getPitStops(season: string | number, round: string | number): Promise<import('./types').PitStop[]> {
+  try {
+    const data = await fetchClient<import('./types').MRDataPitStopsResponse>(`/${season}/${round}/pitstops.json?limit=100`);
+    const races = data?.MRData?.RaceTable?.Races;
+    return races && races.length > 0 && races[0].PitStops ? races[0].PitStops : [];
+  } catch {
+    return [];
+  }
+}
+

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useRaceResults, useQualifyingResults, useSprintResults, useLatestRaceResults } from '../hooks/useF1Data';
+import { useRaceResults, useQualifyingResults, useSprintResults, useLatestRaceResults, usePitStops } from '../hooks/useF1Data';
 import { useRaceState } from '../hooks/useRaceState';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
@@ -31,6 +31,7 @@ export const LiveFeed: React.FC = () => {
   const { data: raceData, isLoading: isRaceLoading, isError: isRaceError, refetch: refetchRace } = useRaceResults(season, round, !isFallbackToLatest && isRace, !isFallbackToLatest && isRace ? pollingInterval : null);
   const { data: qualyData, isLoading: isQualyLoading, isError: isQualyError, refetch: refetchQualy } = useQualifyingResults(season, round, !isFallbackToLatest && isQualifying, !isFallbackToLatest && isQualifying ? pollingInterval : null);
   const { data: sprintData, isLoading: isSprintLoading, isError: isSprintError, refetch: refetchSprint } = useSprintResults(season, round, !isFallbackToLatest && isSprint, !isFallbackToLatest && isSprint ? pollingInterval : null);
+  const { data: pitData } = usePitStops(season, round, !isFallbackToLatest && isRace, !isFallbackToLatest && isRace ? pollingInterval : null);
 
   const triggerRefetch = async () => {
     setIsManualRefreshing(true);
@@ -50,9 +51,9 @@ export const LiveFeed: React.FC = () => {
 
   useEffect(() => {
     if (activeData && activeData.Results && activeData.Results.length > 0) {
-      liveRaceTracker.processRaceResults(activeData);
+      liveRaceTracker.processRaceResults(activeData, pitData);
     }
-  }, [activeData]);
+  }, [activeData, pitData]);
   
   const isAnyLoading = isStateLoading || (isFallbackToLatest ? isLatestLoading : (isQualifying ? isQualyLoading : isSprint ? isSprintLoading : isRaceLoading));
   const isAnyError = isStateError || (isFallbackToLatest ? isLatestError : (isQualifying ? isQualyError : isSprint ? isSprintError : isRaceError));

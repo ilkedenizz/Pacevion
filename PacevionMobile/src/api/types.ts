@@ -143,3 +143,20 @@ export interface SprintRace extends Race {
 export interface MRDataSprintResultsResponse {
   MRData: { RaceTable: { Races: SprintRace[] } };
 }
+
+export interface PitStop {
+  driverId: string;
+  lap: string;
+  stop: string;
+  time: string;
+  duration?: string;
+}
+
+export interface PitStopRace extends Race {
+  PitStops: PitStop[];
+}
+
+export interface MRDataPitStopsResponse {
+  MRData: { RaceTable: { Races: PitStopRace[] } };
+}
+

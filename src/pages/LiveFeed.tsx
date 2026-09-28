@@ -3,7 +3,8 @@ import {
   useRaceResults, 
   useQualifyingResults, 
   useSprintResults, 
-  useLatestRaceResults 
+  useLatestRaceResults,
+  usePitStops
 } from '../hooks/useF1Data';
 import { useRaceState } from '../hooks/useRaceState';
 import { useLanguage } from '../context/LanguageContext';
@@ -35,6 +36,7 @@ export const LiveFeed: React.FC = () => {
   const { data: sprintData, isLoading: isSprintLoading, isError: isSprintError, refetch: refetchSprint } = useSprintResults(String(season), String(round));
   const { data: raceData, isLoading: isRaceLoading, isError: isRaceError, refetch: refetchRace } = useRaceResults(String(season), String(round));
   const { data: qualyData, isLoading: isQualyLoading, isError: isQualyError, refetch: refetchQualy } = useQualifyingResults(String(season), String(round));
+  const { data: pitData } = usePitStops(String(season), String(round), isRace ? pollingInterval : null);
 
   // Determine active data
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,9 +49,9 @@ export const LiveFeed: React.FC = () => {
   // Track live race events whenever race data updates
   useEffect(() => {
     if (activeData?.Results && activeData.Results.length > 0) {
-      liveRaceTracker.processRaceResults(activeData);
+      liveRaceTracker.processRaceResults(activeData, pitData);
     }
-  }, [activeData]);
+  }, [activeData, pitData]);
 
   // Track session start event
   useEffect(() => {

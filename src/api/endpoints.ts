@@ -146,3 +146,18 @@ export async function getSprintResults(season: string, round: string): Promise<S
     return null;
   }
 }
+
+/**
+ * Fetch pit stops for a specific race.
+ */
+export async function getPitStops(season: string, round: string): Promise<import('./types').PitStop[]> {
+  if (season === '2027') return [];
+  try {
+    const data = await fetchClient<import('./types').MRDataPitStopsResponse>(`/${season}/${round}/pitstops.json?limit=100`);
+    const races = data?.MRData?.RaceTable?.Races;
+    return races && races.length > 0 && races[0].PitStops ? races[0].PitStops : [];
+  } catch {
+    return [];
+  }
+}
+

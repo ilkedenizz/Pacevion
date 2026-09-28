@@ -34,7 +34,7 @@ const STORAGE_KEY_SEEN_IDS = 'pacevion_seen_live_event_ids_v2';
 const MAX_NOTIFICATIONS = 150;
 const MAX_SEEN_IDS = 1000;
 
-class LiveNotificationStore {
+export class LiveNotificationStore {
   private notifications: LiveNotification[] = [];
   private seenEventIds: Set<string> = new Set();
   private listeners: Set<(notifications: LiveNotification[]) => void> = new Set();
@@ -44,27 +44,42 @@ class LiveNotificationStore {
   }
 
   private loadFromStorage(): void {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      this.notifications = [];
+      this.seenEventIds = new Set();
+      return;
+    }
+
     try {
       const storedNotifs = localStorage.getItem(STORAGE_KEY_NOTIFICATIONS);
       if (storedNotifs) {
-        this.notifications = JSON.parse(storedNotifs);
+        const parsed = JSON.parse(storedNotifs);
+        if (Array.isArray(parsed)) {
+          this.notifications = parsed.filter(item => item && typeof item.id === 'string');
+        } else {
+          this.notifications = [];
+        }
       }
 
       const storedIds = localStorage.getItem(STORAGE_KEY_SEEN_IDS);
       if (storedIds) {
         const parsed = JSON.parse(storedIds);
         if (Array.isArray(parsed)) {
-          this.seenEventIds = new Set(parsed);
+          this.seenEventIds = new Set(parsed.filter(id => typeof id === 'string'));
+        } else {
+          this.seenEventIds = new Set();
         }
       }
     } catch (e) {
-      console.warn('[LiveNotificationStore] Error loading from storage', e);
+      console.warn('[LiveNotificationStore] Error loading from storage, resetting:', e);
       this.notifications = [];
       this.seenEventIds = new Set();
     }
   }
 
   private saveToStorage(): void {
+    if (typeof window === 'undefined' || !window.localStorage) return;
+
     try {
       localStorage.setItem(
         STORAGE_KEY_NOTIFICATIONS,
@@ -75,7 +90,13 @@ class LiveNotificationStore {
         JSON.stringify(Array.from(this.seenEventIds).slice(-MAX_SEEN_IDS))
       );
     } catch (e) {
-      console.warn('[LiveNotificationStore] Error saving to storage', e);
+      console.warn('[LiveNotificationStore] Error saving to storage, attempting prune:', e);
+      try {
+        this.notifications = this.notifications.slice(0, 50);
+        localStorage.setItem(STORAGE_KEY_NOTIFICATIONS, JSON.stringify(this.notifications));
+      } catch {
+        // Storage genuinely unavailable, continue in memory
+      }
     }
   }
 
@@ -89,8 +110,8 @@ class LiveNotificationStore {
   }
 
   public addNotification(notification: Omit<LiveNotification, 'read'>): boolean {
-    if (this.seenEventIds.has(notification.id)) {
-      return false; // Already recorded
+    if (!notification || !notification.id || this.seenEventIds.has(notification.id)) {
+      return false; // Already recorded or invalid
     }
 
     this.seenEventIds.add(notification.id);
@@ -130,7 +151,22 @@ class LiveNotificationStore {
 
   public clearAll(): void {
     this.notifications = [];
+    this.seenEventIds.clear();
     this.saveToStorage();
+    this.notifyListeners();
+  }
+
+  public reset(): void {
+    this.notifications = [];
+    this.seenEventIds.clear();
+    if (typeof window !== 'undefined' && window.localStorage) {
+      try {
+        localStorage.removeItem(STORAGE_KEY_NOTIFICATIONS);
+        localStorage.removeItem(STORAGE_KEY_SEEN_IDS);
+      } catch {
+        // Ignore removal error
+      }
+    }
     this.notifyListeners();
   }
 
@@ -144,8 +180,15 @@ class LiveNotificationStore {
 
   private notifyListeners(): void {
     const list = [...this.notifications];
-    this.listeners.forEach(fn => fn(list));
+    this.listeners.forEach(fn => {
+      try {
+        fn(list);
+      } catch (err) {
+        console.error('[LiveNotificationStore] Listener error:', err);
+      }
+    });
   }
 }
 
 export const liveNotificationStore = new LiveNotificationStore();
+

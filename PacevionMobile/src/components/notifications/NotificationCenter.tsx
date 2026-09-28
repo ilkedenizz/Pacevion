@@ -1,4 +1,4 @@
-﻿// PacevionMobile/src/components/notifications/NotificationCenter.tsx
+// src/components/notifications/NotificationCenter.tsx
 import React, { useState } from 'react';
 import { 
   X, 
@@ -11,7 +11,8 @@ import {
   AlertTriangle, 
   Radio, 
   ArrowUpRight,
-  ShieldAlert
+  ShieldAlert,
+  Wrench
 } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
 import { useLanguage } from '../../context/LanguageContext';
@@ -43,7 +44,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose 
 
   const filteredNotifications = notifications.filter(n => {
     if (filter === 'UNREAD') return !n.read;
-    if (filter === 'RACE') return n.type === 'START' || n.type === 'LEADER' || n.type === 'OVERTAKE' || n.type === 'FASTEST_LAP' || n.type === 'FINISH';
+    if (filter === 'RACE') return n.type === 'START' || n.type === 'LEADER' || n.type === 'OVERTAKE' || n.type === 'FASTEST_LAP' || n.type === 'PIT' || n.type === 'FINISH';
     if (filter === 'DNF') return n.type === 'DNF' || n.type === 'FLAG';
     return true;
   });
@@ -60,6 +61,8 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose 
       case 'OVERTAKE':
       case 'FIRST_LAPS':
         return <ArrowUpRight size={16} color={teamColor || 'var(--color-primary)'} />;
+      case 'PIT':
+        return <Wrench size={16} color="var(--color-warning)" />;
       case 'DNF':
         return <AlertTriangle size={16} color="var(--color-primary)" />;
       case 'FLAG':
@@ -145,7 +148,7 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose 
         {browserPermission === 'default' && (
           <div className="nc-perm-banner">
             <div className="nc-perm-text font-mono">
-              <span>Enable alerts for live race events</span>
+              <span>Enable browser alerts for live race events</span>
             </div>
             <button className="nc-perm-btn font-mono" onClick={() => requestBrowserPermission()}>
               ENABLE
