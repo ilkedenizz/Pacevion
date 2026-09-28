@@ -1,5 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { getCalendar, getDriverStandings, getRaceResults, getConstructorStandings, getSeasonCalendar, getQualifyingResults } from '../api/endpoints';
+import {
+  getCalendar,
+  getDriverStandings,
+  getRaceResults,
+  getLatestRaceResults,
+  getAllSeasonResults,
+  getConstructorStandings,
+  getSeasonCalendar,
+  getQualifyingResults,
+  getSprintResults
+} from '../api/endpoints';
 import { useSeason } from '../context/SeasonContext';
 
 /**
@@ -36,6 +46,27 @@ export function useRaceResults(season: string, round: string) {
 }
 
 /**
+ * Hook to fetch the latest completed race results.
+ */
+export function useLatestRaceResults() {
+  return useQuery({
+    queryKey: ['latestRaceResults'],
+    queryFn: () => getLatestRaceResults(),
+  });
+}
+
+/**
+ * Hook to fetch all race results for a season.
+ */
+export function useAllSeasonResults(season: string) {
+  return useQuery({
+    queryKey: ['allSeasonResults', season],
+    queryFn: () => getAllSeasonResults(season),
+    enabled: !!season,
+  });
+}
+
+/**
  * Hook to fetch the current season's constructor standings.
  */
 export function useConstructorStandings() {
@@ -68,3 +99,13 @@ export function useQualifyingResults(season: string, round: string) {
   });
 }
 
+/**
+ * Hook to fetch sprint race results for a specific race.
+ */
+export function useSprintResults(season: string, round: string) {
+  return useQuery({
+    queryKey: ['sprintResults', season, round],
+    queryFn: () => getSprintResults(season, round),
+    enabled: !!season && !!round,
+  });
+}

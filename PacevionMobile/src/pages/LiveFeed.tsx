@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRaceResults, useQualifyingResults, useSprintResults, useLatestRaceResults } from '../hooks/useF1Data';
 import { useRaceState } from '../hooks/useRaceState';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import { getCountryFlag } from '../utils/raceWeekend';
-import { Radio, Activity, Timer, Flag, Award, AlertCircle, RefreshCw } from 'lucide-react';
+import { liveRaceTracker } from '../services/liveRaceTracker';
+import { useNotifications } from '../context/NotificationContext';
+import { Radio, Activity, Timer, Flag, Award, AlertCircle, RefreshCw, Bell } from 'lucide-react';
 import './LiveFeed.css';
 
 export const LiveFeed: React.FC = () => {
   const { raceState, isLoading: isStateLoading, isError: isStateError, pollingInterval, now } = useRaceState();
+  const { unreadCount, toggleNotificationCenter } = useNotifications();
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
 
@@ -44,6 +47,12 @@ export const LiveFeed: React.FC = () => {
 
   const activeData: any = isFallbackToLatest ? latestData : (isQualifying ? qualyData : isSprint ? sprintData : raceData);
   const resultsArray = activeData?.Results || activeData?.QualifyingResults || activeData?.SprintResults || [];
+
+  useEffect(() => {
+    if (activeData && activeData.Results && activeData.Results.length > 0) {
+      liveRaceTracker.processRaceResults(activeData);
+    }
+  }, [activeData]);
   
   const isAnyLoading = isStateLoading || (isFallbackToLatest ? isLatestLoading : (isQualifying ? isQualyLoading : isSprint ? isSprintLoading : isRaceLoading));
   const isAnyError = isStateError || (isFallbackToLatest ? isLatestError : (isQualifying ? isQualyError : isSprint ? isSprintError : isRaceError));
@@ -136,6 +145,35 @@ export const LiveFeed: React.FC = () => {
             <span className="live-subtitle font-mono">{displaySubtitle}</span>
           </div>
           <div className="lh-actions">
+            <button 
+              onClick={toggleNotificationCenter} 
+              className="refresh-btn" 
+              aria-label="Notification Center"
+              style={{ position: 'relative' }}
+            >
+              <Bell size={14} color="var(--color-text-muted)" />
+              {unreadCount > 0 && (
+                <span 
+                  style={{
+                    position: 'absolute',
+                    top: -3,
+                    right: -3,
+                    background: 'var(--color-primary)',
+                    color: '#fff',
+                    borderRadius: '50%',
+                    width: 12,
+                    height: 12,
+                    fontSize: 8,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
             <button onClick={triggerRefetch} className={`refresh-btn ${isManualRefreshing ? 'spinning' : ''}`} aria-label="Refresh Data">
               <RefreshCw size={14} color="var(--color-text-muted)" />
             </button>

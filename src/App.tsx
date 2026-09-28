@@ -5,6 +5,7 @@ import Router from './router';
 
 import { LanguageProvider } from './context/LanguageContext';
 import { SeasonProvider } from './context/SeasonContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ScrollToTop from './components/utils/ScrollToTop';
 
 const queryClient = new QueryClient({
@@ -19,12 +20,14 @@ const queryClient = new QueryClient({
 const App: React.FC = () => (
   <LanguageProvider>
     <SeasonProvider>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter basename={import.meta.env.BASE_URL}>
-          <ScrollToTop />
-          <Router />
-        </BrowserRouter>
-      </QueryClientProvider>
+      <NotificationProvider>
+        <QueryClientProvider client={queryClient}>
+          <BrowserRouter basename={import.meta.env.BASE_URL}>
+            <ScrollToTop />
+            <Router />
+          </BrowserRouter>
+        </QueryClientProvider>
+      </NotificationProvider>
     </SeasonProvider>
   </LanguageProvider>
 );

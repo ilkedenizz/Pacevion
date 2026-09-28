@@ -1,15 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Bell } from 'lucide-react';
+import { ArrowLeft, Bell, Inbox } from 'lucide-react';
 import { NotificationService, DEFAULT_PREFERENCES } from '../services/notifications';
 import type { NotificationPreferences } from '../services/notifications';
 import { useCalendar } from '../hooks/useF1Data';
+import { useNotifications } from '../context/NotificationContext';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import './NotificationSettings.css';
 
 export const NotificationSettings: React.FC = () => {
   const navigate = useNavigate();
+  const { openNotificationCenter, unreadCount } = useNotifications();
   const { data: calendar } = useCalendar('current');
   const [prefs, setPrefs] = useState<NotificationPreferences>(DEFAULT_PREFERENCES);
   const [permStatus, setPermStatus] = useState<string>('checking...');
@@ -146,7 +148,35 @@ export const NotificationSettings: React.FC = () => {
         <div className="header-titles">
           <h1 className="font-heading">NOTIFICATIONS</h1>
         </div>
-        <div style={{ width: 24 }} /> {/* Spacer */}
+        <button 
+          className="back-btn" 
+          onClick={openNotificationCenter} 
+          aria-label="Notification Feed"
+          style={{ position: 'relative' }}
+        >
+          <Inbox size={20} color="#fff" />
+          {unreadCount > 0 && (
+            <span 
+              style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                background: 'var(--color-primary)',
+                color: '#fff',
+                borderRadius: '50%',
+                width: 12,
+                height: 12,
+                fontSize: 8,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold'
+              }}
+            >
+              {unreadCount > 9 ? '9+' : unreadCount}
+            </span>
+          )}
+        </button>
       </header>
 
       <div className="ns-content">

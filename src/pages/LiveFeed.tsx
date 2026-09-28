@@ -1,15 +1,22 @@
-/* eslint-disable */
-import React, { useState } from 'react';
-import { useRaceResults, useQualifyingResults } from '../hooks/useF1Data';
+import React, { useState, useEffect } from 'react';
+import { 
+  useRaceResults, 
+  useQualifyingResults, 
+  useSprintResults, 
+  useLatestRaceResults 
+} from '../hooks/useF1Data';
 import { useRaceState } from '../hooks/useRaceState';
+import { useLanguage } from '../context/LanguageContext';
 import { getTeamDetails } from '../data/teamDetails';
 import { getDriverVisual } from '../data/assets';
 import { getCountryFlag } from '../utils/raceWeekend';
+import { liveRaceTracker } from '../services/liveRaceTracker';
 import { Radio, Activity, Timer, Flag, Award, AlertCircle, RefreshCw } from 'lucide-react';
 import './LiveFeed.css';
 
 export const LiveFeed: React.FC = () => {
   const { raceState, isLoading: isStateLoading, isError: isStateError, pollingInterval, now } = useRaceState();
+  const { t } = useLanguage();
   const [isManualRefreshing, setIsManualRefreshing] = useState(false);
   const [lastRefreshed, setLastRefreshed] = useState<Date>(new Date());
 
@@ -19,34 +26,53 @@ export const LiveFeed: React.FC = () => {
   const isSprint = activeOrLastSession?.type === 'SPRINT';
   const isRace = activeOrLastSession?.type === 'RACE' || (!isQualifying && !isSprint);
 
-  const season = raceState?.race?.season || '';
-  const round = raceState?.race?.round || '';
+  const season = raceState?.race?.season || '2026';
+  const round = raceState?.race?.round || '1';
 
   const isFallbackToLatest = raceState?.status === 'NO_RACE_WEEKEND' || raceState?.status === 'UPCOMING_WEEKEND';
 
-  // Web hook adapters
-  const latestData: any = null;
-  const isLatestLoading = false;
-  const isLatestError = false;
-  const refetchLatest = async () => {};
-  
-  const sprintData: any = null;
-  const isSprintLoading = false;
-  const isSprintError = false;
-  const refetchSprint = async () => {};
-
+  const { data: latestData, isLoading: isLatestLoading, isError: isLatestError, refetch: refetchLatest } = useLatestRaceResults();
+  const { data: sprintData, isLoading: isSprintLoading, isError: isSprintError, refetch: refetchSprint } = useSprintResults(String(season), String(round));
   const { data: raceData, isLoading: isRaceLoading, isError: isRaceError, refetch: refetchRace } = useRaceResults(String(season), String(round));
   const { data: qualyData, isLoading: isQualyLoading, isError: isQualyError, refetch: refetchQualy } = useQualifyingResults(String(season), String(round));
 
-  React.useEffect(() => {
+  // Determine active data
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const activeData: any = isFallbackToLatest 
+    ? (latestData || raceData) 
+    : (isQualifying ? qualyData : isSprint ? (sprintData || raceData) : raceData);
+
+  const resultsArray = activeData?.Results || activeData?.QualifyingResults || activeData?.SprintResults || [];
+
+  // Track live race events whenever race data updates
+  useEffect(() => {
+    if (activeData?.Results && activeData.Results.length > 0) {
+      liveRaceTracker.processRaceResults(activeData);
+    }
+  }, [activeData]);
+
+  // Track session start event
+  useEffect(() => {
+    if (raceState?.status === 'ACTIVE_SESSION' && raceState.race && raceState.activeSession) {
+      liveRaceTracker.trackSessionStart(raceState.race, raceState.activeSession.name);
+    }
+  }, [raceState?.status, raceState?.race, raceState?.activeSession]);
+
+  // Adaptive Polling
+  useEffect(() => {
     if (pollingInterval) {
       const interval = setInterval(() => {
-        if (!isFallbackToLatest && isRace) refetchRace();
-        if (!isFallbackToLatest && isQualifying) refetchQualy();
+        if (!isFallbackToLatest) {
+          if (isRace) refetchRace();
+          if (isQualifying) refetchQualy();
+          if (isSprint) refetchSprint();
+        } else {
+          refetchLatest();
+        }
       }, pollingInterval);
       return () => clearInterval(interval);
     }
-  }, [pollingInterval, isFallbackToLatest, isRace, isQualifying, refetchRace, refetchQualy]);
+  }, [pollingInterval, isFallbackToLatest, isRace, isQualifying, isSprint, refetchRace, refetchQualy, refetchSprint, refetchLatest]);
 
   const triggerRefetch = async () => {
     setIsManualRefreshing(true);
@@ -60,44 +86,41 @@ export const LiveFeed: React.FC = () => {
       setIsManualRefreshing(false);
     }
   };
-
-  const activeData: any = isFallbackToLatest ? latestData : (isQualifying ? qualyData : isSprint ? sprintData : raceData);
-  const resultsArray = activeData?.Results || activeData?.QualifyingResults || activeData?.SprintResults || [];
   
   const isAnyLoading = isStateLoading || (isFallbackToLatest ? isLatestLoading : (isQualifying ? isQualyLoading : isSprint ? isSprintLoading : isRaceLoading));
   const isAnyError = isStateError || (isFallbackToLatest ? isLatestError : (isQualifying ? isQualyError : isSprint ? isSprintError : isRaceError));
 
-  // Determine the display title and badge
-  let displayTitle = "LIVE TIMING";
-  let displayBadge = "STANDBY";
+  // Display title & badge computation
+  let displayTitle = t('liveFeed');
+  let displayBadge = t('pending');
   let badgeClass = "badge-standby";
   let displaySubtitle = "";
 
   if (isFallbackToLatest) {
-    displayTitle = "LATEST RESULT";
-    displayBadge = "OFFICIAL";
-    displaySubtitle = latestData ? `ROUND ${String(latestData.round).padStart(2, '0')} • ${latestData.season}` : '';
+    displayTitle = t('lastRaceResult');
+    displayBadge = t('official');
+    displaySubtitle = activeData ? `${t('round')} ${String(activeData.round).padStart(2, '0')} • ${activeData.season}` : '';
   } else if (raceState?.status === 'ACTIVE_SESSION') {
-    displayTitle = activeOrLastSession?.name.toUpperCase() || 'LIVE TIMING';
-    displayBadge = "LIVE";
+    displayTitle = activeOrLastSession?.name.toUpperCase() || t('liveFeed');
+    displayBadge = t('liveStatus');
     badgeClass = "badge-live pulse-border";
-    displaySubtitle = raceState?.race ? `ROUND ${String(raceState.race.round).padStart(2, '0')} • ${raceState.race.season}` : '';
+    displaySubtitle = raceState?.race ? `${t('round')} ${String(raceState.race.round).padStart(2, '0')} • ${raceState.race.season}` : '';
   } else if (raceState?.status === 'WAITING_FOR_SESSION') {
-    displayTitle = "NEXT SESSION";
-    displayBadge = "STANDBY";
+    displayTitle = t('sessionPending');
+    displayBadge = t('pending');
     displaySubtitle = raceState.nextSession ? raceState.nextSession.name.toUpperCase() : 'UNKNOWN';
   } else if (raceState?.status === 'POST_RACE') {
     if (resultsArray.length > 0) {
-      displayTitle = "RACE RESULT";
-      displayBadge = "OFFICIAL";
+      displayTitle = t('raceClassification');
+      displayBadge = t('official');
     } else {
-      displayTitle = "RESULT PENDING";
-      displayBadge = "PENDING";
+      displayTitle = t('pending');
+      displayBadge = t('pending');
     }
-    displaySubtitle = raceState?.race ? `ROUND ${String(raceState.race.round).padStart(2, '0')} • ${raceState.race.season}` : '';
+    displaySubtitle = raceState?.race ? `${t('round')} ${String(raceState.race.round).padStart(2, '0')} • ${raceState.race.season}` : '';
   }
 
-  const raceDetails = isFallbackToLatest ? latestData : raceState?.race;
+  const raceDetails = isFallbackToLatest ? activeData : raceState?.race;
 
   if (isAnyLoading && !activeData && !isManualRefreshing) {
     return (
@@ -118,29 +141,33 @@ export const LiveFeed: React.FC = () => {
           <AlertCircle size={32} color="var(--color-primary)" />
           <h2 className="font-heading editorial-headline" style={{ color: 'var(--color-primary)' }}>TIMING FEED OFFLINE</h2>
           <p className="editorial-label">UNABLE TO CONNECT TO FIA RACE CONTROL</p>
-          <button onClick={triggerRefetch} className="retry-btn font-mono">RECONNECT</button>
+          <button onClick={triggerRefetch} className="retry-btn font-mono">{t('retry').toUpperCase()}</button>
         </div>
       </div>
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const winner = resultsArray.length > 0 ? resultsArray.find((r: any) => r.position === '1') : null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const fastestLapEntry = resultsArray.length > 0 ? resultsArray.find((r: any) => r.FastestLap?.rank === '1') : null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const totalFinishers = resultsArray.length > 0 ? resultsArray.filter((r: any) => r.status === 'Finished' || /^\+/.test(r.status || '') || /lap/i.test(r.status || '')).length : 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dnfs = resultsArray.length > 0 ? resultsArray.filter((r: any) => !/finished/i.test(r.status || '') && !/^\+/.test(r.status || '') && !/lap/i.test(r.status || '')).length : 0;
   const flagEmoji = getCountryFlag(raceDetails?.Circuit?.Location?.country, raceDetails?.Circuit?.Location?.locality);
   
   const minutesSinceUpdate = Math.floor((now.getTime() - lastRefreshed.getTime()) / 60000);
-  let updateText = '';
+  let updateText: string;
   if (isManualRefreshing) {
     updateText = 'CHECKING...';
   } else if (resultsArray.length === 0) {
     if (raceState?.status === 'POST_RACE') {
-      updateText = 'AWAITING OFFICIAL DATA';
+      updateText = t('retrievingTiming');
     } else if (pollingInterval) {
-      updateText = 'POLLING ACTIVE';
+      updateText = t('activeSession');
     } else {
-      updateText = 'DATA UNAVAILABLE';
+      updateText = t('dataNotAvailable');
     }
   } else {
     updateText = minutesSinceUpdate === 0 ? 'UPDATED: JUST NOW' : `UPDATED: ${minutesSinceUpdate}M AGO`;
@@ -182,7 +209,7 @@ export const LiveFeed: React.FC = () => {
         <div className="ssp-left">
           <span className={`ssp-dot ${raceState?.status === 'ACTIVE_SESSION' ? 'pulse' : ''}`} style={{ background: raceState?.status === 'ACTIVE_SESSION' ? 'var(--color-primary)' : 'var(--color-text-muted)' }} />
           <span className="ssp-status-text">
-            {raceState?.status === 'ACTIVE_SESSION' ? 'TRACK IS LIVE' : 'OFF-TRACK'}
+            {raceState?.status === 'ACTIVE_SESSION' ? t('trackIsLive') : t('offTrack')}
           </span>
         </div>
         <div className="ssp-right" style={{ color: 'var(--color-text-muted)', fontSize: '0.75rem' }}>
@@ -195,7 +222,7 @@ export const LiveFeed: React.FC = () => {
           <div className="lt-chip">
             <Award size={13} color="var(--color-warning)" />
             <div className="lt-chip-data">
-              <span className="editorial-label">LEADER</span>
+              <span className="editorial-label">{t('winner')}</span>
               <span className="font-heading lt-chip-val" style={{ color: winner ? getTeamDetails(winner.Constructor.constructorId).color : '#fff' }}>
                 {winner ? winner.Driver.familyName : '—'}
               </span>
@@ -204,7 +231,7 @@ export const LiveFeed: React.FC = () => {
           <div className="lt-chip">
             <Timer size={13} color="#C98EE8" />
             <div className="lt-chip-data">
-              <span className="editorial-label">FASTEST LAP</span>
+              <span className="editorial-label">{t('fastestLap')}</span>
               <span className="font-heading lt-chip-val" style={{ color: '#C98EE8' }}>
                 {fastestLapEntry ? `${fastestLapEntry.Driver.familyName}` : '—'}
               </span>
@@ -213,7 +240,7 @@ export const LiveFeed: React.FC = () => {
           <div className="lt-chip">
             <Flag size={13} color="var(--color-success)" />
             <div className="lt-chip-data">
-              <span className="editorial-label">FINISHERS</span>
+              <span className="editorial-label">{t('finished')}</span>
               <span className="font-mono lt-chip-val">{totalFinishers} / {resultsArray.length}</span>
             </div>
           </div>
@@ -222,10 +249,10 @@ export const LiveFeed: React.FC = () => {
 
       <section className="live-classification-section">
         <div className="ltb-header font-mono">
-          <span className="col-pos">POS</span>
-          <span className="col-driver">DRIVER</span>
-          <span className="col-time">{isQualifying ? 'Q3 / BEST' : 'GAP / STATUS'}</span>
-          <span className="col-pts">PTS</span>
+          <span className="col-pos">{t('pos')}</span>
+          <span className="col-driver">{t('driver')}</span>
+          <span className="col-time">{isQualifying ? 'Q3 / BEST' : `${t('timeStatus')}`}</span>
+          <span className="col-pts">{t('pts')}</span>
         </div>
 
         {resultsArray.length === 0 ? (
@@ -233,31 +260,32 @@ export const LiveFeed: React.FC = () => {
             {raceState?.status === 'ACTIVE_SESSION' ? (
               <>
                 <Activity size={32} color="var(--color-primary)" style={{ marginBottom: 16 }} />
-                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>LIVE TIMING UNAVAILABLE</span>
-                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Live timing data is currently unavailable.<br/>Waiting for official session data...</span>
+                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>{t('sessionLive')}</span>
+                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{t('retrievingTiming')}</span>
               </>
             ) : raceState?.status === 'POST_RACE' ? (
               <>
                 <Flag size={32} color="var(--color-text-primary)" style={{ marginBottom: 16 }} />
-                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>OFFICIAL RESULT PENDING</span>
-                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Official classification is not available yet.<br/>Waiting for official results...</span>
+                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>{t('finalClassification')}</span>
+                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{t('retrievingTiming')}</span>
               </>
             ) : raceState?.status === 'WAITING_FOR_SESSION' ? (
               <>
                 <Timer size={32} color="var(--color-text-muted)" style={{ marginBottom: 16 }} />
-                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>SESSION PENDING</span>
+                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>{t('sessionNotStarted')}</span>
                 <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Waiting for {activeOrLastSession?.name || 'session'} to start...</span>
               </>
             ) : (
               <>
                 <AlertCircle size={32} color="var(--color-text-muted)" style={{ marginBottom: 16 }} />
-                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>DATA UNAVAILABLE</span>
-                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>No classification data found.</span>
+                <span style={{ fontSize: '1.1rem', color: 'var(--color-text-primary)' }}>{t('noData')}</span>
+                <span style={{ marginTop: 8, fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>{t('dataNotAvailable')}</span>
               </>
             )}
           </div>
         ) : (
           <div className="ltb-body">
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             {resultsArray.map((result: any) => {
               const posNum = parseInt(result.position, 10);
               const isP1 = posNum === 1;
@@ -268,7 +296,7 @@ export const LiveFeed: React.FC = () => {
               const teamDetails = getTeamDetails(result.Constructor.constructorId);
               const teamColor = teamDetails.color || '#555';
 
-              let displayGap: React.ReactNode = '—';
+              let displayGap: React.ReactNode;
               if (isQualifying) {
                 displayGap = result.Q3 || result.Q2 || result.Q1 || 'NO TIME';
               } else {
@@ -329,7 +357,7 @@ export const LiveFeed: React.FC = () => {
                     <div className="driver-team-stripe" style={{ backgroundColor: teamColor }} />
                     <div className="driver-avatar-mini">
                       <img 
-                        src={getDriverVisual(result.Driver.driverId, 'portrait') || ''} 
+                        src={getDriverVisual(result.Driver.driverId, result.Constructor?.constructorId) || ''} 
                         alt={result.Driver.familyName}
                         loading="lazy" 
                       />
@@ -393,14 +421,14 @@ export const LiveFeed: React.FC = () => {
             
             {fastestLapEntry && (
               <div className="rc-event">
-                <span className="rc-event-tag purple">FASTEST LAP</span>
+                <span className="rc-event-tag purple">{t('fastestLap')}</span>
                 <span className="rc-event-msg">
                   Lap {fastestLapEntry.FastestLap?.lap || '—'} set by {fastestLapEntry.Driver.familyName} ({fastestLapEntry.FastestLap?.Time.time})
                 </span>
               </div>
             )}
             <div className="rc-event">
-              <span className="rc-event-tag info">STANDINGS</span>
+              <span className="rc-event-tag info">{t('standings').toUpperCase()}</span>
               <span className="rc-event-msg">
                 {totalFinishers} classified, {dnfs} retirements
               </span>

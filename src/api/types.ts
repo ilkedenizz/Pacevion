@@ -115,6 +115,10 @@ export interface FastestLap {
   Time: {
     time: string;
   };
+  AverageSpeed?: {
+    units: string;
+    speed: string;
+  };
 }
 
 export interface RaceResult {
@@ -214,5 +218,43 @@ export interface MRDataQualifyingResponse {
     offset: string;
     total: string;
     RaceTable: QualifyingRaceTable;
+  };
+}
+
+export type MRDataQualifyingResultsResponse = MRDataQualifyingResponse;
+
+export interface SprintResult {
+  number: string;
+  position: string;
+  positionText: string;
+  points: string;
+  Driver: Driver;
+  Constructor: Constructor;
+  grid: string;
+  laps: string;
+  status: string;
+  Time?: Time;
+  FastestLap?: FastestLap;
+}
+
+export interface SprintRace extends Race {
+  SprintResults: SprintResult[];
+}
+
+export interface SprintRaceTable {
+  season?: string;
+  round?: string;
+  Races: SprintRace[];
+}
+
+export interface MRDataSprintResultsResponse {
+  MRData: {
+    xmlns: string;
+    series: string;
+    url: string;
+    limit: string;
+    offset: string;
+    total: string;
+    RaceTable: SprintRaceTable;
   };
 }
