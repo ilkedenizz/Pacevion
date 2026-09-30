@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRaceResults, useQualifyingResults, useSprintResults, useLatestRaceResults, usePitStops } from '../hooks/useF1Data';
 import { useRaceState } from '../hooks/useRaceState';
 import { getTeamDetails } from '../data/teamDetails';
@@ -39,7 +39,12 @@ export const LiveFeed: React.FC = () => {
       if (isFallbackToLatest) await refetchLatest();
       else if (isQualifying) await refetchQualy();
       else if (isSprint) await refetchSprint();
-      else await refetchRace();
+      else {
+        const res = await refetchRace();
+        if (res.data) {
+          liveRaceTracker.processRaceResults(res.data, pitData);
+        }
+      }
     } finally {
       setLastRefreshed(new Date());
       setIsManualRefreshing(false);
@@ -48,12 +53,6 @@ export const LiveFeed: React.FC = () => {
 
   const activeData: any = isFallbackToLatest ? latestData : (isQualifying ? qualyData : isSprint ? sprintData : raceData);
   const resultsArray = activeData?.Results || activeData?.QualifyingResults || activeData?.SprintResults || [];
-
-  useEffect(() => {
-    if (activeData && activeData.Results && activeData.Results.length > 0) {
-      liveRaceTracker.processRaceResults(activeData, pitData);
-    }
-  }, [activeData, pitData]);
   
   const isAnyLoading = isStateLoading || (isFallbackToLatest ? isLatestLoading : (isQualifying ? isQualyLoading : isSprint ? isSprintLoading : isRaceLoading));
   const isAnyError = isStateError || (isFallbackToLatest ? isLatestError : (isQualifying ? isQualyError : isSprint ? isSprintError : isRaceError));

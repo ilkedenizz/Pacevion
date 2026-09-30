@@ -20,14 +20,14 @@ const queryClient = new QueryClient({
 const App: React.FC = () => (
   <LanguageProvider>
     <SeasonProvider>
-      <NotificationProvider>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <NotificationProvider>
           <BrowserRouter basename={import.meta.env.BASE_URL}>
             <ScrollToTop />
             <Router />
           </BrowserRouter>
-        </QueryClientProvider>
-      </NotificationProvider>
+        </NotificationProvider>
+      </QueryClientProvider>
     </SeasonProvider>
   </LanguageProvider>
 );

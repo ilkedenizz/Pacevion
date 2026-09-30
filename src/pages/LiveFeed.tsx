@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   useRaceResults, 
   useQualifyingResults, 
@@ -46,43 +46,22 @@ export const LiveFeed: React.FC = () => {
 
   const resultsArray = activeData?.Results || activeData?.QualifyingResults || activeData?.SprintResults || [];
 
-  // Track live race events whenever race data updates
-  useEffect(() => {
-    if (activeData?.Results && activeData.Results.length > 0) {
-      liveRaceTracker.processRaceResults(activeData, pitData);
-    }
-  }, [activeData, pitData]);
-
-  // Track session start event
-  useEffect(() => {
-    if (raceState?.status === 'ACTIVE_SESSION' && raceState.race && raceState.activeSession) {
-      liveRaceTracker.trackSessionStart(raceState.race, raceState.activeSession.name);
-    }
-  }, [raceState?.status, raceState?.race, raceState?.activeSession]);
-
-  // Adaptive Polling
-  useEffect(() => {
-    if (pollingInterval) {
-      const interval = setInterval(() => {
-        if (!isFallbackToLatest) {
-          if (isRace) refetchRace();
-          if (isQualifying) refetchQualy();
-          if (isSprint) refetchSprint();
-        } else {
-          refetchLatest();
-        }
-      }, pollingInterval);
-      return () => clearInterval(interval);
-    }
-  }, [pollingInterval, isFallbackToLatest, isRace, isQualifying, isSprint, refetchRace, refetchQualy, refetchSprint, refetchLatest]);
-
+  // Manual refresh handler
   const triggerRefetch = async () => {
     setIsManualRefreshing(true);
     try {
-      if (isFallbackToLatest) await refetchLatest();
-      else if (isQualifying) await refetchQualy();
-      else if (isSprint) await refetchSprint();
-      else await refetchRace();
+      if (isFallbackToLatest) {
+        await refetchLatest();
+      } else if (isQualifying) {
+        await refetchQualy();
+      } else if (isSprint) {
+        await refetchSprint();
+      } else {
+        const [res, pits] = await Promise.all([refetchRace(), pitData]);
+        if (res.data) {
+          liveRaceTracker.processRaceResults(res.data, pits);
+        }
+      }
     } finally {
       setLastRefreshed(new Date());
       setIsManualRefreshing(false);
