@@ -134,6 +134,19 @@ export async function getQualifyingResults(season: string, round: string): Promi
 }
 
 /**
+ * Fetch all qualifying results for a season.
+ */
+export async function getAllSeasonQualifying(season: string = '2026'): Promise<QualifyingRace[]> {
+  if (season === '2027') return [];
+  try {
+    const data = await fetchClient<MRDataQualifyingResponse>(`/${season}/qualifying.json?limit=1000`);
+    return data?.MRData?.RaceTable?.Races || [];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Fetch sprint race results for a specific race.
  */
 export async function getSprintResults(season: string, round: string): Promise<SprintRace | null> {

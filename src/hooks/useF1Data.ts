@@ -5,6 +5,7 @@ import {
   getRaceResults,
   getLatestRaceResults,
   getAllSeasonResults,
+  getAllSeasonQualifying,
   getConstructorStandings,
   getSeasonCalendar,
   getQualifyingResults,
@@ -63,6 +64,17 @@ export function useAllSeasonResults(season: string) {
   return useQuery({
     queryKey: ['allSeasonResults', season],
     queryFn: () => getAllSeasonResults(season),
+    enabled: !!season,
+  });
+}
+
+/**
+ * Hook to fetch all qualifying results for a season.
+ */
+export function useAllSeasonQualifying(season: string) {
+  return useQuery({
+    queryKey: ['allSeasonQualifying', season],
+    queryFn: () => getAllSeasonQualifying(season),
     enabled: !!season,
   });
 }
