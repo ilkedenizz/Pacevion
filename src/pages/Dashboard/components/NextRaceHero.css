@@ -81,12 +81,33 @@
   letter-spacing: 2px;
 }
 
+.live-badge-red.is-live {
+  background-color: #e10600;
+  box-shadow: 0 0 12px rgba(225, 6, 0, 0.6);
+  animation: live-pulse 2s infinite ease-in-out;
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
+}
+
 .round-info {
   font-size: 12px;
   font-weight: 700;
   color: var(--color-text-primary);
   letter-spacing: 2px;
   background: rgba(255,255,255,0.1);
+  padding: 4px var(--space-2);
+}
+
+.hero-sprint-badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: #ff9800;
+  letter-spacing: 2px;
+  background: rgba(255, 152, 0, 0.15);
+  border: 1px solid rgba(255, 152, 0, 0.4);
   padding: 4px var(--space-2);
 }
 
@@ -144,10 +165,45 @@
   box-shadow: 0 8px 24px rgba(225, 6, 0, 0.4);
 }
 
+.hero-action-btn.hero-action-live {
+  background-color: var(--color-accent);
+  color: #fff;
+  border-color: #ff3333;
+  box-shadow: 0 0 16px rgba(225, 6, 0, 0.5);
+}
+
+.hero-action-btn.hero-action-live:hover {
+  background-color: #ff1a1a;
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(225, 6, 0, 0.75);
+}
+
+.btn-icon-live {
+  animation: blink 1.5s infinite;
+}
+
 .hero-right-col {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+}
+
+.hero-countdown-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.hc-session-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-accent);
+  letter-spacing: 2px;
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 8px;
+  border-right: 3px solid var(--color-accent);
 }
 
 .broadcast-countdown {
@@ -204,11 +260,42 @@
   letter-spacing: 2px;
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
   background: rgba(0, 0, 0, 0.6);
   padding: var(--space-4) var(--space-5);
   border-left: 4px solid var(--color-accent);
   backdrop-filter: blur(12px);
+}
+
+.broadcast-live-state.active {
+  background: rgba(225, 6, 0, 0.15);
+  border-left: 4px solid #00C864;
+}
+
+.broadcast-live-state.active .blink-dot {
+  background-color: #00C864;
+  box-shadow: 0 0 10px #00C864;
+}
+
+.live-state-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.live-state-title {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.live-state-sub {
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  font-weight: 600;
 }
 
 .blink-dot {

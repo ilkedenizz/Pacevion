@@ -6,12 +6,14 @@ import UpcomingRaces from './components/UpcomingRaces';
 import ChampionshipAnalytics from './components/ChampionshipAnalytics';
 import AboutSection from './components/AboutSection';
 import RevealSection from '../../components/ui/RevealSection';
-import { useCalendar, useDriverStandings } from '../../hooks/useF1Data';
+import { useDriverStandings } from '../../hooks/useF1Data';
+import { useRaceState } from '../../hooks/useRaceState';
+import { isWeekendCompleted } from '../../utils/raceWeekend';
 import { useSEO } from '../../hooks/useSEO';
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
-  const { data: races } = useCalendar();
+  const { calendar: races, raceState, now } = useRaceState();
   const { data: standings } = useDriverStandings();
 
   useSEO({
@@ -22,32 +24,23 @@ const Dashboard: React.FC = () => {
 
   const stats = useMemo(() => {
     const total = races ? races.length : 0;
-    const now = new Date();
     const completed = races
-      ? races.filter((race) => {
-          const raceTimeStr = race.time ? (race.time.endsWith('Z') ? race.time : `${race.time}Z`) : '00:00:00Z';
-          const raceDate = new Date(`${race.date}T${raceTimeStr}`);
-          return raceDate <= now;
-        }).length
+      ? races.filter((race) => isWeekendCompleted(race, now)).length
       : 0;
 
     const drivers = standings ? standings.length : 0;
     const constructors = standings
       ? new Set(standings.map((s) => s.Constructors[0]?.constructorId).filter(Boolean)).size
       : 0;
-    const remaining = total - completed;
+    const remaining = Math.max(0, total - completed);
 
-    // Next Race computation for data strip
-    const nextRace = races ? races.find(race => {
-      const raceTimeStr = race.time ? (race.time.endsWith('Z') ? race.time : `${race.time}Z`) : '00:00:00Z';
-      const raceDate = new Date(`${race.date}T${raceTimeStr}`);
-      return raceDate > now;
-    }) : null;
-    
-    const nextEventName = nextRace ? nextRace.Circuit.Location.country : '—';
+    const isPostRace = raceState?.status === 'POST_RACE';
+    const activeRace = isPostRace ? raceState?.nextRace : (raceState?.race || raceState?.nextRace || (races && races.length > 0 ? races[0] : null));
+    const currentRound = activeRace ? activeRace.round : (completed + 1 || '1');
+    const nextEventName = activeRace?.Circuit?.Location?.country || '—';
 
-    return { total, completed, drivers, constructors, remaining, nextEventName };
-  }, [races, standings]);
+    return { total, completed, currentRound, drivers, constructors, remaining, nextEventName };
+  }, [races, standings, raceState, now]);
 
   return (
     <div className="dashboard-wrapper">
@@ -61,7 +54,7 @@ const Dashboard: React.FC = () => {
         <div className="data-strip">
           <div className="strip-item">
             <span className="strip-label">ROUND</span>
-            <span className="strip-value">{stats.completed + 1 || '—'}</span>
+            <span className="strip-value">{stats.currentRound || '—'}</span>
           </div>
           <div className="strip-item">
             <span className="strip-label">RACES</span>
