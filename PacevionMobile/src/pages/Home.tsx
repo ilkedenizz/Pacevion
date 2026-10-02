@@ -12,13 +12,15 @@ import { getCircuitDetails } from '../data/circuitData';
 import { HomeCountdown } from '../components/common/HomeCountdown';
 import { formatRaceDateRange, getCountryFlag, parseSessionDateSecure, isWeekendCompleted } from '../utils/raceWeekend';
 import CircuitTrack from '../components/common/CircuitTrack';
-import { ChevronRight, Calendar, Radio, Trophy, CheckCircle2, Clock } from 'lucide-react';
+import { useNotifications } from '../context/NotificationContext';
+import { ChevronRight, Calendar, Radio, Trophy, CheckCircle2, Clock, Bell } from 'lucide-react';
 import './Home.css';
 
 export const Home: React.FC = () => {
   const { calendar, isLoading: isCalendarLoading, isError: isCalendarError, now, raceState, refetchCalendar } = useRaceState();
   const { data: standings, isLoading: isStandingsLoading, isError: isStandingsError, refetch: refetchStandings } = useDriverStandings('2026');
   const { data: constructors } = useConstructorStandings('2026');
+  const { unreadCount, toggleNotificationCenter } = useNotifications();
   const navigate = useNavigate();
 
   // If the current weekend is POST_RACE (all sessions done but within 24h), the "next" race for Home is the nextRace
@@ -136,9 +138,23 @@ export const Home: React.FC = () => {
           <h1 className="h-title font-heading editorial-headline">PACEVION</h1>
           <span className="h-season font-mono">2026 SEASON • FIA FORMULA 1</span>
         </div>
-        <div className="hh-right">
-          <div className="status-dot pulse" />
-          <span className="status-badge-text font-mono">LIVE TIMING</span>
+        <div className="hh-right-group">
+          <button 
+            onClick={toggleNotificationCenter}
+            className="home-notif-btn" 
+            aria-label="Live Notifications"
+          >
+            <Bell size={18} color="var(--color-text-primary)" />
+            {unreadCount > 0 && (
+              <span className="home-notif-badge font-mono">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
+          </button>
+          <div className="hh-status-pill">
+            <div className="status-dot pulse" />
+            <span className="status-badge-text font-mono">LIVE TIMING</span>
+          </div>
         </div>
       </header>
 

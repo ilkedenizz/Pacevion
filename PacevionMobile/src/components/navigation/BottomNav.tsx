@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Flag, Trophy, Activity, Calendar, Menu } from 'lucide-react';
+import { useNotifications } from '../../context/NotificationContext';
 import './BottomNav.css';
 
 const navItems = [
@@ -12,19 +13,29 @@ const navItems = [
 ];
 
 export const BottomNav: React.FC = () => {
+  const { unreadCount } = useNotifications();
+
   return (
     <nav className="bottom-nav">
-      {navItems.map((item) => (
-        <NavLink 
-          key={item.path} 
-          to={item.path} 
-          className={({ isActive }) => `bn-item ${isActive ? 'active' : ''}`}
-          end={item.path === '/'}
-        >
-          <span className="bn-icon">{item.icon}</span>
-          <span className="bn-label">{item.label}</span>
-        </NavLink>
-      ))}
+      {navItems.map((item) => {
+        const isLive = item.path === '/live';
+        return (
+          <NavLink 
+            key={item.path} 
+            to={item.path} 
+            className={({ isActive }) => `bn-item ${isActive ? 'active' : ''}`}
+            end={item.path === '/'}
+          >
+            <span className="bn-icon">
+              {item.icon}
+              {isLive && unreadCount > 0 && (
+                <span className="bn-unread-dot" aria-label={`${unreadCount} unread live notifications`} />
+              )}
+            </span>
+            <span className="bn-label">{item.label}</span>
+          </NavLink>
+        );
+      })}
     </nav>
   );
 };

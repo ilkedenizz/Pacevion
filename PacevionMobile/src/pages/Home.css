@@ -36,7 +36,53 @@
   margin-top: 4px;
 }
 
-.hh-right {
+.hh-right,
+.hh-right-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-notif-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--color-surface-elevated, #1a1a24);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.home-notif-btn:active {
+  background: var(--color-surface-light, #222735);
+  border-color: var(--color-primary);
+}
+
+.home-notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  min-width: 14px;
+  height: 14px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  border: 1.5px solid var(--color-bg, #0a0a0f);
+  line-height: 1;
+}
+
+.hh-status-pill {
   display: flex;
   align-items: center;
   gap: 6px;
