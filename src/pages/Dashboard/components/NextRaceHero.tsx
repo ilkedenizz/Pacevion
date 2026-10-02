@@ -16,7 +16,7 @@ interface Countdown {
 }
 
 const NextRaceHero: React.FC = () => {
-  const { calendar, raceState, isLoading, isError, refetchCalendar } = useRaceState();
+  const { calendar, raceState, isLoading, isError, refetchCalendar, now } = useRaceState();
   const navigate = useNavigate();
   const [countdown, setCountdown] = useState<Countdown | null>(null);
 
@@ -51,7 +51,7 @@ const NextRaceHero: React.FC = () => {
         return raceState.nextSession || raceState.allSessions[0] || null;
       }
       if (raceState.allSessions && raceState.allSessions.length > 0) {
-        const nextInWeekend = raceState.allSessions.find(s => s.date.getTime() > Date.now());
+        const nextInWeekend = raceState.allSessions.find(s => s.date.getTime() > now.getTime());
         if (nextInWeekend) return nextInWeekend;
       }
     }
@@ -68,13 +68,12 @@ const NextRaceHero: React.FC = () => {
     }
 
     return null;
-  }, [raceState, displayedRace, isLive]);
+  }, [raceState, displayedRace, isLive, now]);
 
   const targetDate = targetSession?.date || (displayedRace ? parseSessionDateSecure(displayedRace.date, displayedRace.time) : null);
 
   useEffect(() => {
     if (!targetDate || isLive) {
-      setCountdown(null);
       return;
     }
 

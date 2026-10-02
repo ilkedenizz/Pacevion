@@ -54,6 +54,29 @@ export async function getDriverStandings(season: string = '2026'): Promise<Drive
 }
 
 /**
+ * Fetch driver standings along with round number for trend/historical comparisons.
+ */
+export async function getDriverStandingsWithRound(
+  season: string = '2026',
+  round?: string | number
+): Promise<{ round: string; standings: DriverStanding[] }> {
+  if (season === '2027') return { round: '0', standings: [] };
+  try {
+    const url = round ? `/${season}/${round}/driverStandings.json` : `/${season}/driverStandings.json`;
+    const data = await fetchClient<MRDataDriverStandingsResponse>(url);
+    const lists = data?.MRData?.StandingsTable?.StandingsLists;
+    if (lists && lists.length > 0 && lists[0].DriverStandings.length > 0) {
+      return { round: lists[0].round || String(round || '0'), standings: lists[0].DriverStandings };
+    }
+    if (season === '2026' && !round) return { round: '0', standings: MOCK_2026_DRIVERS };
+    return { round: '0', standings: [] };
+  } catch {
+    if (season === '2026' && !round) return { round: '0', standings: MOCK_2026_DRIVERS };
+    return { round: '0', standings: [] };
+  }
+}
+
+/**
  * Fetch results for a specific race.
  */
 export async function getRaceResults(season: string, round: string): Promise<ResultRace | null> {
@@ -109,6 +132,29 @@ export async function getConstructorStandings(season: string = '2026'): Promise<
   } catch (error) {
     if (season === '2026') return MOCK_2026_CONSTRUCTORS;
     throw error;
+  }
+}
+
+/**
+ * Fetch constructor standings along with round number for trend/historical comparisons.
+ */
+export async function getConstructorStandingsWithRound(
+  season: string = '2026',
+  round?: string | number
+): Promise<{ round: string; standings: ConstructorStanding[] }> {
+  if (season === '2027') return { round: '0', standings: [] };
+  try {
+    const url = round ? `/${season}/${round}/constructorStandings.json` : `/${season}/constructorStandings.json`;
+    const data = await fetchClient<MRDataConstructorStandingsResponse>(url);
+    const lists = data?.MRData?.StandingsTable?.StandingsLists;
+    if (lists && lists.length > 0 && lists[0].ConstructorStandings.length > 0) {
+      return { round: lists[0].round || String(round || '0'), standings: lists[0].ConstructorStandings };
+    }
+    if (season === '2026' && !round) return { round: '0', standings: MOCK_2026_CONSTRUCTORS };
+    return { round: '0', standings: [] };
+  } catch {
+    if (season === '2026' && !round) return { round: '0', standings: MOCK_2026_CONSTRUCTORS };
+    return { round: '0', standings: [] };
   }
 }
 

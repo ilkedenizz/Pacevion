@@ -23,6 +23,14 @@ interface NotificationCenterProps {
   onClose?: () => void;
 }
 
+const formatTimestamp = (ts: number): string => {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return 'Just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return new Date(ts).toLocaleDateString();
+};
+
 export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose }) => {
   const { 
     notifications, 
@@ -71,14 +79,6 @@ export const NotificationCenter: React.FC<NotificationCenterProps> = ({ onClose 
       default:
         return <Radio size={16} color="var(--color-text-secondary)" />;
     }
-  };
-
-  const formatTimestamp = (ts: number): string => {
-    const diff = Math.floor((Date.now() - ts) / 1000);
-    if (diff < 60) return 'Just now';
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return new Date(ts).toLocaleDateString();
   };
 
   return (

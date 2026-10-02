@@ -318,13 +318,9 @@ export class LiveRaceTracker {
           const posNum = parseInt(r.position, 10);
           if (isNaN(posNum) || posNum <= 0) return;
 
-          let baselinePos = 0;
-          if (isLap1) {
-            baselinePos = parseInt(r.grid, 10);
-          } else {
-            const prev = snapshot.driverStates.get(r.Driver.driverId);
-            baselinePos = prev ? prev.position : parseInt(r.grid, 10);
-          }
+          const baselinePos = isLap1 
+            ? parseInt(r.grid, 10) 
+            : (snapshot.driverStates.get(r.Driver.driverId)?.position || parseInt(r.grid, 10));
 
           if (baselinePos > 0 && baselinePos !== posNum) {
             const gain = baselinePos - posNum;

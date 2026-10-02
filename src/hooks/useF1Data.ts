@@ -2,11 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 import {
   getCalendar,
   getDriverStandings,
+  getDriverStandingsWithRound,
   getRaceResults,
   getLatestRaceResults,
   getAllSeasonResults,
   getAllSeasonQualifying,
   getConstructorStandings,
+  getConstructorStandingsWithRound,
   getSeasonCalendar,
   getQualifyingResults,
   getSprintResults,
@@ -33,6 +35,26 @@ export function useDriverStandings() {
   return useQuery({
     queryKey: ['driverStandings', season],
     queryFn: () => getDriverStandings(season),
+  });
+}
+
+/**
+ * Hook to fetch current driver standings along with the previous round's standings for trend calculation.
+ */
+export function useDriverStandingsWithPrevious(customSeason?: string) {
+  const { season: contextSeason } = useSeason();
+  const season = customSeason || contextSeason || '2026';
+  return useQuery({
+    queryKey: ['driverStandingsWithPrevious', season],
+    queryFn: async () => {
+      const current = await getDriverStandingsWithRound(season);
+      if (!current.round || current.round === '0' || current.round === '1') {
+        return { current: current.standings, previous: null };
+      }
+      const prevRound = parseInt(current.round, 10) - 1;
+      const prev = await getDriverStandingsWithRound(season, prevRound);
+      return { current: current.standings, previous: prev.standings };
+    },
   });
 }
 
@@ -87,6 +109,26 @@ export function useConstructorStandings() {
   return useQuery({
     queryKey: ['constructorStandings', season],
     queryFn: () => getConstructorStandings(season),
+  });
+}
+
+/**
+ * Hook to fetch current constructor standings along with the previous round's standings for trend calculation.
+ */
+export function useConstructorStandingsWithPrevious(customSeason?: string) {
+  const { season: contextSeason } = useSeason();
+  const season = customSeason || contextSeason || '2026';
+  return useQuery({
+    queryKey: ['constructorStandingsWithPrevious', season],
+    queryFn: async () => {
+      const current = await getConstructorStandingsWithRound(season);
+      if (!current.round || current.round === '0' || current.round === '1') {
+        return { current: current.standings, previous: null };
+      }
+      const prevRound = parseInt(current.round, 10) - 1;
+      const prev = await getConstructorStandingsWithRound(season, prevRound);
+      return { current: current.standings, previous: prev.standings };
+    },
   });
 }
 

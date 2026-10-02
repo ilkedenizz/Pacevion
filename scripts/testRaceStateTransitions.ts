@@ -1,8 +1,7 @@
 import { 
   getCurrentRaceState, 
   buildSessionsForRace, 
-  isWeekendCompleted,
-  parseSessionDateSecure
+  isWeekendCompleted
 } from '../src/utils/raceWeekend';
 import type { Race } from '../src/api/types';
 

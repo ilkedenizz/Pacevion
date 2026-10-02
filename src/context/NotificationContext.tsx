@@ -28,7 +28,12 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
     liveNotificationStore.getNotifications()
   );
   const [isOpen, setIsOpen] = useState(false);
-  const [browserPermission, setBrowserPermission] = useState<NotificationPermission | 'unsupported'>('default');
+  const [browserPermission, setBrowserPermission] = useState<NotificationPermission | 'unsupported'>(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      return Notification.permission;
+    }
+    return 'unsupported';
+  });
 
   const queryClient = useQueryClient();
   const { raceState, pollingInterval } = useRaceState();
@@ -36,12 +41,6 @@ export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ 
 
   // Synchronize in-memory notification store
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setBrowserPermission(Notification.permission);
-    } else {
-      setBrowserPermission('unsupported');
-    }
-
     const unsubscribe = liveNotificationStore.subscribe((list) => {
       setNotifications(list);
     });

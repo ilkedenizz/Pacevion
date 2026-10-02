@@ -202,10 +202,13 @@
 
 /* Columns */
 .tb-col-pos {
-  width: 60px;
+  width: 72px;
   flex-shrink: 0;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .tb-col-driver {
@@ -287,6 +290,33 @@
   font-size: 12px;
   font-weight: 800;
   border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.tb-pos-trend {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.5px;
+  flex-shrink: 0;
+}
+
+.trend-up,
+.tb-pos-trend.trend-up {
+  color: var(--ds-color-success, #00C864);
+}
+
+.trend-down,
+.tb-pos-trend.trend-down {
+  color: var(--ds-color-accent-red, #E10600);
+}
+
+.trend-same,
+.trend-none,
+.tb-pos-trend.trend-same,
+.tb-pos-trend.trend-none {
+  color: var(--ds-color-text-muted, #6B7280);
 }
 
 .tb-driver-name {
@@ -342,7 +372,8 @@
   }
   
   .tb-col-pos {
-    width: 40px;
+    width: 58px;
+    gap: 4px;
   }
   
   .tb-col-driver, .tb-col-team-primary {
@@ -352,13 +383,13 @@
   
   .tb-col-team {
     width: 100%;
-    padding-left: 40px;
+    padding-left: 58px;
     margin-top: 4px;
   }
   
   .tb-col-lineup {
     width: 100%;
-    padding-left: 40px;
+    padding-left: 58px;
     margin-top: 4px;
   }
   

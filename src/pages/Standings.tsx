@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDriverStandings, useConstructorStandings } from '../hooks/useF1Data';
+import { useDriverStandingsWithPrevious, useConstructorStandingsWithPrevious } from '../hooks/useF1Data';
 import { useSeason } from '../context/SeasonContext';
 import { useSEO } from '../hooks/useSEO';
 import ErrorState from '../components/ui/ErrorState';
 import { getDriverVisual } from '../data/assets';
+import { calculateDriverTrend, calculateConstructorTrend } from '../utils/standingsTrend';
 import './Standings.css';
 
 const Standings: React.FC = () => {
@@ -18,8 +19,14 @@ const Standings: React.FC = () => {
     canonicalPath: '/standings'
   });
 
-  const { data: driverStandings, isLoading: driversLoading, isError: driversError, refetch: refetchDrivers } = useDriverStandings();
-  const { data: constructorStandings, isLoading: constructorsLoading, isError: constructorsError, refetch: refetchConstructors } = useConstructorStandings();
+  const { data: driverData, isLoading: driversLoading, isError: driversError, refetch: refetchDrivers } = useDriverStandingsWithPrevious(season);
+  const { data: constructorData, isLoading: constructorsLoading, isError: constructorsError, refetch: refetchConstructors } = useConstructorStandingsWithPrevious(season);
+
+  const driverStandings = driverData?.current;
+  const prevDriverStandings = driverData?.previous;
+
+  const constructorStandings = constructorData?.current;
+  const prevConstructorStandings = constructorData?.previous;
 
   const isLoading = driversLoading || constructorsLoading;
   const isError = driversError || constructorsError;
@@ -109,6 +116,7 @@ const Standings: React.FC = () => {
                 const leaderPoints = parseInt(driverStandings[0].points, 10);
                 const currentPoints = parseInt(row.points, 10);
                 const barWidth = leaderPoints > 0 ? (currentPoints / leaderPoints) * 100 : 0;
+                const trend = calculateDriverTrend(row.Driver.driverId, row.position, prevDriverStandings);
                 
                 return (
                   <div 
@@ -120,6 +128,9 @@ const Standings: React.FC = () => {
                     <div className="tb-row-bg-bar" style={{ width: `${barWidth}%` }} />
                     <div className="tb-col-pos">
                       <span className="tb-pos-badge">{row.position}</span>
+                      <span className={`tb-pos-trend ${trend.className}`} aria-label={`Position trend: ${trend.text}`}>
+                        {trend.text}
+                      </span>
                     </div>
                     <div className="tb-col-driver">
                       <img 
@@ -173,6 +184,7 @@ const Standings: React.FC = () => {
                 const leaderPoints = parseInt(constructorStandings[0].points, 10);
                 const currentPoints = parseInt(row.points, 10);
                 const barWidth = leaderPoints > 0 ? (currentPoints / leaderPoints) * 100 : 0;
+                const trend = calculateConstructorTrend(row.Constructor.constructorId, row.position, prevConstructorStandings);
                   
                 return (
                   <div 
@@ -183,6 +195,9 @@ const Standings: React.FC = () => {
                     <div className="tb-row-bg-bar" style={{ width: `${barWidth}%` }} />
                     <div className="tb-col-pos">
                       <span className="tb-pos-badge">{row.position}</span>
+                      <span className={`tb-pos-trend ${trend.className}`} aria-label={`Position trend: ${trend.text}`}>
+                        {trend.text}
+                      </span>
                     </div>
                     <div className="tb-col-team-primary">
                       <span className="tb-driver-name">{teamName}</span>
